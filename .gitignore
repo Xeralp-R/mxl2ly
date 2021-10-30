@@ -1,0 +1,4 @@
+# ignore build directories
+build/
+build_xcode/
+.vscode/
