@@ -7,6 +7,9 @@ project(ly2musicxml LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Add the tinyxml2 directory
+add_subdirectory(tinyxml2)
+
 # set the sources
 set (SOURCES
     main.cpp
@@ -17,11 +20,17 @@ add_executable(mxl2ly
     ${SOURCES}
 )
 
+# link the library to the executable
+target_link_libraries(
+    mxl2ly PUBLIC tinyxml2
+)
+target_include_directories(
+    mxl2ly PUBLIC "${PROJECT_SOURCE_DIR}/tinyxml2"
+)
+
 # State that we want all the warnings
 if (MSVC)
-# warning level 4 and all warnings as errors
-add_compile_options(/W4 /WX)
+add_compile_options(/W4 /WX) # warning level 4 and all warnings as errors
 else()
-# lots of warnings and all warnings as errors
-add_compile_options(-Wall -Wextra -pedantic -Werror)
+add_compile_options(-Wall -Wextra -pedantic -Werror) # lots of warnings and all warnings as errors
 endif()
