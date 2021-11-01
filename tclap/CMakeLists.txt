@@ -16,7 +16,7 @@ set (HEADERS
     MultiSwitchArg.h 
     OptionalUnlabeledTracker.h 
     sstream.h 
-    StandardTraits. 
+    StandardTraits.h
     StdOutput.h 
     UnlabeledMultiArg.h 
     UnlabeledValueArg.h 
@@ -29,8 +29,10 @@ set (HEADERS
 #target_sources(TCLAP INTERFACE ${HEADER_FILES})
 #install(FILES ${HEADER_FILES} DESTINATION include/tclap)
 
-add_library(tclap
+add_library(tclap INTERFACE
     ${HEADERS}
 )
 
-target_include_directories(tclap PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+set_target_properties(tclap PROPERTIES LINKER_LANGUAGE CXX)
+
+target_include_directories(tclap INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")

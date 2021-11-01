@@ -7,6 +7,8 @@ project(mxl2ly LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+set (CMAKE_CXX_FLAGS "-stdlib=libc++")
+
 # Add the tinyxml2 directory
 add_subdirectory(tinyxml2)
 add_subdirectory(tclap)

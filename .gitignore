@@ -15,3 +15,4 @@ tinyxml2/TinyXML2_small.png
 
 # ignore the .DS_store?
 .DS_Store
+*.out
