@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project(tinyxml2 VERSION 9.0.0)
 
-include(CTest)
-option(tinyxml2_BUILD_TESTING "Build tests for tinyxml2" "${BUILD_TESTING}")
+#include(CTest)
+#option(tinyxml2_BUILD_TESTING "Build tests for tinyxml2" "${BUILD_TESTING}")
 
 ##
 ## Honor tinyxml2_SHARED_LIBS to match install interface
@@ -19,7 +19,7 @@ endif ()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
-add_library(tinyxml2 tinyxml2.cpp tinyxml2.hpp)
+add_library(tinyxml2 tinyxml2.cpp tinyxml2.h)
 add_library(tinyxml2::tinyxml2 ALIAS tinyxml2)
 
 # Uncomment the following line to require C++11 (or greater) to use tinyxml2
@@ -113,7 +113,7 @@ install(
 ## Headers
 
 install(
-    FILES tinyxml2.hpp
+    FILES tinyxml2.h
     TYPE INCLUDE
     COMPONENT tinyxml2_development
 )
