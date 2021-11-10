@@ -5,37 +5,12 @@
 
 #include "tinyxml2/tinyxml2.h"
 #include "tclap/CmdLine.h"
-#include "src/file_options.hpp"
+#include "src/file_option_parser.hpp"
 
 int main(int argc, char* argv[]) {
     try {
-        // Declare the command line.
-        TCLAP::CmdLine cmd("A program to convert musicxml to lilypond.", ' ', "beta");
-        
-        add_file_options(cmd);
-        
-        // Add the filename as mandatory
-        TCLAP::UnlabeledValueArg<std::string> filename_arg("filename",
-                                                           "The name of the file being converted",
-                                                           true,
-                                                           "",
-                                                           "string" );
-        
-        // Add the output name as optional
-        TCLAP::ValueArg<std::string> output_arg("o",
-                                                "output",
-                                                "The name of the file to output to: default is based on the input filename",
-                                                false,
-                                                "",
-                                                "string");
-        
-        // add those arguments
-        cmd.add(filename_arg);
-        cmd.add(output_arg);
-        
-        // Parse the command-line arguments.
-        cmd.parse(argc, argv);
-        std::string filename = filename_arg.getValue();
+        FileOptionParser file_option_parser (argc, argv);
+        std::string filename = file_option_parser.get_filename();
         
         std::fstream filestr;
         filestr.open(filename, std::ios::in);
