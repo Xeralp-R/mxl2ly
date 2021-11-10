@@ -1,6 +1,7 @@
 #include <iostream>
 #include <exception>
 #include <string>
+#include <fstream>
 
 #include "tinyxml2/tinyxml2.h"
 #include "tclap/CmdLine.h"
@@ -33,7 +34,15 @@ int main(int argc, char* argv[]) {
         cmd.parse(argc, argv);
         std::string filename = filename_arg.getValue();
         
-        std::cout << "Filename: " << filename << std::endl;
+        std::fstream filestr;
+        filestr.open(filename, std::ios::in);
+        
+        if (filestr.is_open()) {
+            std::cout << "Opened file" << std::endl;
+        }
+        else {
+            std::cout << "File was not opened" << std::endl;
+        }
     }
     catch (TCLAP::ArgException &e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId() << std::endl;
