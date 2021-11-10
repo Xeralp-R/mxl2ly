@@ -12,6 +12,7 @@ set (CMAKE_CXX_FLAGS "-stdlib=libc++")
 # Add the tinyxml2 directory
 add_subdirectory(tinyxml2)
 add_subdirectory(tclap)
+add_subdirectory(src)
 
 # set the sources
 set (SOURCES
