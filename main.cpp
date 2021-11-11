@@ -4,7 +4,8 @@
 #include <fstream>
 
 #include "tinyxml2/tinyxml2.h"
-#include "tclap/CmdLine.h"
+#include "ghc/filesystem.hpp"
+
 #include "src/file_option_parser.hpp"
 
 int main(int argc, char* argv[]) {
@@ -21,6 +22,13 @@ int main(int argc, char* argv[]) {
         else {
             std::cout << "File was not opened" << std::endl;
         }
+        
+        if (ghc::filesystem::exists(filename)) {
+            std::cout << "Can use experimental filesystem" << std::endl;
+        } 
+        else {
+            std::cout << "File was not opened" << std::endl;
+        }
     }
     catch (TCLAP::ArgException &e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId() << std::endl;
@@ -31,7 +39,7 @@ int main(int argc, char* argv[]) {
         exit(2);
     }
     catch (...) {
-        std::cerr << "Unknown error occured. Terminating." << std::endl;
+        std::cerr << "Unknown error ocurred. Terminating." << std::endl;
         exit(3);
     }
 }

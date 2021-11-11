@@ -10,9 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set (CMAKE_CXX_FLAGS "-stdlib=libc++")
 
 # Add the tinyxml2 directory
-add_subdirectory(tinyxml2)
-add_subdirectory(tclap)
-add_subdirectory(src)
+add_subdirectory(lib/tinyxml2)
+add_subdirectory(lib/tclap)
+add_subdirectory(lib/ghc)
 
 # set the sources
 set (SOURCES
@@ -24,6 +24,9 @@ add_executable(mxl2ly
     ${SOURCES}
 )
 
+# Add the src directory to the compilation
+add_subdirectory(src)
+
 # link the library to the executable
 target_link_libraries(
     mxl2ly PUBLIC tinyxml2
@@ -33,8 +36,16 @@ target_link_libraries(
     mxl2ly PUBLIC tclap
 )
 
+target_link_libraries(
+    mxl2ly PUBLIC ghc
+)
+
 target_include_directories(
     mxl2ly PUBLIC "${PROJECT_SOURCE_DIR}"
+)
+
+target_include_directories(
+    mxl2ly PUBLIC "${PROJECT_SOURCE_DIR}/lib"
 )
 
 # State that we want all the warnings
