@@ -13,22 +13,9 @@ int main(int argc, char* argv[]) {
         FileOptionParser file_option_parser (argc, argv);
         std::string filename = file_option_parser.get_filename();
         
-        std::fstream filestr;
-        filestr.open(filename, std::ios::in);
-        
-        if (filestr.is_open()) {
-            std::cout << "Opened file" << std::endl;
-        }
-        else {
-            std::cout << "File was not opened" << std::endl;
-        }
-        
-        if (ghc::filesystem::exists(filename)) {
-            std::cout << "Can use experimental filesystem" << std::endl;
+        if (!ghc::filesystem::exists(filename)) {
+            throw std::invalid_argument("File cannot be found");
         } 
-        else {
-            std::cout << "File was not opened" << std::endl;
-        }
     }
     catch (TCLAP::ArgException &e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId() << std::endl;
