@@ -6,4 +6,5 @@ PRIVATE
     file_option_parser.cpp
     music_tree.hpp
     music_tree.cpp
+    statement.hpp
 )
