@@ -12,7 +12,7 @@
 #include <string>
 #include <optional>
 
-#include "../tclap/CmdLine.h"
+#include "tclap/CmdLine.h"
 
 class FileOptionParser {
 public:

@@ -3,10 +3,10 @@
 #include <string>
 #include <fstream>
 
-#include "tinyxml2/tinyxml2.h"
 #include "ghc/filesystem.hpp"
 
 #include "src/file_option_parser.hpp"
+#include "src/music_tree.hpp"
 
 int main(int argc, char* argv[]) {
     try {
@@ -15,7 +15,9 @@ int main(int argc, char* argv[]) {
         
         if (!ghc::filesystem::exists(filename)) {
             throw std::invalid_argument("File cannot be found");
-        } 
+        }
+        
+        MusicTree music_tree (filename);
     }
     catch (TCLAP::ArgException &e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId() << std::endl;
