@@ -7,6 +7,7 @@
 
 #include "music_tree.hpp"
 
+#include "header_and_paper.hpp"
 
 MusicTree::MusicTree(std::string filename) { 
     this->xml_document.LoadFile(filename.c_str());
@@ -33,11 +34,9 @@ void MusicTree::extract_first_layer() {
                                   );
     this->tenths_to_mm_conversion = staff_width/tenths_in_staff;
     
-    this->statements.emplace_back(std::make_unique<AbstractStatement>
-                                  (Statement("tenths_to_mm", this->tenths_to_mm_conversion))
-                                  );
-    this->statements.emplace_back(std::make_unique<AbstractStatement>
-                                  (Statement("staff_size", millimeters(staff_width)))
-                                  );
+    this->statements.emplace_back(std::make_unique<Statement<double>>
+                                  ("tenths_to_mm", this->tenths_to_mm_conversion));
+    this->statements.emplace_back(std::make_unique<Statement<Length>>
+                                  ("staff_size", millimeters(staff_width)));
 }
 
