@@ -24,7 +24,6 @@ public:
     std::string to_lilypond();
 private:
     // Functions
-    void extract_first_layer();
     void extract_staff_info();
     void extract_paper_block();
     
