@@ -20,10 +20,12 @@
 
 class Header : public AbstractStatement {
 public:
+    Header() = default;
     Header(std::initializer_list<std::pair<std::string, std::string>> statements);
     
-    std::string get_type() override { return "header"; }
+    void add_statement(std::pair<std::string, std::string>);
     
+    std::string get_type() override { return "header"; }
     std::vector<Statement<std::string>*> get_statements();
 private:
     std::vector<std::unique_ptr<Statement<std::string>>> statements;

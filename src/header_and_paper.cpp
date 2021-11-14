@@ -15,6 +15,10 @@ Header::Header(std::initializer_list<std::pair<std::string, std::string>> statem
     }
 }
 
+void Header::add_statement(std::pair<std::string, std::string> pair) {
+    this->statements.push_back(std::make_unique<Statement<std::string>>(pair.first, pair.second));
+}
+
 std::vector<Statement<std::string>*> Header::get_statements() {
     std::vector<Statement<std::string>*> returner;
     for (auto& pointer : this->statements) {

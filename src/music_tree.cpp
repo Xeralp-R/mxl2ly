@@ -11,14 +11,19 @@
 
 #include "header_and_paper.hpp"
 
+// Main execution
+
 MusicTree::MusicTree(std::string filename) { 
     this->xml_document.LoadFile(filename.c_str());
     
     this->extract_staff_info();
     this->extract_paper_block();
+    this->extract_header_block();
     
     std::cout << "Loaded file in class!" << std::endl;
 }
+
+// Function Definitions
 
 void MusicTree::extract_staff_info() {
     double staff_width = atof(this->xml_document
@@ -145,4 +150,21 @@ void MusicTree::extract_paper_block() {
     }
     
     this->statements.emplace_back(std::move(paper_pointer));
+}
+
+void MusicTree::extract_header_block() { 
+    auto* root_elem = this->xml_document.FirstChildElement("score-partwise");
+    auto header_ptr = std::make_unique<Header>();
+    
+    for (tinyxml2::XMLElement* runner = root_elem->FirstChildElement("credit");
+         std::string_view(runner->Name()) != "credit";
+         runner = runner->NextSiblingElement()) {
+        
+        std::string credit_type = runner->FirstChildElement("credit-type")->GetText();
+        std::string credit_words = runner->FirstChildElement("credit-words")->GetText();
+        
+        header_ptr->add_statement({credit_type, credit_words});
+    }
+    
+    this->statements.emplace_back(std::move(header_ptr));
 }

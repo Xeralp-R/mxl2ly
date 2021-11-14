@@ -26,6 +26,7 @@ private:
     // Functions
     void extract_staff_info();
     void extract_paper_block();
+    void extract_header_block();
     
     double tenths_to_mm_conversion;
     tinyxml2::XMLDocument xml_document;
