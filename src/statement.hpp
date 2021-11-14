@@ -34,7 +34,9 @@ class Length {
     operator float()       { return static_cast<float>(this->length_millimeters); }
     
     friend Length millimeters(long double d);
+    friend Length inches(long double d);
     friend Length points(long double d);
+    friend Length tenths(long double amt, long double conversion);
 private:
     Length(double length_millimeters) : length_millimeters(length_millimeters) {};
     
@@ -45,8 +47,16 @@ inline Length millimeters(long double d) {
     return Length(d);
 }
 
+inline Length inches(long double d) {
+    return Length(d * 25.4);
+}
+
 inline Length points(long double d) {
     return Length(d * 0.3528);
+}
+
+inline Length tenths(long double amt, long double conversion) {
+    return Length(amt * conversion);
 }
 
 #endif /* statement_hpp */
