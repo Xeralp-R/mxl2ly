@@ -11,6 +11,8 @@
 
 #include "header_and_paper.hpp"
 
+using namespace lmt;
+
 // Main execution
 
 MusicTree::MusicTree(std::string filename) { 

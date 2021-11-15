@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
             throw std::invalid_argument("File cannot be found");
         }
         
-        MusicTree music_tree (filename);
+        lmt::MusicTree music_tree (filename);
     }
     catch (TCLAP::ArgException &e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId() << std::endl;

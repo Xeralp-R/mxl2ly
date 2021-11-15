@@ -9,6 +9,8 @@
 
 #include <exception>
 
+using namespace lmt;
+
 Header::Header(std::initializer_list<std::pair<std::string, std::string>> statements) { 
     for (auto& pair : statements) {
         this->statements.push_back(std::make_unique<Statement<std::string>>(pair.first, pair.second));

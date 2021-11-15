@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace lmt {
+
 class AbstractStatement {
 public:
     virtual std::string get_type() = 0;
@@ -57,6 +59,8 @@ inline Length points(long double d) {
 
 inline Length tenths(long double amt, long double conversion) {
     return Length(amt * conversion);
+}
+    
 }
 
 #endif /* statement_hpp */

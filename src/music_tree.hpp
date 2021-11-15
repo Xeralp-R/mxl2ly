@@ -17,6 +17,8 @@
 
 #include "statement.hpp"
 
+namespace lmt {
+
 class MusicTree {
 public:
     MusicTree(std::string filename);
@@ -37,5 +39,7 @@ private:
         inches(1), inches(1), inches(1), inches(1)
     };
 };
+    
+}
 
 #endif /* music_tree_hpp */

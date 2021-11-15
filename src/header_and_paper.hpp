@@ -18,6 +18,8 @@
 
 #include "statement.hpp"
 
+namespace lmt {
+
 class Header : public AbstractStatement {
 public:
     Header() = default;
@@ -68,5 +70,7 @@ private:
     margin_array even_margins;
     margin_array odd_margins;
 };
+    
+}
 
 #endif /* header_and_paper_hpp */
