@@ -9,4 +9,6 @@ PRIVATE
     music_tree.hpp
     music_tree.cpp
     statement.hpp
+    part_and_measure.hpp
+    part_and_measure.cpp
 )
