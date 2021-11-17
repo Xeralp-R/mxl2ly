@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <exception>
 
 #include "statement.hpp"
 
@@ -23,16 +24,32 @@ namespace lmt::aux {
     }
     
     // The clef: add more clefs later
-    enum class Clef {
-        Treble,
-        Alto,
-        Bass
+    class Clef : public AbstractMeasureStatement {
+    public:
+        Clef(char type, short int staff_line) {
+            if (type != 'c' && type != 'f' && type != 'g') {
+                throw std::logic_error("Incorrect clef");
+            }
+            if (staff_line > 5) {
+                throw std::logic_error("Incorrect clef position");
+            }
+            
+            this->type = type;
+            this->staff_line = staff_line;
+        }
+        
+        std::string get_subtype() { return "key-signature"; }
+    private:
+        char type;
+        short int staff_line;
     };
     
     // The key signature
     class KeySignature : public AbstractMeasureStatement {
     public:
-        KeySignature(int fifths) : fifths(fifths) {}
+        KeySignature(int fifths) : fifths(fifths) {
+            // add functionality later
+        }
         
         std::string get_subtype() { return "key-signature"; }
     private:
