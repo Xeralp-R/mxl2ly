@@ -47,8 +47,12 @@ namespace lmt::aux {
     // The key signature
     class KeySignature : public AbstractMeasureStatement {
     public:
-        KeySignature(int fifths) : fifths(fifths) {
-            // add functionality later
+        KeySignature(int fifths) {
+            if (fifths < -7 || fifths > 7) {
+                throw std::logic_error("Incorrect clef position");
+            }
+            
+            this->fifths = fifths;
         }
         
         std::string get_subtype() { return "key-signature"; }
