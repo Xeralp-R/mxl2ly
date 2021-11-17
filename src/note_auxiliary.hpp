@@ -15,14 +15,7 @@
 #include <variant>
 #include <iostream>
 
-namespace lly::aux {
-    enum class Unit {
-        cm,
-        mm,
-        in,
-        sp
-    };
-    
+namespace lmt::aux {
     enum class Location {
         Above,
         Below
@@ -32,56 +25,6 @@ namespace lly::aux {
         short int time;
         std::optional<short int> dotted;
         operator double() const;
-    };
-    
-    // The clef: add more clefs later
-    enum class Clef {
-        Treble,
-        Alto,
-        Bass
-    };
-    
-    // The key signature
-    struct KeySignature {
-        // valid values: a to g only
-        char pitch_class;
-        enum {
-            Major,
-            Minor
-            // TODO: add more here later
-        } mode;
-    };
-    
-    // the time signature
-    struct TimeSignature {
-        short int upper;
-        short int lower;
-    };
-    
-    struct Barline {
-        enum {
-            None,
-            // A single light barline
-            Regular,
-            // A single heavy barline
-            Heavy,
-            // A regular double barline
-            LightLight,
-            // An ending barline
-            LightHeavy,
-            // A starting barline?
-            HeavyLight,
-            // An unusual double heavy barline
-            HeavyHeavy
-            // TODO: Add more here later
-        } type;
-        
-        // a double repeat is listed as 1 repeat before and 1 repeat after in 2 different bars
-        enum class Quality {
-            //Regular,
-            RepeatBefore,
-            RepeatAfter
-        } quality;
     };
     
     // the accidental
@@ -192,12 +135,6 @@ namespace lly::aux {
     typedef std::variant<Ornament, Articulation, Dynamic, Spanner> Notations;
     typedef std::variant<Spanner, Markup, Symbol> Directions;
     typedef std::variant<KeySignature, TimeSignature, Clef> Attributes;
-    typedef std::variant<Clef, KeySignature, TimeSignature, Barline> MeasureTypes;
 }
-
-// ==> Output functions:
-std::ostream& operator<<(std::ostream& os, const lly::aux::Accidental& acc);
-std::ostream& operator<<(std::ostream& os, const lly::aux::TimeSignature& time);
-
 
 #endif /* note_auxiliary_hpp */

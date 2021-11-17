@@ -14,56 +14,31 @@
 #include <ostream>
 #include <variant>
 
-#include "auxiliary.hpp"
+#include "statement.hpp"
 
-// Forward declaration:
-namespace lly {
-    // Declared here
-    class Note;
-}
-
-// so that this will work
-std::ostream& operator<<(std::ostream& os, const lly::Note& nt);
-
-// Actual declaration
-namespace lly {
-    // The class which represents notes
-    class Note {
+namespace lmt {
+    class Pitch : public AbstractStatement {
+        char pitch_class;
+        short int octave;
+    };
+    
+    class Note : public AbstractStatement {
     public:
         // ==> Constructor
-        Note(char pitch_class,
-             lly::aux::Accidental accidental,
-             short int octave,
+        Note(Pitch pitch,
              short int duration);
-        Note(char pitch_class,
-             lly::aux::Accidental accidental,
-             short int octave,
+        Note(Pitch pitch,
              short int duration,
              short int dotted);
         
         // ==> Setter Functions
-        void add_note_object(lly::aux::Dynamic);
-        void add_note_object(lly::aux::Articulation);
-        void add_note_object(lly::aux::Ornament);
-        void add_note_object(lly::aux::Spanner);
-        void add_note_object(lly::aux::Markup);
+        void add_note_object(AbstractStatement*);
         void set_stem_direction(bool);
         
         // ==> Getter functions (I don't know whether these are necessary)
-        char get_pitch_class();
-        lly::aux::Accidental get_accidental();
-        short int get_octave();
+        Pitch get_pitch();
         lly::aux::Duration get_duration();
-        
-        // ==> Other Functions
-        friend std::ostream& ::operator<<(std::ostream& os, const lly::Note& nt);
     private:
-        // ==> Private setter functions
-        void set_pitch_class(char);
-        void set_accidental(lly::aux::Accidental);
-        void set_octave(short int);
-        void set_duration(short int);
-        
         // ==> Required Variables
         char pitch_class; // valid values: a-g, r, s
         short int octave; // valid values: -3 to 4
