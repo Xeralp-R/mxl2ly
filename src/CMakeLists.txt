@@ -6,6 +6,7 @@ PRIVATE
     file_option_parser.cpp
     header_and_paper.hpp
     header_and_paper.cpp
+    helper.hpp
     measure_auxiliary.hpp
     music_tree.hpp
     music_tree.cpp

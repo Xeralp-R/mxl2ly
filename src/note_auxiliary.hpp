@@ -14,67 +14,49 @@
 #include <ostream>
 #include <variant>
 #include <iostream>
+#include <exception>
+
+#include "helper.hpp"
+#include "statement.hpp"
+
+/* Add later
+ enum class Location {
+ Above,
+ Below
+ };
+ */
 
 namespace lmt::aux {
-    enum class Location {
-        Above,
-        Below
+    struct AbstractNotation : public AbstractStatement {
+        std::string get_type() { return "note_statement"; }
+        virtual std::string get_subtype() = 0;
+        virtual ~AbstractNotation(){};
     };
     
-    struct Duration {
-        short int time;
-        std::optional<short int> dotted;
-        operator double() const;
-    };
-    
-    // the accidental
-    struct Accidental {
-        // the quality
-        enum {
-            DoubleFlat,
-            Flat,
-            Natural,
-            Sharp,
-            DoubleSharp
-        } type;
+    class Dynamic : public AbstractNotation {
+    public:
+        Dynamic(std::string type) {
+            if (!is_element(permitted_types.begin(), permitted_types.end(), type)) {
+                throw std::logic_error("Incorrect dynamic");
+            }
+            
+            this->type = type;
+        }
         
-        // whether it is cautionary
-        enum class Quality {
-            Invisible,
-            Cautionary,
-            Visible
-        } quality;
-    };
-    
-    // I think it may be better to represent them individually,
-    // rather than have to match strings-
-    // something that can be tricky to do in C++.
-    struct Dynamic {
-        enum {
-            pppppppp,
-            ppppppp,
-            pppppp,
-            ppppp,
-            pppp,
-            ppp,
-            pp,
-            p,
-            mp,
-            mf,
-            f,
-            ff,
-            fff,
-            ffff,
-            fffff,
-            ffffff,
-            fffffff,
-            ffffffff
-        } type;
+        std::string get_subtype() override { return "dynamic"; }
+        std::string get_dynamic() const { return type; };
+    private:
+        std::string type;
         
-        std::optional<Location> location {};
+        const std::vector<std::string> permitted_types {
+            "pppppppp", "ppppppp", "pppppp", "ppppp", "pppp",
+            "ppp", "pp", "p", "mp", "mf", "f", "ff", "fff",
+            "ffff", "fffff", "ffffff", "fffffff", "ffffffff",
+            "sf", "sfz", "rf", "sffz"
+        };
     };
     
-    struct Articulation {
+    struct Articulation : public AbstractNotation {
         enum {
             Staccato, // like a dot
             Staccatissimo, // a wedge
@@ -84,10 +66,10 @@ namespace lmt::aux {
             Marcato // a hat?
         } type;
         
-        std::optional<Location> location {};
+        std::string get_subtype() override { return "articulation"; }
     };
     
-    struct Ornament {
+    struct Ornament : public AbstractNotation {
         enum {
             Turn,
             Trill,
@@ -95,46 +77,14 @@ namespace lmt::aux {
             Mordent
         } type;
         
-        std::optional<Location> location {};
+        std::string get_subtype() override { return "ornament"; }
     };
     
-    struct Spanner {
-        enum {
-            Crescendo,
-            Decrescendo,
-            Pedal,
-            OttavaAlta,
-            OttavaBassa,
-            Slur
-        } type;
-        
-        // true if it starts: false if it ends
-        bool start;
-        
-        std::optional<Location> location {};
-    };
-    
-    struct Markup {
+    struct Markup : public AbstractNotation {
         std::string text;
         bool italics;
         bool boldface;
-        std::optional<Location> location {};
     };
-    
-    // represents symbols
-    // TODO: Implement
-    struct Symbol {};
-    
-    // a function to stringify vectors using python list notation:
-    // e.g. [1,2,3,4,5]
-    std::string stringify(std::vector<short int> vec);
-    std::string stringify(std::vector<int> vec);
-    std::string stringify(std::vector<char> vec);
-    
-    // convenient typedefs:
-    typedef std::variant<Ornament, Articulation, Dynamic, Spanner> Notations;
-    typedef std::variant<Spanner, Markup, Symbol> Directions;
-    typedef std::variant<KeySignature, TimeSignature, Clef> Attributes;
 }
 
 #endif /* note_auxiliary_hpp */
