@@ -1,12 +1,12 @@
 //
-//  measure_auxiliary.hpp
+//  measure_attributes.hpp
 //  mxl2ly
 //
 //  Created by Reventar on 17/11/2021.
 //
 
-#ifndef measure_auxiliary_hpp
-#define measure_auxiliary_hpp
+#ifndef measure_attributes_hpp
+#define measure_attributes_hpp
 
 #include <string>
 #include <vector>
@@ -150,4 +150,4 @@ namespace lmt::aux {
     };
 }
 
-#endif /* measure_auxiliary_hpp */
+#endif /* measure_attributes_hpp */
