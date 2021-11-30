@@ -1,12 +1,12 @@
 //
-//  note_auxiliary.hpp
+//  notations.hpp
 //  mxl2ly
 //
 //  Created by Reventar on 17/11/2021.
 //
 
-#ifndef note_auxiliary_hpp
-#define note_auxiliary_hpp
+#ifndef notations_hpp
+#define notations_hpp
 
 #include <vector>
 #include <optional>
@@ -87,4 +87,4 @@ namespace lmt::aux {
     };
 }
 
-#endif /* note_auxiliary_hpp */
+#endif /* notations_hpp */
