@@ -38,7 +38,7 @@ namespace lmt::aux {
             this->staff_line = staff_line;
         }
         
-        std::string get_subtype() { return "key-signature"; }
+        std::string get_subtype() override { return "key-signature"; }
     private:
         char type;
         short int staff_line;
@@ -86,7 +86,7 @@ namespace lmt::aux {
         TimeSignature(short int upper, short int lower)
         : upper_num{upper}, lower_num{lower} {};
         
-        std::string get_subtype() { return "time-signature"; }
+        std::string get_subtype() override { return "time-signature"; }
         
         short int get_upper() { return this->upper_num; }
         short int get_lower() { return this->lower_num; }
@@ -124,13 +124,29 @@ namespace lmt::aux {
         Barline(Barline::Type type, Barline::Repeat repeat)
         : type{type}, repeat{repeat} {};
         
-        std::string get_subtype() { return "barline"; }
+        std::string get_subtype() override { return "barline"; }
         
         Barline::Type get_type() const { return type; }
         Barline::Repeat get_repeat() const { return repeat; }
     private:
         const Barline::Type type;
         const Barline::Repeat repeat;
+    };
+    
+    struct Spanner {
+        enum {
+            Crescendo,
+            Decrescendo,
+            Pedal,
+            OttavaAlta,
+            OttavaBassa,
+            Slur
+        } type;
+        
+        // true if it starts: false if it ends
+        bool start;
+        
+        std::optional<Location> location {};
     };
 }
 
