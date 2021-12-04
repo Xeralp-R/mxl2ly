@@ -13,47 +13,65 @@
 #include <string>
 #include <ostream>
 #include <variant>
+#include <exception>
 
 #include "statement.hpp"
+#include "notations.hpp"
 
 namespace lmt {
-    class Pitch : public AbstractStatement {
-        char pitch_class;
-        short int octave;
-    };
-    
     class Note : public AbstractStatement {
     public:
-        // ==> Constructor
+        class Pitch : public AbstractStatement {
+            Pitch(char pitch_class, short int octave, short int alteration) {
+                if (!is_element(valid_pitch_classes.begin(),
+                                valid_pitch_classes.end(),
+                                pitch_class)) {
+                    throw std::logic_error("Invalid pitch class");
+                }
+                if (!is_element(valid_octaves.begin(),
+                                valid_octaves.end(),
+                                octave)) {
+                    throw std::logic_error("Invalid octave");
+                }
+                if (!is_element(valid_alterations.begin(),
+                                valid_alterations.end(),
+                                alteration)) {
+                    throw std::logic_error("Invalid alteration (sharp/flat)");
+                }
+                
+                this->pitch_class = pitch_class;
+                this->octave = octave;
+                this->alteration = alteration;
+            }
+            
+            std::string get_type() override { return "pitch"; }
+        private:
+            short int alteration;
+            char pitch_class;
+            short int octave;
+            
+            std::vector<char> valid_pitch_classes {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'r', 's'};
+            std::vector<short int> valid_octaves {1, 2, 3, 4, 5, 6, 7, 8, 9};
+            std::vector<short int> valid_alterations {-2, -1, 0, 1, 2};
+        };
+        
         Note(Pitch pitch,
              short int duration);
         Note(Pitch pitch,
              short int duration,
              short int dotted);
         
-        // ==> Setter Functions
-        void add_note_object(AbstractStatement*);
-        void set_stem_direction(bool);
-        
-        // ==> Getter functions (I don't know whether these are necessary)
-        Pitch get_pitch();
-        lly::aux::Duration get_duration();
+        void add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation);
     private:
         // ==> Required Variables
-        char pitch_class; // valid values: a-g, r, s
-        short int octave; // valid values: -3 to 4
-        lly::aux::Accidental accidental; // std::optional because there's an error without.
+        Pitch pitch;
         short int duration; // valid values: powers of 2
         
         // ==> Non-required Variables
-        std::vector<lly::aux::Directions> directions;
-        std::vector<lly::aux::Notations> notations;
-        std::optional<bool> stem_direction = {}; // true for up, false for down
+        std::vector<std::unique_ptr<lmt::aux::AbstractNotation>> notations;
         std::optional<short int> dotted = {}; // number of dots
         
         // ==> Constants
-        std::vector<char> valid_pitch_classes {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'r', 's'};
-        std::vector<short int> valid_octaves {-3, -2, -1, 0, 1, 2, 3, 4};
         std::vector<short int> valid_durations {1, 2, 4, 8, 16, 32, 64, 128};
     };
 }
