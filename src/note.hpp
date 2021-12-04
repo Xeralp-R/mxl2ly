@@ -19,12 +19,10 @@
 #include "notations.hpp"
 
 namespace lmt {
-    class Note : public AbstractMeasureObject {
+    class Note : public aux::AbstractMeasureObject {
     public:
         class Pitch {
             Pitch(char pitch_class, short int octave, short int alteration);
-            
-            std::string get_type() override { return "pitch"; }
         private:
             short int alteration;
             char pitch_class;

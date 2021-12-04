@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "statement.hpp"
+#include "helper.hpp"
 
 namespace lmt {
     

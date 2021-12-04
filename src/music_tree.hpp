@@ -16,6 +16,7 @@
 #include "tinyxml2/tinyxml2.h"
 
 #include "statement.hpp"
+#include "helper.hpp"
 
 namespace lmt {
     
