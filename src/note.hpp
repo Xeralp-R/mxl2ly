@@ -22,27 +22,7 @@ namespace lmt {
     class Note : public AbstractStatement {
     public:
         class Pitch : public AbstractStatement {
-            Pitch(char pitch_class, short int octave, short int alteration) {
-                if (!is_element(valid_pitch_classes.begin(),
-                                valid_pitch_classes.end(),
-                                pitch_class)) {
-                    throw std::logic_error("Invalid pitch class");
-                }
-                if (!is_element(valid_octaves.begin(),
-                                valid_octaves.end(),
-                                octave)) {
-                    throw std::logic_error("Invalid octave");
-                }
-                if (!is_element(valid_alterations.begin(),
-                                valid_alterations.end(),
-                                alteration)) {
-                    throw std::logic_error("Invalid alteration (sharp/flat)");
-                }
-                
-                this->pitch_class = pitch_class;
-                this->octave = octave;
-                this->alteration = alteration;
-            }
+            Pitch(char pitch_class, short int octave, short int alteration);
             
             std::string get_type() override { return "pitch"; }
         private:
