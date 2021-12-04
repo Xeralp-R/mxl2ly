@@ -16,15 +16,14 @@
 #include "statement.hpp"
 
 namespace lmt::aux {
-    class AbstractMeasureStatement : public AbstractStatement {
-    public:
-        std::string get_type() { return "measure_statement"; }
+    struct AbstractMeasureAttribute : public AbstractStatement {
+        std::string get_type() { return "measure_attribute"; }
         virtual std::string get_subtype() = 0;
-        virtual ~AbstractMeasureStatement(){};
+        virtual ~AbstractMeasureAttribute(){};
     }
     
     // The clef: add more clefs later
-    class Clef : public AbstractMeasureStatement {
+    class Clef : public AbstractMeasureAttribute {
     public:
         Clef(char type, short int staff_line) {
             if (type != 'c' && type != 'f' && type != 'g') {
@@ -45,7 +44,7 @@ namespace lmt::aux {
     };
     
     // The key signature
-    class KeySignature : public AbstractMeasureStatement {
+    class KeySignature : public AbstractMeasureAttribute {
     public:
         KeySignature(int fifths) {
             if (fifths < -7 || fifths > 7) {
@@ -81,7 +80,7 @@ namespace lmt::aux {
     };
     
     // the time signature
-    class TimeSignature : public AbstractMeasureStatement {
+    class TimeSignature : public AbstractMeasureAttribute {
     public:
         TimeSignature(short int upper, short int lower)
         : upper_num{upper}, lower_num{lower} {};
@@ -95,7 +94,7 @@ namespace lmt::aux {
         short int lower_num;
     };
     
-    class Barline : public AbstractMeasureStatement {
+    class Barline : public AbstractMeasureAttribute {
     public:
         enum class Type {
             None,
@@ -131,22 +130,6 @@ namespace lmt::aux {
     private:
         const Barline::Type type;
         const Barline::Repeat repeat;
-    };
-    
-    struct Spanner {
-        enum {
-            Crescendo,
-            Decrescendo,
-            Pedal,
-            OttavaAlta,
-            OttavaBassa,
-            Slur
-        } type;
-        
-        // true if it starts: false if it ends
-        bool start;
-        
-        std::optional<Location> location {};
     };
 }
 

@@ -7,7 +7,8 @@ PRIVATE
     header_and_paper.hpp
     header_and_paper.cpp
     helper.hpp
-    measure_auxiliary.hpp
+    measure_attributes.hpp
+    measure_directions.hpp
     music_tree.hpp
     music_tree.cpp
     note.hpp
