@@ -14,30 +14,19 @@
 #include <vector>
 
 #include "statement.hpp"
-#include "measure_attributes.hpp"
-#include "measure_directions.hpp"
+#include "measure.hpp"
 
 namespace lmt {
-    class Measure : public AbstractStatement {
-    public:
-        Measure();
-    private:
-    };
-    
     class Part : public AbstractStatement {
     public:
-        Part(std::string long_name, std::string short_name)
-        : long_name(long_name), short_name(short_name) {};
+        Part(std::string id);
         
-        void add_statement(std::unique_ptr<AbstractStatement> new_statement);
+        void add_measure(std::unique_ptr<Measure> measure_ptr);
         
         std::string get_type() override { return "part"; }
-        std::vector<AbstractStatement *> get_statements();
-        
     private:
-        std::string long_name;
-        std::string short_name;
-        std::vector<std::unique_ptr<AbstractStatement>> statements;
+        std::string id;
+        std::vector<std::unique_ptr<Measure>> measures;
     };
 } // namespace lmt
 
