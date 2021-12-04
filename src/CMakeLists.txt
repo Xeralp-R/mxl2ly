@@ -7,6 +7,8 @@ PRIVATE
     header_and_paper.hpp
     header_and_paper.cpp
     helper.hpp
+    measure.hpp
+    measure.cpp
     measure_attributes.hpp
     measure_directions.hpp
     music_tree.hpp
@@ -15,6 +17,6 @@ PRIVATE
     note.cpp
     note_auxiliary.hpp
     statement.hpp
-    part_and_measure.hpp
-    part_and_measure.cpp
+    part.hpp
+    part.cpp
 )

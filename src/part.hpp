@@ -1,12 +1,12 @@
 //
-//  part_and_measure.hpp
+//  part_.hpp
 //  mxl2ly
 //
 //  Created by Reventar on 17/11/2021.
 //
 
-#ifndef part_and_measure_hpp
-#define part_and_measure_hpp
+#ifndef part_hpp
+#define part_hpp
 
 #include <iostream>
 #include <memory>
@@ -41,4 +41,4 @@ namespace lmt {
     };
 } // namespace lmt
 
-#endif /* part_and_measure_hpp */
+#endif /* part_hpp */
