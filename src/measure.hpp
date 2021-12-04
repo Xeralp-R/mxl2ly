@@ -26,11 +26,12 @@ namespace lmt {
     public:
         Measure(int id_number);
         
-        void add_object(std::unique_ptr<lmt::aux::AbstractMeasureObject> abstract_ptr);
+        void add_measure_object(std::unique_ptr<lmt::aux::AbstractMeasureObject> abstract_ptr);
     private:
         // ==> Variables
         int id_number;
         std::vector<std::unique_ptr<lmt::aux::AbstractMeasureObject>> objects;
+        int number_of_voices;
     };
 }
 
