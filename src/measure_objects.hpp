@@ -18,6 +18,12 @@ namespace lmt::aux {
         virtual std::string get_subtype() = 0;
         virtual ~AbstractMeasureObject(){};
     };
+    
+    struct Backup : public AbstractMeasureObject {
+        short int duration_back;
+        
+        std::string get_subtype() { return "backup"; };
+    };
 }
 
 #endif /* measure_objects_hpp */
