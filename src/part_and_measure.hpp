@@ -14,6 +14,8 @@
 #include <vector>
 
 #include "statement.hpp"
+#include "measure_attributes.hpp"
+#include "measure_directions.hpp"
 
 namespace lmt {
     class Measure : public AbstractStatement {

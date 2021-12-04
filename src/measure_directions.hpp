@@ -20,7 +20,7 @@ namespace lmt::aux {
         std::string get_type() { return "measure_direction"; }
         virtual std::string get_subtype() = 0;
         virtual ~AbstractMeasureDirection(){};
-    }
+    };
     
     struct Wedge : AbstractMeasureDirection {
         enum {

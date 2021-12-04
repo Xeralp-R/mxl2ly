@@ -47,5 +47,5 @@ Note::Note(lmt::Note::Pitch pitch, short duration, short dotted)
 }
 
 void Note::add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation) {
-    this->notations.push_back(notation);
+    this->notations.push_back(std::move(notation));
 }

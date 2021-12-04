@@ -20,7 +20,7 @@ namespace lmt::aux {
         std::string get_type() { return "measure_attribute"; }
         virtual std::string get_subtype() = 0;
         virtual ~AbstractMeasureAttribute(){};
-    }
+    };
     
     // The clef: add more clefs later
     class Clef : public AbstractMeasureAttribute {
@@ -60,7 +60,7 @@ namespace lmt::aux {
         std::string pitch_class;
         std::string mode {"major"};
         
-        constexpr std::map<int, std::string> converter {
+        const std::map<int, std::string> converter {
             {-7, "ces"},
             {-6, "ges"},
             {-5, "des"},
@@ -76,7 +76,7 @@ namespace lmt::aux {
             {5, "b"},
             {6, "fis"},
             {7, "cis"}
-        }
+        };
     };
     
     // the time signature
@@ -111,17 +111,17 @@ namespace lmt::aux {
             // An unusual double heavy barline
             HeavyHeavy
             // TODO: Add more here later
-        }
+        };
         
         // a double repeat is listed as 1 repeat before and 1 repeat after in 2 different bars
         enum class Repeat {
             //Regular,
             RepeatBefore,
             RepeatAfter
-        }
+        };
         
         Barline(Barline::Type type, Barline::Repeat repeat)
-        : type{type}, repeat{repeat} {};
+        : type(type), repeat(repeat) {};
         
         std::string get_subtype() override { return "barline"; }
         
