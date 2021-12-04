@@ -11,6 +11,7 @@ PRIVATE
     measure.cpp
     measure_attributes.hpp
     measure_directions.hpp
+    measure_objects.hpp
     music_tree.hpp
     music_tree.cpp
     note.hpp

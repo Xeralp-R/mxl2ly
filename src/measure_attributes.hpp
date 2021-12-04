@@ -13,12 +13,12 @@
 #include <map>
 #include <exception>
 
-#include "statement.hpp"
+#include "measure_objects.hpp"
 
 namespace lmt::aux {
     struct AbstractMeasureAttribute : public AbstractStatement {
-        std::string get_type() { return "measure_attribute"; }
-        virtual std::string get_subtype() = 0;
+        std::string get_subtype() { return "attribute"; }
+        virtual std::string get_subsubtype() = 0;
         virtual ~AbstractMeasureAttribute(){};
     };
     
@@ -37,7 +37,7 @@ namespace lmt::aux {
             this->staff_line = staff_line;
         }
         
-        std::string get_subtype() override { return "key-signature"; }
+        std::string get_subsubtype() override { return "key-signature"; }
     private:
         char type;
         short int staff_line;
@@ -54,7 +54,7 @@ namespace lmt::aux {
             this->fifths = fifths;
         }
         
-        std::string get_subtype() { return "key-signature"; }
+        std::string get_subsubtype() { return "key-signature"; }
     private:
         int fifths;
         std::string pitch_class;
@@ -85,7 +85,7 @@ namespace lmt::aux {
         TimeSignature(short int upper, short int lower)
         : upper_num{upper}, lower_num{lower} {};
         
-        std::string get_subtype() override { return "time-signature"; }
+        std::string get_subsubtype() override { return "time-signature"; }
         
         short int get_upper() { return this->upper_num; }
         short int get_lower() { return this->lower_num; }
@@ -123,7 +123,7 @@ namespace lmt::aux {
         Barline(Barline::Type type, Barline::Repeat repeat)
         : type(type), repeat(repeat) {};
         
-        std::string get_subtype() override { return "barline"; }
+        std::string get_subsubtype() override { return "barline"; }
         
         Barline::Type get_type() const { return type; }
         Barline::Repeat get_repeat() const { return repeat; }

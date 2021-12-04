@@ -15,13 +15,13 @@
 #include <variant>
 #include <exception>
 
-#include "statement.hpp"
+#include "measure_objects.hpp"
 #include "notations.hpp"
 
 namespace lmt {
-    class Note : public AbstractStatement {
+    class Note : public AbstractMeasureObject {
     public:
-        class Pitch : public AbstractStatement {
+        class Pitch {
             Pitch(char pitch_class, short int octave, short int alteration);
             
             std::string get_type() override { return "pitch"; }

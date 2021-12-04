@@ -13,12 +13,12 @@
 #include <map>
 #include <exception>
 
-#include "statement.hpp"
+#include "measure_objects.hpp"
 
 namespace lmt::aux {
-    struct AbstractMeasureDirection : public AbstractStatement {
-        std::string get_type() { return "measure_direction"; }
-        virtual std::string get_subtype() = 0;
+    struct AbstractMeasureDirection : public AbstractMeasureObject {
+        std::string get_subtype() { return "direction"; }
+        virtual std::string get_subsubtype() = 0;
         virtual ~AbstractMeasureDirection(){};
     };
     
@@ -29,7 +29,7 @@ namespace lmt::aux {
             Stop
         } type;
         
-        std::string get_subtype() { return "wedge"; }
+        std::string get_subsubtype() { return "wedge"; }
     };
 }
 
