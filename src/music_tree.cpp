@@ -22,6 +22,7 @@ MusicTree::MusicTree(std::string filename) {
     this->extract_staff_info();
     this->extract_paper_block();
     this->extract_header_block();
+    this->extract_part_list();
     
     std::cout << "Loaded file in class!" << std::endl;
 }
@@ -70,3 +71,21 @@ void MusicTree::extract_header_block() {
     
     this->statements.emplace_back(std::move(header_ptr));
 }
+
+void MusicTree::extract_part_list() { 
+    auto* element_ptr = this->xml_document.FirstChildElement("score-partwise")
+                                        ->FirstChildElement("part-list");
+    
+    auto part_list_ptr = std::make_unique<PartList>();
+    
+    for (auto* score_ptr = element_ptr->FirstChildElement("score-part");
+         score_ptr != nullptr;
+         score_ptr = score_ptr->NextSiblingElement() ) {
+        
+        part_list_ptr->add_part(score_ptr->Attribute("id"),
+                                score_ptr->FirstChildElement("part-name")->GetText());
+    }
+    
+    this->statements.emplace_back(std::move(part_list_ptr));
+}
+

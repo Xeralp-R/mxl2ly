@@ -21,8 +21,10 @@ namespace lmt {
     class PartList : public AbstractStatement {
     public:
         PartList(std::initializer_list<std::pair<std::string, std::string>> parts);
+        PartList() = default;
         
         void add_part(std::string part_id, std::string part_name);
+        std::string get_type() override { return "part_list"; }
     private:
         std::map<std::string, std::string> parts;
     };
