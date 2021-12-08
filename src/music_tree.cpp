@@ -24,6 +24,7 @@ MusicTree::MusicTree(std::string filename) {
     this->extract_paper_block();
     this->extract_header_block();
     this->extract_part_list();
+    this->extract_music();
     
     std::cout << "Loaded file in class!" << std::endl;
 }
@@ -88,6 +89,8 @@ void MusicTree::extract_part_list() {
         
         part_list_ptr->add_part(score_ptr->Attribute("id"),
                                 score_ptr->FirstChildElement("part-name")->GetText());
+        
+        this->valid_part_ids.push_back(score_ptr->Attribute("id"));
     }
     
     this->statements.emplace_back(std::move(part_list_ptr));

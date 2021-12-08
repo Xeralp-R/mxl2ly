@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 target_sources(mxl2ly
 PRIVATE
+    extract_music.cpp
     extract_paper_block.cpp
     file_option_parser.hpp
     file_option_parser.cpp

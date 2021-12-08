@@ -32,11 +32,13 @@ namespace lmt {
         void extract_paper_block();
         void extract_header_block();
         void extract_part_list();
+        void extract_music();
         
         double tenths_to_mm_conversion;
         tinyxml2::XMLDocument xml_document;
         tinyxml2::XMLElement* root_element;
         std::vector<std::unique_ptr<AbstractStatement>> statements;
+        std::vector<std::string> valid_part_ids;
         
         // Constants
         const std::array<Length, 4> default_margins{inches(1), inches(1), inches(1),
