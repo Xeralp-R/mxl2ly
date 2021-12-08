@@ -35,6 +35,7 @@ namespace lmt {
         
         double tenths_to_mm_conversion;
         tinyxml2::XMLDocument xml_document;
+        tinyxml2::XMLElement* root_element;
         std::vector<std::unique_ptr<AbstractStatement>> statements;
         
         // Constants

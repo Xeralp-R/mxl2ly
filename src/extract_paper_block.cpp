@@ -45,19 +45,16 @@ static void assign_paper_margins(Paper *assignee,
 }
 
 void MusicTree::extract_paper_block() {
-    auto page_layout_pointer =
-    this->xml_document.FirstChildElement("score-partwise")
-    ->FirstChildElement("defaults")
-    ->FirstChildElement("page-layout");
+    auto* page_layout_pointer =
+    this->root_element->FirstChildElement("defaults")->FirstChildElement("page-layout");
     
     double height_in_tenths =
-    atof(page_layout_pointer->FirstChildElement("page-height")->GetText());
+    page_layout_pointer->FirstChildElement("page-height")->FloatText();
     
     double width_in_tenths =
-    atof(page_layout_pointer->FirstChildElement("page-width")->GetText());
+    page_layout_pointer->FirstChildElement("page-width")->FloatText();
     
-    auto paper_pointer = std::make_unique<Paper>(
-                                                 tenths(height_in_tenths, this->tenths_to_mm_conversion),
+    auto paper_pointer = std::make_unique<Paper>(tenths(height_in_tenths, this->tenths_to_mm_conversion),
                                                  tenths(width_in_tenths, this->tenths_to_mm_conversion));
     
     tinyxml2::XMLElement *margin_pointer_one =
@@ -67,6 +64,8 @@ void MusicTree::extract_paper_block() {
     if (margin_pointer_one == nullptr) {
         paper_pointer->set_odd_margins(default_margins[0], default_margins[1],
                                        default_margins[2], default_margins[3]);
+        paper_pointer->set_even_margins(default_margins[0], default_margins[1],
+                                        default_margins[2], default_margins[3]);
     }
     
     // Case 1: there is only 1 margin pointer, meaning it has to be assigned
@@ -103,4 +102,6 @@ void MusicTree::extract_paper_block() {
     }
     
     this->statements.emplace_back(std::move(paper_pointer));
+    
+    this->root_element->FirstChildElement("defaults")->DeleteChild(page_layout_pointer);
 }

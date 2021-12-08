@@ -18,6 +18,7 @@ using namespace lmt;
 
 MusicTree::MusicTree(std::string filename) {
     this->xml_document.LoadFile(filename.c_str());
+    this->root_element = this->xml_document.FirstChildElement("score-partwise");
     
     this->extract_staff_info();
     this->extract_paper_block();
@@ -30,34 +31,31 @@ MusicTree::MusicTree(std::string filename) {
 // Function Definitions
 
 void MusicTree::extract_staff_info() {
+    auto* scaling_ptr = this->root_element->FirstChildElement("defaults")
+    ->FirstChildElement("scaling");
+    
     double staff_width =
-    atof(this->xml_document.FirstChildElement("score-partwise")
-         ->FirstChildElement("defaults")
-         ->FirstChildElement("scaling")
-         ->FirstChildElement("millimeters")
-         ->GetText());
+    atof(scaling_ptr->FirstChildElement("millimeters")->GetText());
     double tenths_in_staff =
-    atof(this->xml_document.FirstChildElement("score-partwise")
-         ->FirstChildElement("defaults")
-         ->FirstChildElement("scaling")
-         ->FirstChildElement("millimeters")
-         ->GetText());
+    atof(scaling_ptr->FirstChildElement("tenths")->GetText());
     this->tenths_to_mm_conversion = staff_width / tenths_in_staff;
     
     this->statements.emplace_back(std::make_unique<Statement<double>>("tenths_to_mm",
                                                                       this->tenths_to_mm_conversion));
     this->statements.emplace_back(std::make_unique<Statement<Length>>("staff_size",
                                                                       millimeters(staff_width)));
+    
+    
+    this->root_element->FirstChildElement("defaults")->DeleteChild(scaling_ptr);
 }
 
 // extract_paper_block has been moved elsewhere,
 // because it was too long. sorry!
 
 void MusicTree::extract_header_block() {
-    auto *root_elem = this->xml_document.FirstChildElement("score-partwise");
     auto header_ptr = std::make_unique<Header>();
     
-    for (tinyxml2::XMLElement *runner = root_elem->FirstChildElement("credit");
+    for (tinyxml2::XMLElement *runner = this->root_element->FirstChildElement("credit");
          std::string_view(runner->Name()) != "credit";
          runner = runner->NextSiblingElement()) {
         
@@ -70,11 +68,17 @@ void MusicTree::extract_header_block() {
     }
     
     this->statements.emplace_back(std::move(header_ptr));
+    
+    tinyxml2::XMLElement* runner = nullptr;
+    while (true) {
+        runner = this->root_element->FirstChildElement("credit");
+        if (runner == nullptr) { break; }
+        this->root_element->DeleteChild(runner);
+    }
 }
 
 void MusicTree::extract_part_list() { 
-    auto* element_ptr = this->xml_document.FirstChildElement("score-partwise")
-                                        ->FirstChildElement("part-list");
+    auto* element_ptr = this->root_element->FirstChildElement("part-list");
     
     auto part_list_ptr = std::make_unique<PartList>();
     
@@ -87,5 +91,7 @@ void MusicTree::extract_part_list() {
     }
     
     this->statements.emplace_back(std::move(part_list_ptr));
+    
+    this->root_element->DeleteChild(element_ptr);
 }
 
