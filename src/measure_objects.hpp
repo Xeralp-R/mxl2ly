@@ -19,10 +19,13 @@ namespace lmt::aux {
         virtual ~AbstractMeasureObject(){};
     };
     
-    struct Backup : public AbstractMeasureObject {
-        short int duration_back;
+    class Backup : public AbstractMeasureObject {
+    public:
+        Backup(short int duration) : duration_back(duration) {}
         
         std::string get_subtype() { return "backup"; };
+    private:
+        short int duration_back;
     };
 }
 

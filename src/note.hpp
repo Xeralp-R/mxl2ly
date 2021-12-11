@@ -47,7 +47,7 @@ namespace lmt {
         
         // ==> Non-required Variables
         std::vector<std::unique_ptr<lmt::aux::AbstractNotation>> notations;
-        std::optional<short int> dotted = {}; // number of dots
+        short int dotted = 0; // number of dots
         
         // ==> Constants
         std::vector<short int> valid_durations {1, 2, 4, 8, 16, 32, 64, 128};

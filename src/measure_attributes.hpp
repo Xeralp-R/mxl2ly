@@ -16,7 +16,7 @@
 #include "measure_objects.hpp"
 
 namespace lmt::aux {
-    struct AbstractMeasureAttribute : public AbstractStatement {
+    struct AbstractMeasureAttribute : public AbstractMeasureObject {
         std::string get_subtype() { return "attribute"; }
         virtual std::string get_subsubtype() = 0;
         virtual ~AbstractMeasureAttribute(){};

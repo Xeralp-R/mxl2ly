@@ -31,7 +31,7 @@ namespace lmt {
         // ==> Variables
         int id_number;
         std::vector<std::unique_ptr<lmt::aux::AbstractMeasureObject>> objects;
-        int number_of_voices;
+        int number_of_voices = 0;
     };
 }
 
