@@ -22,6 +22,7 @@ namespace lmt {
     class Note : public aux::AbstractMeasureObject {
     public:
         class Pitch {
+        public:
             Pitch(char pitch_class, short int octave, short int alteration);
         private:
             short int alteration;
@@ -29,25 +30,33 @@ namespace lmt {
             short int octave;
             
             std::vector<char> valid_pitch_classes {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'r', 's'};
-            std::vector<short int> valid_octaves {1, 2, 3, 4, 5, 6, 7, 8, 9};
+            std::vector<short int> valid_octaves {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
             std::vector<short int> valid_alterations {-2, -1, 0, 1, 2};
         };
+        struct Rest {};
         
         Note(Pitch pitch,
-             short int duration);
-        Note(Pitch pitch,
-             short int duration,
-             short int dotted);
+             unsigned int duration,
+             short int dotted = 0,
+             bool in_chord = false);
+        Note(Rest rest,
+             unsigned int duration,
+             short int dotted = 0,
+             bool in_chord = false);
         
         void add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation);
+        void set_in_chord(bool status) { this->in_chord = status; }
+        
+        std::string get_subtype() override { return "note"; }
     private:
         // ==> Required Variables
         Pitch pitch;
-        short int duration; // valid values: powers of 2
+        unsigned int duration = 0; // valid values: powers of 2
         
         // ==> Non-required Variables
         std::vector<std::unique_ptr<lmt::aux::AbstractNotation>> notations;
         short int dotted = 0; // number of dots
+        bool in_chord = false;
         
         // ==> Constants
         std::vector<short int> valid_durations {1, 2, 4, 8, 16, 32, 64, 128};

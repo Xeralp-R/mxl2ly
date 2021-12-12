@@ -36,13 +36,13 @@ Note::Pitch::Pitch(char pitch_class, short int octave, short int alteration) {
 
 // ==> Constructors and private setters
 
-Note::Note(lmt::Note::Pitch pitch, short duration) : pitch(pitch) {
-    // todo later
+Note::Note(lmt::Note::Pitch pitch, unsigned duration, short dotted, bool in_chord)
+: pitch(pitch), dotted(dotted), in_chord(in_chord) {
     this->duration = duration;
 }
 
-Note::Note(lmt::Note::Pitch pitch, short duration, short dotted)
-: pitch(pitch), dotted(dotted) {
+Note::Note(Note::Rest rest, unsigned duration, short dotted, bool in_chord)
+: pitch(Pitch('r', 0, 0)), dotted(dotted), in_chord(in_chord) {
     this->duration = duration;
 }
 

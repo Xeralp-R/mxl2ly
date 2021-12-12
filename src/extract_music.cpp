@@ -10,6 +10,7 @@
 #include <vector>
 #include <utility>
 #include <memory>
+#include <cctype>
 
 #include "part.hpp"
 #include "measure.hpp"
@@ -22,7 +23,7 @@ using namespace lmt;
 namespace tx2 = tinyxml2;
 
 static std::unique_ptr<Measure> convert_measure(tx2::XMLElement* meas_elem_ptr);
-static std::unique_ptr<Note> convert_note(tx2::XMLElement* note);
+static std::unique_ptr<Note> convert_note(tx2::XMLElement* note_elem_ptr);
 static std::vector<std::unique_ptr<aux::AbstractMeasureAttribute>>
 convert_attributes(tx2::XMLElement* attr_elem_ptr);
 static std::unique_ptr<aux::AbstractMeasureDirection> convert_direction(tx2::XMLElement* dir_elem_ptr);
@@ -61,8 +62,14 @@ static std::unique_ptr<Measure> convert_measure(tx2::XMLElement* meas_elem_ptr) 
         std::string_view reader_name = reader->Name();
         
         if (reader_name == "note") {
-            //auto note = convert_note(reader);
-            //meas_uniq_ptr->add_measure_object(std::move(note));
+            // note: add grace note functionality later.
+            if (reader->FirstChildElement("grace") != nullptr) {
+                meas_elem_ptr->DeleteChild(reader);
+                continue;
+            }
+            
+            auto note = convert_note(reader);
+            meas_uniq_ptr->add_measure_object(std::move(note));
         }
         else if (reader_name == "attributes") {
             //auto attributes = convert_attributes(reader);
@@ -81,4 +88,36 @@ static std::unique_ptr<Measure> convert_measure(tx2::XMLElement* meas_elem_ptr) 
     }
     
     return std::move(meas_uniq_ptr);
+}
+
+static std::unique_ptr<Note> convert_note(tx2::XMLElement* note_elem_ptr) {
+    unsigned int duration = note_elem_ptr->FirstChildElement("duration")->IntText();
+    
+    bool in_chord = note_elem_ptr->FirstChildElement("chord") != nullptr;
+    
+    short int dotted = 0;
+    if (note_elem_ptr->FirstChildElement("dotted") != nullptr) {
+        dotted = note_elem_ptr->FirstChildElement("dotted")->IntText();
+    }
+    
+    Note::Pitch pitch = Note::Pitch('r', 0, 0);
+    if (note_elem_ptr->FirstChildElement("pitch") != nullptr) {
+        auto pitch_elem_ptr = note_elem_ptr->FirstChildElement("pitch");
+        
+        char pitch_class = tolower(pitch_elem_ptr->FirstChildElement("step")->GetText()[0]);
+        short pitch_octave = pitch_elem_ptr->FirstChildElement("octave")->IntText();
+        
+        int pitch_alteration = 0;
+        if (note_elem_ptr->FirstChildElement("alter") != nullptr) {
+            pitch_alteration =  note_elem_ptr->FirstChildElement("alter")->IntText();
+        }
+        
+        pitch = Note::Pitch(pitch_class, pitch_octave, pitch_alteration);
+    }
+    
+    auto note_uniq_ptr = std::make_unique<Note>(pitch, duration, dotted, in_chord);
+    
+    // handle articulation, ornaments, etc.
+    
+    return std::move(note_uniq_ptr);
 }
