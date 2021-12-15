@@ -57,8 +57,8 @@ void MusicTree::extract_header_block() {
     auto header_ptr = std::make_unique<Header>();
     
     for (tinyxml2::XMLElement *runner = this->root_element->FirstChildElement("credit");
-         std::string_view(runner->Name()) != "credit";
-         runner = runner->NextSiblingElement()) {
+         runner != nullptr;
+         runner = this->root_element->FirstChildElement("credit")) {
         
         std::string credit_type =
         runner->FirstChildElement("credit-type")->GetText();
@@ -66,16 +66,11 @@ void MusicTree::extract_header_block() {
         runner->FirstChildElement("credit-words")->GetText();
         
         header_ptr->add_statement({credit_type, credit_words});
+        
+        this->root_element->DeleteChild(runner);
     }
     
     this->statements.emplace_back(std::move(header_ptr));
-    
-    tinyxml2::XMLElement* runner = nullptr;
-    while (true) {
-        runner = this->root_element->FirstChildElement("credit");
-        if (runner == nullptr) { break; }
-        this->root_element->DeleteChild(runner);
-    }
 }
 
 void MusicTree::extract_part_list() { 

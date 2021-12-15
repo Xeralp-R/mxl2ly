@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
         }
         
         lmt::MusicTree music_tree(filename);
+        music_tree.print_lilypond(file_option_parser.get_outfilename());
     } catch (TCLAP::ArgException &e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId()
         << std::endl;

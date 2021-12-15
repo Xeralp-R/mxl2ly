@@ -31,6 +31,7 @@ FileOptionParser::FileOptionParser(int argc, char **argv) {
     if (output_arg.isSet()) {
         this->outfilename = output_arg.getValue();
     } else {
-        this->outfilename = {};
+        std::string temp = filename_arg.getValue();
+        this->outfilename = temp.substr(0, temp.find('.'))+".ly";
     }
 }

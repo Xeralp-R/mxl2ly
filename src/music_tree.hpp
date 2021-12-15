@@ -24,8 +24,7 @@ namespace lmt {
     public:
         MusicTree(std::string filename);
         
-        std::string to_lilypond();
-        
+        void print_lilypond(std::string filename);
     private:
         // Functions
         void extract_staff_info();
