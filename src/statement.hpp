@@ -23,7 +23,7 @@ namespace lmt {
         Statement(std::string type, Type content) : type{type}, content{content} {};
         
         std::string get_type() override { return this->type; }
-        Type get_content() { return this->content; }
+        Type get_content() const { return this->content; }
         
     private:
         std::string type;
