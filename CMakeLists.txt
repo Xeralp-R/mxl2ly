@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+
 # set the project name
 project(mxl2ly LANGUAGES CXX)
 
@@ -13,6 +15,7 @@ set (CMAKE_CXX_FLAGS "-stdlib=libc++")
 add_subdirectory(lib/tinyxml2)
 add_subdirectory(lib/tclap)
 add_subdirectory(lib/ghc)
+add_subdirectory(lib/fmt)
 
 # set the sources
 set (SOURCES
@@ -38,6 +41,10 @@ target_link_libraries(
 
 target_link_libraries(
     mxl2ly PUBLIC ghc
+)
+
+target_link_libraries(
+    mxl2ly PUBLIC fmt-lib
 )
 
 target_include_directories(

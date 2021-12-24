@@ -47,8 +47,9 @@ namespace lmt {
         
         std::string get_type() override { return "paper"; }
         
-        Statement<Length>* get_margin(Paper::Margins margin);
-        
+        Length get_height() const { return height->get_content(); };
+        Length get_width() const { return width->get_content(); };
+        Length get_margin(Paper::Margins margin) const;
     private:
         std::unique_ptr<Statement<Length>> height;
         std::unique_ptr<Statement<Length>> width;

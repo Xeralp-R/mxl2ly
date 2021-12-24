@@ -48,20 +48,19 @@ void Paper::set_margins(Length left_margin, Length right_margin,
     this->margins[3] =
     std::make_unique<Statement<Length>>("b_margin", bottom_margin);
 }
-
-Statement<Length>* Paper::get_margin(Paper::Margins margin) {
+Length Paper::get_margin(Paper::Margins margin) const {
     switch (margin) {
         case Margins::LeftMargin:
-            return this->margins[0].get();
+            return this->margins[0]->get_content();
             break;
         case Margins::RightMargin:
-            return this->margins[1].get();
+            return this->margins[1]->get_content();
             break;
         case Margins::TopMargin:
-            return this->margins[2].get();
+            return this->margins[2]->get_content();
             break;
         case Margins::BottomMargin:
-            return this->margins[3].get();
+            return this->margins[3]->get_content();
             break;
     }
     throw std::logic_error("Impossible margin request");

@@ -18,8 +18,8 @@ PRIVATE
     music_tree.cpp
     note.hpp
     note.cpp
-    note_auxiliary.hpp
     statement.hpp
     part.hpp
     part.cpp
+    print_lilypond.cpp
 )
