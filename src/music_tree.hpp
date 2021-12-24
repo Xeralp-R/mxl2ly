@@ -12,6 +12,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <fstream>
 
 #include "tinyxml2/tinyxml2.h"
 
@@ -22,8 +23,9 @@ namespace lmt {
     
     class MusicTree {
     public:
-        MusicTree(std::string filename);
+        MusicTree() = default;
         
+        void accept_musicxml(std::string filename);
         void print_lilypond(std::string filename);
     private:
         // Functions
@@ -33,15 +35,24 @@ namespace lmt {
         void extract_part_list();
         void extract_music();
         
+        void print_staff_info();
+        void print_paper_block();
+        void print_header_block();
+        void print_music();
+        void print_part_list();
+        
         double tenths_to_mm_conversion;
         tinyxml2::XMLDocument xml_document;
         tinyxml2::XMLElement* root_element;
         std::vector<std::unique_ptr<AbstractStatement>> statements;
         std::vector<std::string> valid_part_ids;
+        std::ofstream out;
         
         // Constants
         const std::array<Length, 4> default_margins{inches(1), inches(1), inches(1),
             inches(1)};
+        static constexpr char newline = '\n';
+        static constexpr auto tab = "    ";
     };
     
 } // namespace lmt

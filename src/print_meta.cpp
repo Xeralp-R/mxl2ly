@@ -18,37 +18,18 @@
 
 using namespace lmt;
 
-constexpr char newline = '\n';
-constexpr auto tab = "    ";
-
-// Functions for later
-static void print_staff_size(std::ofstream& out, const Length staff_width);
-static void print_paper(std::ofstream& out, const Paper* paper_ptr);
-static void print_header(std::ofstream& out, const Header* header_ptr);
-
-// Main execution block
-void MusicTree::print_lilypond(std::string filename) {
-    std::cout << "Printing to: " << filename << '\n';
-    std::ofstream lilypond_file (filename);
-    lilypond_file << "% Automatically generated from a musicxml file.\n\n";
-    
+void MusicTree::print_staff_info() {
     auto staff_width = dynamic_cast<Statement<Length>*>(statements.at(1).get())->get_content();
-    print_staff_size(lilypond_file, staff_width);
     
-    auto paper_ptr = dynamic_cast<Paper*>(statements.at(2).get());
-    print_paper(lilypond_file, paper_ptr);
-    
-    auto header_ptr = dynamic_cast<Header*>(statements.at(3).get());
-    print_header(lilypond_file, header_ptr);
-}
-
-static void print_staff_size(std::ofstream& out, const Length staff_width) {
     out << "#(set-global-staff-size ";
     out << staff_width.get_points();
     out << ")\n\n";
 }
 
-static void print_paper(std::ofstream& out, const Paper* paper_ptr) {
+void MusicTree::print_paper_block() {
+    // get the paper pointer
+    auto paper_ptr = dynamic_cast<Paper*>(statements.at(2).get());
+    
     // Prepare the page size
     out << R"||(#(set! paper-alist )||" << newline << tab;
     out << fmt::format(R"||((cons '("new_size" . (cons (* {0} mm) )||",
@@ -75,7 +56,9 @@ static void print_paper(std::ofstream& out, const Paper* paper_ptr) {
     out << "}" << newline << newline;
 }
 
-static void print_header(std::ofstream& out, const Header* header_ptr) {
+void MusicTree::print_header_block() {
+    auto header_ptr = dynamic_cast<Header*>(statements.at(3).get());
+    
     out << R"||(\header {)||" << newline;
     for (auto pair : header_ptr->get_statements()) {
         out << tab << fmt::format(R"||({0} = "{1}")||",
