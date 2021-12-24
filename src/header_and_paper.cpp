@@ -15,7 +15,8 @@ Header::Header(
                std::initializer_list<std::pair<std::string, std::string>> statements) {
     for (auto& pair : statements) {
         this->statements.push_back(
-                                   std::make_unique<Statement<std::string>>(pair.first, pair.second));
+                                   std::make_unique<Statement<std::string>>(pair.first,
+                                                                            pair.second));
     }
 }
 
@@ -24,10 +25,11 @@ void Header::add_statement(std::pair<std::string, std::string> pair) {
                                std::make_unique<Statement<std::string>>(pair.first, pair.second));
 }
 
-std::vector<Statement<std::string>*> Header::get_statements() {
-    std::vector<Statement<std::string>*> returner;
+std::unordered_map<std::string, std::string>
+Header::get_statements() const {
+    std::unordered_map<std::string, std::string> returner;
     for (auto& pointer : this->statements) {
-        returner.push_back(pointer.get());
+        returner.emplace(pointer->get_type(), pointer->get_content());
     }
     return returner;
 }

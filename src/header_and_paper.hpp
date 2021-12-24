@@ -15,6 +15,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <unordered_map>
 
 #include "helper.hpp"
 #include "statement.hpp"
@@ -30,7 +31,7 @@ namespace lmt {
         void add_statement(std::pair<std::string, std::string>);
         
         std::string get_type() override { return "header"; }
-        std::vector<Statement<std::string>*> get_statements();
+        std::unordered_map<std::string, std::string> get_statements() const;
         
     private:
         std::vector<std::unique_ptr<Statement<std::string>>> statements;

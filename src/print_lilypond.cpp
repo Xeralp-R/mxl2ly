@@ -21,9 +21,12 @@ using namespace lmt;
 constexpr char newline = '\n';
 constexpr auto tab = "    ";
 
+// Functions for later
 static void print_staff_size(std::ofstream& out, const Length staff_width);
 static void print_paper(std::ofstream& out, const Paper* paper_ptr);
+static void print_header(std::ofstream& out, const Header* header_ptr);
 
+// Main execution block
 void MusicTree::print_lilypond(std::string filename) {
     std::cout << "Printing to: " << filename << '\n';
     std::ofstream lilypond_file (filename);
@@ -31,8 +34,12 @@ void MusicTree::print_lilypond(std::string filename) {
     
     auto staff_width = dynamic_cast<Statement<Length>*>(statements.at(1).get())->get_content();
     print_staff_size(lilypond_file, staff_width);
+    
     auto paper_ptr = dynamic_cast<Paper*>(statements.at(2).get());
     print_paper(lilypond_file, paper_ptr);
+    
+    auto header_ptr = dynamic_cast<Header*>(statements.at(3).get());
+    print_header(lilypond_file, header_ptr);
 }
 
 static void print_staff_size(std::ofstream& out, const Length staff_width) {
@@ -65,5 +72,14 @@ static void print_paper(std::ofstream& out, const Paper* paper_ptr) {
                               paper_ptr->get_margin(Paper::Margins::RightMargin)
                               .get_millimeters()) << newline;
     out << tab << R"||(ragged-last-bottom = ##f)||" << newline;
-    out << "}" << newline;
+    out << "}" << newline << newline;
+}
+
+static void print_header(std::ofstream& out, const Header* header_ptr) {
+    out << R"||(\header {)||" << newline;
+    for (auto pair : header_ptr->get_statements()) {
+        out << tab << fmt::format(R"||({0} = "{1}")||",
+                                  pair.first, pair.second) << newline;
+    }
+    out << "}" << newline << newline;
 }
