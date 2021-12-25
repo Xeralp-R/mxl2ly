@@ -27,6 +27,8 @@ namespace lmt {
         Measure(int id_number);
         
         void add_measure_object(std::unique_ptr<lmt::aux::AbstractMeasureObject> abstract_ptr);
+        int size() const { return this->objects.size(); }
+        lmt::aux::AbstractMeasureObject* at(int i) const { return this->objects.at(i).get(); }
     private:
         // ==> Variables
         int id_number;

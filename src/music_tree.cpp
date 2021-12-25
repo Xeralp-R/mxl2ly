@@ -35,10 +35,12 @@ void MusicTree::accept_musicxml(std::string filename) {
 
 void MusicTree::print_lilypond(std::string filename) {
     std::cout << "Printing to: " << filename << '\n';
-    std::ofstream lilypond_file (filename);
-    lilypond_file << "% Automatically generated from a musicxml file.\n\n";
+    this->out.open(filename);
+    this->out << "% Automatically generated from a musicxml file.\n\n";
     
     this->print_staff_info();
     this->print_paper_block();
     this->print_header_block();
+    this->print_music();
+    this->print_part_list();
 }

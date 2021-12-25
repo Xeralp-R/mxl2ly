@@ -27,6 +27,12 @@ namespace lmt {
         
         void accept_musicxml(std::string filename);
         void print_lilypond(std::string filename);
+        
+        // Constants
+        const std::array<Length, 4> default_margins{inches(1), inches(1), inches(1),
+            inches(1)};
+        static constexpr char newline = '\n';
+        static constexpr auto tab = "    ";
     private:
         // Functions
         void extract_staff_info();
@@ -35,24 +41,18 @@ namespace lmt {
         void extract_part_list();
         void extract_music();
         
-        void print_staff_info();
-        void print_paper_block();
-        void print_header_block();
-        void print_music();
-        void print_part_list();
+        void print_staff_info() const;
+        void print_paper_block() const;
+        void print_header_block() const;
+        void print_music() const;
+        void print_part_list() const;
         
         double tenths_to_mm_conversion;
         tinyxml2::XMLDocument xml_document;
         tinyxml2::XMLElement* root_element;
         std::vector<std::unique_ptr<AbstractStatement>> statements;
         std::vector<std::string> valid_part_ids;
-        std::ofstream out;
-        
-        // Constants
-        const std::array<Length, 4> default_margins{inches(1), inches(1), inches(1),
-            inches(1)};
-        static constexpr char newline = '\n';
-        static constexpr auto tab = "    ";
+        mutable std::ofstream out;
     };
     
 } // namespace lmt
