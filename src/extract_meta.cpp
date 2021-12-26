@@ -16,18 +16,16 @@ namespace tx2 = tinyxml2;
 
 void MusicTree::extract_staff_info() {
     auto* scaling_ptr = tx2::find_element(this->root_element, "defaults/scaling");
-    // this->root_element->FirstChildElement("defaults")
-    // ->FirstChildElement("scaling");
     
-    double staff_width =
-    scaling_ptr->FirstChildElement("millimeters")->FloatText();
-    double tenths_in_staff =
-    scaling_ptr->FirstChildElement("tenths")->FloatText();
+    double staff_width = tx2::float_text(tx2::find_element(scaling_ptr,
+                                                           "millimeters"));
+    double tenths_in_staff = tx2::float_text(tx2::find_element(scaling_ptr,
+                                                               "tenths"));
     this->tenths_to_mm_conversion = staff_width / tenths_in_staff;
     
     this->measure_duration =
-    root_element->FirstChildElement("part")->FirstChildElement("measure")
-    ->FirstChildElement("attributes")->FirstChildElement("divisions")->IntText() * 4;
+    tx2::int_text(tx2::find_element(this->root_element,
+                  "part/measure/attributes/divisions")) * 4;
     
     this->statements.emplace_back(std::make_unique<Statement<Length>>("staff_size",
                                                                       millimeters(staff_width)));

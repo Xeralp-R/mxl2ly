@@ -472,7 +472,30 @@ namespace tinyxml2
 			else
 				return ""s;
 		}
-
+        
+    // ================== ADDITION ================== //
+    inline int int_text (const XMLElement* element) {
+        if (!element) {
+            throw XmlException("null element"s);
+        }
+        if (auto value = element->IntText()) {
+            return value;
+        } else {
+            throw XmlException("content of element "s + element->Name() + " not int"s);
+        }
+    }
+    
+    inline float float_text (const XMLElement* element) {
+        if (!element) {
+            throw XmlException("null element"s);
+        }
+        if (auto value = element->FloatText()) {
+            return value;
+        } else {
+            throw XmlException("content of element "s + element->Name() + " not float"s);
+        }
+    }
+    // ================== ADDITION ================== //
 
 		// append / prepend element
 		// common method for all append / prepend element insertions

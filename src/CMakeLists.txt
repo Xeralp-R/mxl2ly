@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 target_sources(mxl2ly
 PRIVATE
+    extract_meta.cpp
     extract_music.cpp
-    extract_paper_block.cpp
     file_option_parser.hpp
     file_option_parser.cpp
     header_and_paper.hpp
@@ -21,5 +21,6 @@ PRIVATE
     statement.hpp
     part.hpp
     part.cpp
-    print_lilypond.cpp
+    print_meta.cpp
+    print_music.cpp
 )
