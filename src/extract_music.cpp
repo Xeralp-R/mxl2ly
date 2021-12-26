@@ -28,12 +28,12 @@ static std::vector<std::unique_ptr<aux::AbstractMeasureAttribute>>
 convert_attributes(tx2::XMLElement* attr_elem_ptr);
 static std::unique_ptr<aux::AbstractMeasureDirection> convert_direction(tx2::XMLElement* dir_elem_ptr);
 
-void MusicTree::extract_music() {
-    for (auto* reader = root_element->FirstChildElement("part");
-         reader != nullptr && is_element(valid_part_ids.begin(),
-                                         valid_part_ids.end(),
+void MusicTree::ExtractMusicFunctor::operator()() {
+    for (auto* reader = tree_ptr->root_element->FirstChildElement("part");
+         reader != nullptr && is_element(tree_ptr->valid_part_ids.begin(),
+                                         tree_ptr->valid_part_ids.end(),
                                          reader->Attribute("id"));
-         reader = root_element->FirstChildElement("part")) {
+         reader = tree_ptr->root_element->FirstChildElement("part")) {
         
         auto part_ptr = std::make_unique<Part>(reader->Attribute("id"));
         
@@ -46,9 +46,9 @@ void MusicTree::extract_music() {
             reader->DeleteChild(measure_reader);
         }
         
-        this->statements.emplace_back(std::move(part_ptr));
+        tree_ptr->statements.emplace_back(std::move(part_ptr));
         
-        this->root_element->DeleteChild(reader);
+        tree_ptr->root_element->DeleteChild(reader);
     }
 }
 
