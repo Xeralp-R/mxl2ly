@@ -18,6 +18,7 @@
 
 #include "statement.hpp"
 #include "helper.hpp"
+#include "measure_objects.hpp"
 #include "measure.hpp"
 #include "note.hpp"
 
@@ -64,7 +65,9 @@ namespace lmt {
         private:
             const MusicTree* tree_ptr;
             void print_measure(const Measure* measure_ptr);
+            void print_tuplets(const aux::Tuplet* tuplet_ptr);
             void print_note(const Note* note_ptr);
+            void print_note(const Note* note_ptr, unsigned int lilypond_duration);
         } print_music{this};
         friend class PrintMusicFunctor;
         
