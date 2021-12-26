@@ -19,39 +19,35 @@
 
 using namespace lmt;
 
-// Functions
-static void print_measure(std::ostream& out, const Measure* measure_ptr);
-static void print_note(std::ostream& out, const Note* note_ptr);
-
-void MusicTree::print_music() const {
-    for (int i = 4; i < statements.size(); ++i) {
+void MusicTree::PrintMusicFunctor::operator()() {
+    for (int i = 4; i < tree_ptr->statements.size(); ++i) {
         // Get the pointer
-        auto part_ptr = dynamic_cast<Part*>(this->statements.at(i).get());
+        auto part_ptr = dynamic_cast<Part*>(tree_ptr->statements.at(i).get());
 
-        out << R"||(\"part-)||" << part_ptr->get_id() << R"||(" {)||"
+        tree_ptr->out << R"||(\"part-)||" << part_ptr->get_id() << R"||(" {)||"
             << newline;
         for (int i = 0; i < part_ptr->size(); ++i) {
-            print_measure(out, part_ptr->at(i));
+            print_measure(part_ptr->at(i));
         }
-        out << "}" << newline;
+        tree_ptr->out << "}" << newline;
     }
 }
 
-static void print_measure(std::ostream& out, const Measure* measure_ptr) {
+void MusicTree::PrintMusicFunctor::print_measure(const Measure* measure_ptr) {
     for (int i = 0; i < measure_ptr->size(); ++i) {
         auto subobj_ptr = measure_ptr->at(i);
 
         std::string_view subobj_iden = subobj_ptr->get_subtype();
 
         if (subobj_iden == "note") {
-            print_note(out, dynamic_cast<Note*>(subobj_ptr));
+            print_note(dynamic_cast<Note*>(subobj_ptr));
         }
     }
 
-    out << " |" << MusicTree::newline;
+    tree_ptr->out << " |" << MusicTree::newline;
 }
 
-static void print_note(std::ostream& out, const Note* note_ptr) {
+void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
     std::string alter_text;
     switch (note_ptr->alteration()) {
         case 2:  alter_text = "isis"; break;
@@ -67,14 +63,17 @@ static void print_note(std::ostream& out, const Note* note_ptr) {
     }
     
     std::string octave_text;
-    if (note_ptr->octave() > 3) {
-        octave_text = std::string("'", note_ptr->octave() - 3);
+    if (note_ptr->pitch_class() == 'r') {
+        octave_text = "";
+    }
+    else if (note_ptr->octave() > 3) {
+        octave_text = std::string(note_ptr->octave() - 3, '\'');
     }
     else if (note_ptr->octave() < 3) {
-        octave_text = std::string(",", (note_ptr->octave() - 3) * -1);
+        octave_text = std::string((note_ptr->octave() - 3) * -1, ',');
     }
     
-    unsigned int lilypond_dur = note_ptr->duration() / MusicTree::measure_duration;
+    unsigned int lilypond_duration = tree_ptr->measure_duration / note_ptr->duration();
     
-    std::cout << "Note";
+    tree_ptr->out << note_ptr->pitch_class() << alter_text << octave_text << lilypond_duration << " ";
 }

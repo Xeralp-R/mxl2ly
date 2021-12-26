@@ -18,6 +18,8 @@
 
 #include "statement.hpp"
 #include "helper.hpp"
+#include "measure.hpp"
+#include "note.hpp"
 
 namespace lmt {
     
@@ -57,10 +59,12 @@ namespace lmt {
         
         class PrintMusicFunctor {
         public:
-            PrintMusicFunctor(MusicTree* tree_ptr) : tree_ptr(tree_ptr) {}
-            void operator() ();
+            PrintMusicFunctor(const MusicTree* tree_ptr) : tree_ptr(tree_ptr) {}
+            void operator()();
         private:
-            MusicTree* tree_ptr;
+            const MusicTree* tree_ptr;
+            void print_measure(const Measure* measure_ptr);
+            void print_note(const Note* note_ptr);
         } print_music{this};
         friend class PrintMusicFunctor;
         
