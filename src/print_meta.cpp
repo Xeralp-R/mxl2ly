@@ -21,7 +21,7 @@ using namespace lmt;
 
 void MusicTree::print_staff_info() const {
     const auto staff_width =
-    dynamic_cast<Statement<Length>*>(statements.at(1).get())->get_content();
+    dynamic_cast<Statement<Length>*>(statements.at(0).get())->get_content();
     
     out << "#(set-global-staff-size ";
     out << staff_width.get_points();
@@ -30,7 +30,7 @@ void MusicTree::print_staff_info() const {
 
 void MusicTree::print_paper_block() const {
     // get the paper pointer
-    const auto paper_ptr = dynamic_cast<Paper*>(statements.at(2).get());
+    const auto paper_ptr = dynamic_cast<Paper*>(statements.at(1).get());
     
     // Prepare the page size
     out << R"||(#(set! paper-alist )||" << newline << tab;
@@ -59,7 +59,7 @@ void MusicTree::print_paper_block() const {
 }
 
 void MusicTree::print_header_block() const {
-    const auto header_ptr = dynamic_cast<Header*>(statements.at(3).get());
+    const auto header_ptr = dynamic_cast<Header*>(statements.at(2).get());
     
     out << R"||(\header {)||" << newline;
     for (auto pair : header_ptr->get_statements()) {
@@ -70,7 +70,7 @@ void MusicTree::print_header_block() const {
 }
 
 void MusicTree::print_part_list() const {
-    const auto list_ptr = dynamic_cast<PartList*>(statements.at(4).get());
+    const auto list_ptr = dynamic_cast<PartList*>(statements.at(3).get());
     
     out << R"||(\score {)||" << newline;
     for (auto pair : list_ptr->get_parts()) {

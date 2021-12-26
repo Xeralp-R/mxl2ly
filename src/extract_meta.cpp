@@ -9,21 +9,26 @@
 
 #include "header_and_paper.hpp"
 #include "part.hpp"
+#include "tinyxml2/tixml2ex.h"
 
 using namespace lmt;
+namespace tx2 = tinyxml2;
 
 void MusicTree::extract_staff_info() {
-    auto* scaling_ptr = this->root_element->FirstChildElement("defaults")
-    ->FirstChildElement("scaling");
+    auto* scaling_ptr = tx2::find_element(this->root_element, "defaults/scaling");
+    // this->root_element->FirstChildElement("defaults")
+    // ->FirstChildElement("scaling");
     
     double staff_width =
-    atof(scaling_ptr->FirstChildElement("millimeters")->GetText());
+    scaling_ptr->FirstChildElement("millimeters")->FloatText();
     double tenths_in_staff =
-    atof(scaling_ptr->FirstChildElement("tenths")->GetText());
+    scaling_ptr->FirstChildElement("tenths")->FloatText();
     this->tenths_to_mm_conversion = staff_width / tenths_in_staff;
     
-    this->statements.emplace_back(std::make_unique<Statement<double>>("tenths_to_mm",
-                                                                      this->tenths_to_mm_conversion));
+    this->measure_duration =
+    root_element->FirstChildElement("part")->FirstChildElement("measure")
+    ->FirstChildElement("attributes")->FirstChildElement("divisions")->IntText() * 4;
+    
     this->statements.emplace_back(std::make_unique<Statement<Length>>("staff_size",
                                                                       millimeters(staff_width)));
     
@@ -47,7 +52,7 @@ void MusicTree::extract_paper_block() {
                                                  tenths(width_in_tenths,
                                                         this->tenths_to_mm_conversion));
     
-    tinyxml2::XMLElement* margin_pointer =
+    tx2::XMLElement* margin_pointer =
     page_layout_pointer->FirstChildElement("page-margins");
     
     // Case 0: margin_pointer is null, meaning that we set default.
@@ -80,7 +85,7 @@ void MusicTree::extract_paper_block() {
 void MusicTree::extract_header_block() {
     auto header_ptr = std::make_unique<Header>();
     
-    for (tinyxml2::XMLElement *runner = this->root_element->FirstChildElement("credit");
+    for (tx2::XMLElement *runner = this->root_element->FirstChildElement("credit");
          runner != nullptr;
          runner = this->root_element->FirstChildElement("credit")) {
         

@@ -47,9 +47,12 @@ namespace lmt {
         void print_music() const;
         void print_part_list() const;
         
+        // Variables
         double tenths_to_mm_conversion;
+        unsigned long int measure_duration;
         tinyxml2::XMLDocument xml_document;
         tinyxml2::XMLElement* root_element;
+        
         std::vector<std::unique_ptr<AbstractStatement>> statements;
         std::vector<std::string> valid_part_ids;
         mutable std::ofstream out;
