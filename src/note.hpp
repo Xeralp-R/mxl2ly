@@ -17,6 +17,7 @@
 
 #include "measure_objects.hpp"
 #include "notations.hpp"
+#include "note_attributes.hpp"
 
 namespace lmt {
 class Note : public aux::AbstractMeasureObject {
@@ -39,13 +40,11 @@ class Note : public aux::AbstractMeasureObject {
     };
     struct Rest {};
 
-    Note(Pitch pitch, unsigned int duration, short int dotted = 0,
-         bool in_chord = false);
-    Note(Rest rest, unsigned int duration, short int dotted = 0,
-         bool in_chord = false);
+    Note(Pitch pitch, unsigned int duration, short int dotted = 0);
+    Note(Rest rest, unsigned int duration, short int dotted = 0);
 
-    void add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation);
-    void set_in_chord(bool status) { this->in_chord = status; }
+    void add_notation(std::unique_ptr<aux::AbstractNotation> notation);
+    void add_attribute(std::unique_ptr<aux::AbstractNoteAttribute> attribute);
 
     std::string  get_subtype() override { return "note"; }
     short int    alteration() const { return pitch.alteration; }
@@ -53,6 +52,10 @@ class Note : public aux::AbstractMeasureObject {
     short int    octave() const { return pitch.octave; }
     short int    dots() const { return this->dotted; }
     unsigned int duration() const { return mxl_dur; }
+    
+    std::optional<aux::Chord> get_chord();
+    std::optional<aux::GraceNote> get_grace_note();
+    std::optional<aux::Tuplet> get_tuplet();
   private:
     // ==> Required Variables
     Pitch        pitch;
@@ -60,8 +63,8 @@ class Note : public aux::AbstractMeasureObject {
 
     // ==> Non-required Variables
     std::vector<std::unique_ptr<lmt::aux::AbstractNotation>> notations;
+    std::vector<std::unique_ptr<lmt::aux::AbstractNoteAttribute>> attributes;
     short int dotted   = 0; // number of dots
-    bool      in_chord = false;
 };
 } // namespace lmt
 

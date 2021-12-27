@@ -43,14 +43,17 @@ void MusicTree::PrintMusicFunctor::print_measure(const Measure* measure_ptr) {
         if (subobj_iden == "note") {
             print_note(dynamic_cast<Note*>(subobj_ptr));
         }
+        /*
         else if (subobj_iden == "tuplet") {
             print_tuplets(dynamic_cast<aux::Tuplet*>(subobj_ptr));
         }
+         */
     }
 
     tree_ptr->out << " |" << MusicTree::newline;
 }
 
+        /*
 void MusicTree::PrintMusicFunctor::print_tuplets(const aux::Tuplet* tuplet_ptr) {
     tree_ptr->out << fmt::format(R"||(\tuplet {0}/{1} {2})||",
                                  tuplet_ptr->actual_notes(),
@@ -73,6 +76,7 @@ void MusicTree::PrintMusicFunctor::print_tuplets(const aux::Tuplet* tuplet_ptr) 
 
     tree_ptr->out << " }";
 }
+        */
 
 void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
     unsigned int lilypond_duration = tree_ptr->measure_duration / note_ptr->duration();

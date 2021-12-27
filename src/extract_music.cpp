@@ -54,33 +54,7 @@ MusicTree::ExtractMusicFunctor::extract_measure(tx2::XMLElement* meas_elem_ptr) 
         
         std::string_view reader_name = reader->Name();
         
-        // note: add grace note functionality later.
-        if (reader_name == "note" && reader->FirstChildElement("grace") != nullptr) {
-            meas_elem_ptr->DeleteChild(reader);
-            continue;
-        }
-        else if (reader_name == "note" &&
-                 tx2::find_element(reader, "notations/tuplet") != nullptr) {
-            std::vector<tx2::XMLElement*> tuplet_notes;
-            
-            tuplet_notes.push_back(reader);
-            
-            auto next_note = reader;
-            do {
-                next_note = next_note->NextSiblingElement();
-                tuplet_notes.push_back(next_note);
-                // while we're not at the end of the tuplet
-            } while (tx2::find_element(next_note, "notations/tuplet") == nullptr);
-            
-            meas_uniq_ptr->add_measure_object(extract_tuplet(tuplet_notes));
-            
-            for (auto i : tuplet_notes) {
-                meas_elem_ptr->DeleteChild(i);
-            }
-            
-            continue;
-        }
-        else if (reader_name == "note") {
+        if (reader_name == "note") {
             auto note = extract_note(reader);
             meas_uniq_ptr->add_measure_object(std::move(note));
         }
@@ -103,6 +77,7 @@ MusicTree::ExtractMusicFunctor::extract_measure(tx2::XMLElement* meas_elem_ptr) 
     return std::move(meas_uniq_ptr);
 }
 
+/*
 std::unique_ptr<aux::Tuplet>
 MusicTree::ExtractMusicFunctor::extract_tuplet(std::vector<tx2::XMLElement*> tuplet_elems) {
     auto act_notes = tx2::int_text(tx2::find_element(tuplet_elems.at(0),
@@ -139,12 +114,15 @@ MusicTree::ExtractMusicFunctor::extract_tuplet(std::vector<tx2::XMLElement*> tup
     
     return std::move(tuplet_uniq_ptr);
 }
+ */
 
 std::unique_ptr<Note>
 MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
-    unsigned int duration = note_elem_ptr->FirstChildElement("duration")->IntText();
-    
-    bool in_chord = note_elem_ptr->FirstChildElement("chord") != nullptr;
+    unsigned int duration = 0;
+    if (!tx2::exists(note_elem_ptr, "grace")) {
+        duration = tx2::int_text(tx2::find_element(note_elem_ptr, "duration"));
+    }
+    //tx2::int_text(tx2::find_element(note_elem_ptr, "duration"));
     
     short int dotted = 0;
     if (note_elem_ptr->FirstChildElement("dotted") != nullptr) {
@@ -166,9 +144,45 @@ MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
         pitch = Note::Pitch(pitch_class, pitch_octave, pitch_alteration);
     }
     
-    auto note_uniq_ptr = std::make_unique<Note>(pitch, duration, dotted, in_chord);
+    auto note_uniq_ptr = std::make_unique<Note>(pitch, duration, dotted);
     
     // handle articulation, ornaments, etc.
+    
+    // handle grace note
+    if (auto grace_elem = tx2::find_element(note_elem_ptr, "grace")) {
+        bool is_slashed = false;
+        if (tx2::attribute_value(grace_elem, "slash") == "yes") {
+            is_slashed = true;
+        }
+        note_uniq_ptr->add_attribute(std::make_unique<aux::GraceNote>(is_slashed));
+    }
+    // handle chord
+    if (!tx2::exists(note_elem_ptr, "chord") &&
+        tx2::exists(note_elem_ptr->NextSiblingElement(), "chord")) {
+        note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Start));
+    }
+    if (tx2::exists(note_elem_ptr, "chord") &&
+        !tx2::exists(note_elem_ptr->NextSiblingElement(), "chord")) {
+        note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Stop));
+    }
+    // handle tuplet
+    if (tx2::exists(note_elem_ptr, "notations/tuplet")) {
+        StartStopType type = StartStopType::Start;
+        if (tx2::attribute_value(tx2::find_element(note_elem_ptr,
+                                                   "notations/tuplet"),
+                                 "type") == "stop") {
+            type = StartStopType::Stop;
+        }
+        unsigned short int actual_notes =
+        tx2::int_text(tx2::find_element(note_elem_ptr,
+                                        "time-modification/actual-notes"));
+        unsigned short int normal_notes =
+        tx2::int_text(tx2::find_element(note_elem_ptr,
+                                        "time-modification/normal-notes"));
+        note_uniq_ptr->add_attribute(std::make_unique<aux::Tuplet>(type,
+                                                                   actual_notes,
+                                                                   normal_notes));
+    }
     
     return std::move(note_uniq_ptr);
 }

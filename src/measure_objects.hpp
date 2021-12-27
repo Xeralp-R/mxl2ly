@@ -29,6 +29,7 @@ namespace lmt::aux {
         short int duration_back;
     };
     
+    /*
    class Tuplet : public AbstractMeasureObject {
       public:
         Tuplet(unsigned short int actual_notes, unsigned short int normal_notes)
@@ -51,6 +52,7 @@ namespace lmt::aux {
 
         std::vector<std::unique_ptr<AbstractMeasureObject>> objects;
     };
+     */
 }
 
 #endif /* measure_objects_hpp */

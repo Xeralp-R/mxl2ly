@@ -474,6 +474,13 @@ namespace tinyxml2
 		}
         
     // ================== ADDITION ================== //
+    inline bool exists (const XMLElement* element, std::string xpath = ""s) {
+        if (find_element(element, xpath)) {
+            return true;
+        }
+        return false;
+    }
+    
     inline int int_text (const XMLElement* element) {
         if (!element) {
             throw XmlException("null element"s);
