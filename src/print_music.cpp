@@ -24,7 +24,9 @@ void MusicTree::PrintMusicFunctor::operator()() {
         // Get the pointer
         auto part_ptr = dynamic_cast<Part*>(tree_ptr->statements.at(i).get());
 
-        tree_ptr->out << R"||(\"part-)||" << part_ptr->get_id() << R"||(" {)||" << newline;
+        tree_ptr->out << R"||(part-)||"
+        << tree_ptr->convert_number_names(part_ptr->get_id()) << " = {"
+        << newline;
         for (int i = 0; i < part_ptr->size(); ++i) {
             print_measure(part_ptr->at(i));
         }
@@ -41,16 +43,19 @@ void MusicTree::PrintMusicFunctor::print_measure(const Measure* measure_ptr) {
         if (subobj_iden == "note") {
             print_note(dynamic_cast<Note*>(subobj_ptr));
         }
+        else if (subobj_iden == "tuplet") {
+            print_tuplets(dynamic_cast<aux::Tuplet*>(subobj_ptr));
+        }
     }
 
     tree_ptr->out << " |" << MusicTree::newline;
 }
 
-void MusicTree::PrintMusicFunctor::print_tuplets(
-    const aux::Tuplet* tuplet_ptr) {
-    tree_ptr->out << fmt::format(R"||(\tuplet {0}/{1} { )||",
+void MusicTree::PrintMusicFunctor::print_tuplets(const aux::Tuplet* tuplet_ptr) {
+    tree_ptr->out << fmt::format(R"||(\tuplet {0}/{1} {2})||",
                                  tuplet_ptr->actual_notes(),
-                                 tuplet_ptr->normal_notes());
+                                 tuplet_ptr->normal_notes(),
+                                 "{");
 
     for (int i = 0; i < tuplet_ptr->size(); ++i) {
         auto subobj_ptr = tuplet_ptr->at(i);

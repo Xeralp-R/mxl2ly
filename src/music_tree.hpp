@@ -71,13 +71,13 @@ namespace lmt {
             void print_tuplets(const aux::Tuplet* tuplet_ptr);
             void print_note(const Note* note_ptr);
             void print_note(const Note* note_ptr, unsigned int lilypond_duration);
-            
-            std::string convert_number_names(std::string);
-            std::vector<std::string> number_names {
-                "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
-            };
         } print_music{this};
         friend class PrintMusicFunctor;
+        
+        std::string convert_number_names(const std::string) const;
+        const std::vector<std::string> number_names {
+            "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+        };
         
         // Variables
         double tenths_to_mm_conversion;

@@ -19,6 +19,20 @@
 
 using namespace lmt;
 
+std::string MusicTree::convert_number_names(const std::string test) const {
+    std::string returner;
+    for (auto ch : test) {
+        // if ch is any number from 0 to 9
+        if (ch - '0' >= 0 && ch - '9' <= 0) {
+            returner += number_names.at(ch - '0');
+        }
+        else {
+            returner += ch;
+        }
+    }
+    return returner;
+}
+
 void MusicTree::print_staff_info() const {
     const auto staff_width =
     dynamic_cast<Statement<Length>*>(statements.at(0).get())->get_content();
@@ -77,7 +91,7 @@ void MusicTree::print_part_list() const {
         out << tab << R"||(\new Staff \with {)||" << newline;
         out << tab << tab << R"||(instrumentName = ")||" << pair.second
             << R"||(")||" << newline;
-        out << tab << R"||(} \"part-)||" << pair.first << R"||(")||" << newline;
+        out << tab << R"||(} \part-)||" << convert_number_names(pair.first) << newline;
     }
     out << "}" << newline;
 }
