@@ -16,6 +16,7 @@ PRIVATE
     measure_objects.hpp
     music_tree.hpp
     music_tree.cpp
+    notations.hpp
     note.hpp
     note.cpp
     statement.hpp
