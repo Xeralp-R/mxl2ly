@@ -50,6 +50,9 @@ namespace lmt {
             void operator() ();
         private:
             MusicTree* tree_ptr;
+            std::unique_ptr<Measure>     extract_measure(tinyxml2::XMLElement* meas_elem_ptr);
+            std::unique_ptr<aux::Tuplet> extract_tuplet(std::vector<tinyxml2::XMLElement*> tuplet_elems);
+            std::unique_ptr<Note>        extract_note(tinyxml2::XMLElement* note_elem_ptr);
         } extract_music{this};
         friend class ExtractMusicFunctor;
         
@@ -68,6 +71,11 @@ namespace lmt {
             void print_tuplets(const aux::Tuplet* tuplet_ptr);
             void print_note(const Note* note_ptr);
             void print_note(const Note* note_ptr, unsigned int lilypond_duration);
+            
+            std::string convert_number_names(std::string);
+            std::vector<std::string> number_names {
+                "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+            };
         } print_music{this};
         friend class PrintMusicFunctor;
         
