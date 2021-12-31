@@ -8,10 +8,12 @@
 #ifndef note_hpp
 #define note_hpp
 
+#include <array>
 #include <exception>
 #include <optional>
 #include <ostream>
 #include <string>
+#include <unordered_map>
 #include <variant>
 #include <vector>
 
@@ -52,19 +54,27 @@ class Note : public aux::AbstractMeasureObject {
     short int    octave() const { return pitch.octave; }
     short int    dots() const { return this->dotted; }
     unsigned int duration() const { return mxl_dur; }
-    
-    std::optional<aux::Chord> get_chord();
-    std::optional<aux::GraceNote> get_grace_note();
-    std::optional<aux::Tuplet> get_tuplet();
+
+    std::optional<aux::GraceNote> get_grace_note() const;
+    std::optional<aux::Chord>     get_chord() const;
+    std::optional<aux::Tuplet>    get_tuplet() const;
   private:
     // ==> Required Variables
     Pitch        pitch;
     unsigned int mxl_dur = 0; // duration of musicxml, not lilypond
 
     // ==> Non-required Variables
-    std::vector<std::unique_ptr<lmt::aux::AbstractNotation>> notations;
-    std::vector<std::unique_ptr<lmt::aux::AbstractNoteAttribute>> attributes;
-    short int dotted   = 0; // number of dots
+    std::vector<std::unique_ptr<lmt::aux::AbstractNotation>>        notations;
+    std::array<std::unique_ptr<lmt::aux::AbstractNoteAttribute>, 3> attributes;
+    short int dotted = 0; // number of dots
+    
+    // ==> Helper functions
+    const std::unordered_map<std::string, std::function<int(void)>>
+    attribute_dispatcher {
+        {"grace_note", [](){return 0;}},
+        {"chord",      [](){return 1;}},
+        {"tuplet",     [](){return 2;}}
+    };
 };
 } // namespace lmt
 

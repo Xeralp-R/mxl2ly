@@ -68,9 +68,15 @@ namespace lmt {
         private:
             const MusicTree* tree_ptr;
             void print_measure(const Measure* measure_ptr);
-            void print_tuplets(const aux::Tuplet* tuplet_ptr);
+            
             void print_note(const Note* note_ptr);
+            void print_gracenote(const std::vector<const Note*> notes);
+            void print_tuplet(const std::vector<const Note*> notes);
+            void print_chord(const std::vector<const Note*> notes);
             void print_note(const Note* note_ptr, unsigned int lilypond_duration);
+            
+            double note_time_alteration = 1.00;
+            bool is_grace = false;
         } print_music{this};
         friend class PrintMusicFunctor;
         

@@ -47,5 +47,29 @@ void Note::add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation) {
 }
 
 void Note::add_attribute(std::unique_ptr<aux::AbstractNoteAttribute> attribute) {
-    this->attributes.push_back(std::move(attribute));
+    auto attr_subtype = attribute->get_subtype();
+    
+    int i = attribute_dispatcher.at(attr_subtype)();
+    attributes.at(i) = std::move(attribute);
+}
+
+std::optional<aux::GraceNote> Note::get_grace_note() const {
+    if (!attributes.at(0)) {
+        return std::nullopt;
+    }
+    return *(dynamic_cast<aux::GraceNote*>(attributes.at(0).get()));
+}
+
+std::optional<aux::Chord> Note::get_chord() const { 
+    if (!attributes.at(1)) {
+        return std::nullopt;
+    }
+    return *(dynamic_cast<aux::Chord*>(attributes.at(1).get()));
+}
+
+std::optional<aux::Tuplet> Note::get_tuplet() const {
+    if (!attributes.at(2)) {
+        return std::nullopt;
+    }
+    return *(dynamic_cast<aux::Tuplet*>(attributes.at(2).get()));
 }

@@ -27,10 +27,13 @@ namespace lmt::aux {
     };
     
     struct GraceNote : public AbstractNoteAttribute {
-        GraceNote(bool is_slashed) : is_slashed(is_slashed) {};
+        GraceNote(StartStopType start_stop,
+                  bool is_slashed)
+        : start_stop(start_stop), is_slashed(is_slashed) {};
         
         std::string get_subtype() const { return "grace_note"; }
         
+        StartStopType start_stop;
         bool is_slashed;
     };
     

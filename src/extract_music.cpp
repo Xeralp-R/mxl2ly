@@ -50,7 +50,7 @@ MusicTree::ExtractMusicFunctor::extract_measure(tx2::XMLElement* meas_elem_ptr) 
     
     for (auto reader = meas_elem_ptr->FirstChildElement();
          reader != nullptr;
-         reader = meas_elem_ptr->FirstChildElement()) {
+         reader = reader->NextSiblingElement()) {
         
         std::string_view reader_name = reader->Name();
         
@@ -70,51 +70,10 @@ MusicTree::ExtractMusicFunctor::extract_measure(tx2::XMLElement* meas_elem_ptr) 
             //auto backup = std::make_unique<aux::Backup>(reader->FirstChildElement()->IntText());
             //meas_uniq_ptr->add_measure_object(std::move(backup));
         }
-        
-        meas_elem_ptr->DeleteChild(reader);
     }
     
     return std::move(meas_uniq_ptr);
 }
-
-/*
-std::unique_ptr<aux::Tuplet>
-MusicTree::ExtractMusicFunctor::extract_tuplet(std::vector<tx2::XMLElement*> tuplet_elems) {
-    auto act_notes = tx2::int_text(tx2::find_element(tuplet_elems.at(0),
-                                                     "time-modification/actual-notes"));
-    auto nor_notes = tx2::int_text(tx2::find_element(tuplet_elems.at(0),
-                                                     "time-modification/normal-notes"));
-    auto tuplet_uniq_ptr = std::make_unique<aux::Tuplet>(act_notes, nor_notes);
-    
-    for (auto reader : tuplet_elems) {
-        std::string_view reader_name = reader->Name();
-        
-        // note: add grace note functionality later.
-        if (reader_name == "note" && reader->FirstChildElement("grace") != nullptr) {
-            // add another time
-            continue;
-        }
-        else if (reader_name == "note") {
-            auto note = extract_note(reader);
-            tuplet_uniq_ptr->add_measure_object(std::move(note));
-        }
-        else if (reader_name == "attributes") {
-            //auto attributes = convert_attributes(reader);
-            //for (auto& i : attributes) { meas_uniq_ptr->add_measure_object(std::move(i)); }
-        }
-        else if (reader_name == "direction") {
-            //auto direction = convert_direction(reader);
-            //meas_uniq_ptr->add_measure_object(std::move(direction));
-        }
-        else if (reader_name == "backup") {
-            //auto backup = std::make_unique<aux::Backup>(reader->FirstChildElement()->IntText());
-            //meas_uniq_ptr->add_measure_object(std::move(backup));
-        }
-    }
-    
-    return std::move(tuplet_uniq_ptr);
-}
- */
 
 std::unique_ptr<Note>
 MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
@@ -149,22 +108,27 @@ MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
     // handle articulation, ornaments, etc.
     
     // handle grace note
-    if (auto grace_elem = tx2::find_element(note_elem_ptr, "grace")) {
+    if (!tx2::exists(note_elem_ptr->PreviousSiblingElement(), "grace") &&
+        tx2::exists(note_elem_ptr, "grace")) {
+        auto grace_elem = tx2::find_element(note_elem_ptr, "grace");
         bool is_slashed = false;
         if (tx2::attribute_value(grace_elem, "slash") == "yes") {
             is_slashed = true;
         }
-        note_uniq_ptr->add_attribute(std::make_unique<aux::GraceNote>(is_slashed));
+        note_uniq_ptr->add_attribute(std::make_unique<aux::GraceNote>(StartStopType::Start,
+                                                                      is_slashed));
     }
-    // handle chord
-    if (!tx2::exists(note_elem_ptr, "chord") &&
-        tx2::exists(note_elem_ptr->NextSiblingElement(), "chord")) {
-        note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Start));
+    if (tx2::exists(note_elem_ptr, "grace") &&
+        !tx2::exists(note_elem_ptr->NextSiblingElement(), "grace")) {
+        auto grace_elem = tx2::find_element(note_elem_ptr, "grace");
+        bool is_slashed = false;
+        if (tx2::attribute_value(grace_elem, "slash") == "yes") {
+            is_slashed = true;
+        }
+        note_uniq_ptr->add_attribute(std::make_unique<aux::GraceNote>(StartStopType::Stop,
+                                                                      is_slashed));
     }
-    if (tx2::exists(note_elem_ptr, "chord") &&
-        !tx2::exists(note_elem_ptr->NextSiblingElement(), "chord")) {
-        note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Stop));
-    }
+    
     // handle tuplet
     if (tx2::exists(note_elem_ptr, "notations/tuplet")) {
         StartStopType type = StartStopType::Start;
@@ -182,6 +146,16 @@ MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
         note_uniq_ptr->add_attribute(std::make_unique<aux::Tuplet>(type,
                                                                    actual_notes,
                                                                    normal_notes));
+    }
+    
+    // handle chord
+    if (!tx2::exists(note_elem_ptr->PreviousSiblingElement(), "chord") &&
+        tx2::exists(note_elem_ptr, "chord")) {
+        note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Start));
+    }
+    if (tx2::exists(note_elem_ptr, "chord") &&
+        !tx2::exists(note_elem_ptr->NextSiblingElement(), "chord")) {
+        note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Stop));
     }
     
     return std::move(note_uniq_ptr);
