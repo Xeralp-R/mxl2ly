@@ -11,6 +11,7 @@
 #include <utility>
 #include <memory>
 #include <cctype>
+#include <cmath>
 
 #include "part.hpp"
 #include "measure.hpp"
@@ -77,19 +78,28 @@ MusicTree::ExtractMusicFunctor::extract_measure(tx2::XMLElement* meas_elem_ptr) 
 
 std::unique_ptr<Note>
 MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
-    unsigned int duration = 0;
-    if (!tx2::exists(note_elem_ptr, "grace")) {
-        duration = tx2::int_text(tx2::find_element(note_elem_ptr, "duration"));
-    }
-    //tx2::int_text(tx2::find_element(note_elem_ptr, "duration"));
+    using tx2::find_element;
+    
+    unsigned int duration = 16;
+    if (tx2::exists(note_elem_ptr, "type")) {
+        auto note_value = tx2::text(find_element(note_elem_ptr, "type"));
+        duration = this->duration_dispatcher.at(note_value)();
+        
+    } else if (!tx2::exists(note_elem_ptr, "grace")) {
+        auto mxl_dur = tx2::int_text(find_element(note_elem_ptr, "duration"));
+        duration = std::round(tree_ptr->measure_duration / mxl_dur);
+        
+    } else {}
     
     short int dotted = 0;
-    if (note_elem_ptr->FirstChildElement("dotted") != nullptr) {
-        dotted = note_elem_ptr->FirstChildElement("dotted")->IntText();
+    for (auto i = note_elem_ptr->FirstChildElement("dot");
+         i != nullptr;
+         i = i->NextSiblingElement("dot")) {
+        dotted += 1;
     }
     
     Note::Pitch pitch = Note::Pitch('r', 0, 0);
-    if (note_elem_ptr->FirstChildElement("pitch") != nullptr) {
+    if (tx2::exists(note_elem_ptr, "pitch")) {
         auto pitch_elem_ptr = note_elem_ptr->FirstChildElement("pitch");
         
         char pitch_class = tolower(pitch_elem_ptr->FirstChildElement("step")->GetText()[0]);
@@ -108,25 +118,28 @@ MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
     // handle articulation, ornaments, etc.
     
     // handle grace note
-    if (!tx2::exists(note_elem_ptr->PreviousSiblingElement(), "grace") &&
-        tx2::exists(note_elem_ptr, "grace")) {
-        auto grace_elem = tx2::find_element(note_elem_ptr, "grace");
-        bool is_slashed = false;
-        if (tx2::attribute_value(grace_elem, "slash") == "yes") {
-            is_slashed = true;
+    if (tx2::exists(note_elem_ptr, "grace")) {
+        auto grace_before = tx2::exists(note_elem_ptr->PreviousSiblingElement(), "grace");
+        auto grace_after = tx2::exists(note_elem_ptr->NextSiblingElement(), "grace");
+        auto function = [&](StartStopType type){
+            auto grace_elem = tx2::find_element(note_elem_ptr, "grace");
+            bool is_slashed = false;
+            if (tx2::attribute_value(grace_elem, "slash") == "yes") {
+                is_slashed = true;
+            }
+            auto i = std::make_unique<aux::GraceNote>(type, is_slashed);
+            note_uniq_ptr->add_attribute(std::move(i));
+        };
+        
+        if (!grace_before && !grace_after) {
+            function(StartStopType::Both);
+        } else if (!grace_before && grace_after) {
+            function(StartStopType::Start);
+        } else if (grace_before && !grace_after) {
+            function(StartStopType::Stop);
+        } else {
+            // Don't do anything.
         }
-        note_uniq_ptr->add_attribute(std::make_unique<aux::GraceNote>(StartStopType::Start,
-                                                                      is_slashed));
-    }
-    if (tx2::exists(note_elem_ptr, "grace") &&
-        !tx2::exists(note_elem_ptr->NextSiblingElement(), "grace")) {
-        auto grace_elem = tx2::find_element(note_elem_ptr, "grace");
-        bool is_slashed = false;
-        if (tx2::attribute_value(grace_elem, "slash") == "yes") {
-            is_slashed = true;
-        }
-        note_uniq_ptr->add_attribute(std::make_unique<aux::GraceNote>(StartStopType::Stop,
-                                                                      is_slashed));
     }
     
     // handle tuplet
@@ -149,8 +162,10 @@ MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
     }
     
     // handle chord
-    if (!tx2::exists(note_elem_ptr->PreviousSiblingElement(), "chord") &&
-        tx2::exists(note_elem_ptr, "chord")) {
+    // The start of a chord is usually not indicated as <chord>. Thus,
+    // we have to compare against the next element rather than comparing against the previous one.
+    if (!tx2::exists(note_elem_ptr, "chord") &&
+        tx2::exists(note_elem_ptr->NextSiblingElement(), "chord")) {
         note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Start));
     }
     if (tx2::exists(note_elem_ptr, "chord") &&

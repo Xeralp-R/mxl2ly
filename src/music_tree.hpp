@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include <fstream>
+#include <unordered_map>
 
 #include "tinyxml2/tinyxml2.h"
 
@@ -53,6 +54,21 @@ namespace lmt {
             std::unique_ptr<Measure>     extract_measure(tinyxml2::XMLElement* meas_elem_ptr);
             std::unique_ptr<aux::Tuplet> extract_tuplet(std::vector<tinyxml2::XMLElement*> tuplet_elems);
             std::unique_ptr<Note>        extract_note(tinyxml2::XMLElement* note_elem_ptr);
+            
+            const std::unordered_map<std::string, std::function<unsigned(void)>>
+            duration_dispatcher {
+                {"1024th",  [](){ return 1024; }},
+                {"512th",   [](){ return 512;  }},
+                {"256th",   [](){ return 256;  }},
+                {"128th",   [](){ return 128;  }},
+                {"64th",    [](){ return 64;   }},
+                {"32nd",    [](){ return 32;   }},
+                {"16th",    [](){ return 16;   }},
+                {"eighth",  [](){ return 8;    }},
+                {"quarter", [](){ return 4;    }},
+                {"half",    [](){ return 2;    }},
+                {"whole",   [](){ return 1;    }}
+            };
         } extract_music{this};
         friend class ExtractMusicFunctor;
         
@@ -76,7 +92,7 @@ namespace lmt {
             void print_note(const Note* note_ptr, unsigned int lilypond_duration);
             
             double note_time_alteration = 1.00;
-            bool is_grace = false;
+            bool in_chord = false;
         } print_music{this};
         friend class PrintMusicFunctor;
         

@@ -42,8 +42,8 @@ class Note : public aux::AbstractMeasureObject {
     };
     struct Rest {};
 
-    Note(Pitch pitch, unsigned int duration, short int dotted = 0);
-    Note(Rest rest, unsigned int duration, short int dotted = 0);
+    Note(Pitch pitch, unsigned int lly_dur, short int dotted = 0);
+    Note(Rest rest, unsigned int lly_dur, short int dotted = 0);
 
     void add_notation(std::unique_ptr<aux::AbstractNotation> notation);
     void add_attribute(std::unique_ptr<aux::AbstractNoteAttribute> attribute);
@@ -53,7 +53,7 @@ class Note : public aux::AbstractMeasureObject {
     char         pitch_class() const { return pitch.pitch_class; }
     short int    octave() const { return pitch.octave; }
     short int    dots() const { return this->dotted; }
-    unsigned int duration() const { return mxl_dur; }
+    unsigned int duration() const { return lly_dur; }
 
     std::optional<aux::GraceNote> get_grace_note() const;
     std::optional<aux::Chord>     get_chord() const;
@@ -61,7 +61,7 @@ class Note : public aux::AbstractMeasureObject {
   private:
     // ==> Required Variables
     Pitch        pitch;
-    unsigned int mxl_dur = 0; // duration of musicxml, not lilypond
+    unsigned int lly_dur = 0; // duration of lilypond, not musicxml
 
     // ==> Non-required Variables
     std::vector<std::unique_ptr<lmt::aux::AbstractNotation>>        notations;

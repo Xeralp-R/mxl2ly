@@ -80,12 +80,10 @@ tree_ptr->out << " }";
 */
 
 void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
-    // TODO: Change this default using musicxml
-    unsigned int lilypond_duration = 16;
-    if (note_ptr->duration() != 0) {
-        lilypond_duration = tree_ptr->measure_duration /
-        note_ptr->duration() *
-        note_time_alteration;
+    std::string lilypond_duration;
+    if (!this->in_chord) {
+        lilypond_duration = std::to_string(note_ptr->duration());
+        lilypond_duration += std::string(note_ptr->dots(), '.');
     }
 
     std::string alter_text;
@@ -123,6 +121,10 @@ void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
             case StartStopType::Stop:
                 after_text = "} " + after_text;
                 break;
+            case StartStopType::Both:
+                before_text += R"--(\grace { )--";
+                after_text = "} " + after_text;
+                break;
         }
     }
 
@@ -136,11 +138,13 @@ void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
                                            "{");
                 this->note_time_alteration = maybe_tuplet->normal_notes /
                                              maybe_tuplet->actual_notes;
-                lilypond_duration *= note_time_alteration;
                 break;
             case StartStopType::Stop:
                 after_text = "} " + after_text;
                 note_time_alteration = 1.00;
+                break;
+            case StartStopType::Both:
+                // Should not be reached.
                 break;
         }
     }
@@ -150,10 +154,20 @@ void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
         switch (maybe_chord->start_stop) {
             case StartStopType::Start:
                 before_text += "< ";
+                
+                in_chord = true;
+                lilypond_duration = "";
                 break;
             case StartStopType::Stop:
-                // must be placed first
-                after_text = "> " + after_text;
+                after_text = fmt::format(">{0}{1} {2}",
+                                         note_ptr->duration(),
+                                         std::string(note_ptr->dots(), '.'),
+                                         after_text);
+                
+                in_chord = false;
+                break;
+            case StartStopType::Both:
+                // Should not be reached.
                 break;
         }
     }
@@ -162,5 +176,5 @@ void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
         fmt::format("{0}{1}{2}{3} ", note_ptr->pitch_class(), alter_text,
                     octave_text, lilypond_duration);
 
-    tree_ptr->out << before_text << note_text << after_text;
+    tree_ptr->out << before_text << note_text << after_text << " ";
 }

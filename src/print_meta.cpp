@@ -48,10 +48,9 @@ void MusicTree::print_paper_block() const {
     
     // Prepare the page size
     out << R"||(#(set! paper-alist )||" << newline << tab;
-    out << fmt::format(R"||((cons '("new_size" . (cons (* {0} mm) )||",
-                       paper_ptr->get_height().get_millimeters());
-    out << fmt::format(R"||((* {0} mm))) paper-alist)))||",
-                       paper_ptr->get_width().get_millimeters()) << newline;
+    out << fmt::format(R"--((cons '("new_size" . (cons (* {0} mm) (* {1} mm))) paper-alist)))--",
+                       paper_ptr->get_width().get_millimeters(),
+                       paper_ptr->get_height().get_millimeters()) << newline;
     
     // Output the actual paper thing
     out << R"(\paper {)" << newline;

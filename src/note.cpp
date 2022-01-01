@@ -36,11 +36,11 @@ Note::Pitch::Pitch(char pitch_class, short int octave, short int alteration) {
 
 // ==> Constructors and private setters
 
-Note::Note(lmt::Note::Pitch pitch, unsigned duration, short dotted)
-: pitch(pitch), mxl_dur(duration), dotted(dotted) {}
+Note::Note(lmt::Note::Pitch pitch, unsigned lly_dur, short dotted)
+: pitch(pitch), lly_dur(lly_dur), dotted(dotted) {}
 
-Note::Note(Note::Rest rest, unsigned duration, short dotted)
-: pitch(Pitch('r', 0, 0)), mxl_dur(duration), dotted(dotted) {}
+Note::Note(Note::Rest rest, unsigned lly_dur, short dotted)
+: pitch(Pitch('r', 0, 0)), lly_dur(lly_dur), dotted(dotted) {}
 
 void Note::add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation) {
     this->notations.push_back(std::move(notation));
