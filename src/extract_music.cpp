@@ -173,5 +173,10 @@ MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {
         note_uniq_ptr->add_attribute(std::make_unique<aux::Chord>(StartStopType::Stop));
     }
     
+    auto vec = this->extract_notations(note_elem_ptr);
+    for (auto& i : vec) {
+        note_uniq_ptr->add_notation(std::move(i));
+    }
+    
     return std::move(note_uniq_ptr);
 }

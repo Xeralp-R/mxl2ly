@@ -54,31 +54,6 @@ void MusicTree::PrintMusicFunctor::print_measure(const Measure* measure_ptr) {
     tree_ptr->out << " |" << MusicTree::newline;
 }
 
-/*
-void MusicTree::PrintMusicFunctor::print_tuplets(const aux::Tuplet* tuplet_ptr)
-{ tree_ptr->out << fmt::format(R"||(\tuplet {0}/{1} {2})||",
-                         tuplet_ptr->actual_notes(),
-                         tuplet_ptr->normal_notes(),
-                         "{");
-
-for (int i = 0; i < tuplet_ptr->size(); ++i) {
-auto subobj_ptr = tuplet_ptr->at(i);
-
-std::string subobj_iden = subobj_ptr->get_subtype();
-
-if (subobj_iden == "note") {
-    auto note_ptr = dynamic_cast<Note*>(subobj_ptr);
-    print_note(note_ptr,
-               (tree_ptr->measure_duration / note_ptr->duration()) *
-                   tuplet_ptr->normal_notes() /
-                   tuplet_ptr->actual_notes());
-}
-}
-
-tree_ptr->out << " }";
-}
-*/
-
 void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
     std::string lilypond_duration;
     if (!this->in_chord) {

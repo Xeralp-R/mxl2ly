@@ -4,6 +4,7 @@ target_sources(mxl2ly
 PRIVATE
     extract_meta.cpp
     extract_music.cpp
+    extract_notations.cpp
     file_option_parser.hpp
     file_option_parser.cpp
     header_and_paper.hpp
