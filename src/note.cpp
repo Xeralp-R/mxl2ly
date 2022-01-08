@@ -73,3 +73,13 @@ std::optional<aux::Tuplet> Note::get_tuplet() const {
     }
     return *(dynamic_cast<aux::Tuplet*>(attributes.at(2).get()));
 }
+
+std::vector<aux::AbstractNotation*> Note::get_notations() const {
+    std::vector<aux::AbstractNotation*> returner;
+    // really hacky trick, of using auto
+    std::transform(this->notations.begin(),
+                   this->notations.end(),
+                   returner.begin(),
+                   [](auto& test){return test.get();});
+    return returner;
+}

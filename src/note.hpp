@@ -58,6 +58,8 @@ class Note : public aux::AbstractMeasureObject {
     std::optional<aux::GraceNote> get_grace_note() const;
     std::optional<aux::Chord>     get_chord() const;
     std::optional<aux::Tuplet>    get_tuplet() const;
+    
+    std::vector<aux::AbstractNotation*> get_notations() const;
   private:
     // ==> Required Variables
     Pitch        pitch;

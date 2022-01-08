@@ -30,6 +30,8 @@ namespace lmt::aux {
     struct AbstractNotation : public AbstractStatement {
         std::string get_type() { return "note_statement"; }
         virtual std::string get_subtype() = 0;
+        virtual void accept_musicxml(std::string) = 0;
+        virtual std::string return_lilypond() = 0;
         virtual ~AbstractNotation(){};
     };
     

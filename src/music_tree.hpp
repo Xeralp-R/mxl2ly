@@ -90,10 +90,8 @@ namespace lmt {
             void print_measure(const Measure* measure_ptr);
             
             void print_note(const Note* note_ptr);
-            void print_gracenote(const std::vector<const Note*> notes);
-            void print_tuplet(const std::vector<const Note*> notes);
             void print_chord(const std::vector<const Note*> notes);
-            void print_note(const Note* note_ptr, unsigned int lilypond_duration);
+            void print_notations(const Note* note_ptr);
             
             double note_time_alteration = 1.00;
             bool in_chord = false;
