@@ -44,11 +44,6 @@ void MusicTree::PrintMusicFunctor::print_measure(const Measure* measure_ptr) {
         if (subobj_iden == "note") {
             print_note(dynamic_cast<Note*>(subobj_ptr));
         }
-        /*
-        else if (subobj_iden == "tuplet") {
-            print_tuplets(dynamic_cast<aux::Tuplet*>(subobj_ptr));
-        }
-         */
     }
 
     tree_ptr->out << " |" << MusicTree::newline;
@@ -146,10 +141,16 @@ void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
                 break;
         }
     }
+    
+    auto nota_vec = note_ptr->get_notations();
+    std::string notation_string;
+    for (auto i : nota_vec) {
+        notation_string += i->return_lilypond();
+    }
 
     std::string note_text =
-        fmt::format("{0}{1}{2}{3} ", note_ptr->pitch_class(), alter_text,
-                    octave_text, lilypond_duration);
+        fmt::format("{0}{1}{2}{3}{4} ", note_ptr->pitch_class(), alter_text,
+                    octave_text, lilypond_duration, notation_string);
 
     tree_ptr->out << before_text << note_text << after_text << " ";
 }

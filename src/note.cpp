@@ -76,10 +76,9 @@ std::optional<aux::Tuplet> Note::get_tuplet() const {
 
 std::vector<aux::AbstractNotation*> Note::get_notations() const {
     std::vector<aux::AbstractNotation*> returner;
-    // really hacky trick, of using auto
-    std::transform(this->notations.begin(),
-                   this->notations.end(),
-                   returner.begin(),
-                   [](auto& test){return test.get();});
+    returner.reserve(notations.size());
+    for (auto& i : this->notations) {
+        returner.push_back(i.get());
+    }
     return returner;
 }

@@ -18,7 +18,7 @@ PRIVATE
     music_tree.hpp
     music_tree.cpp
     notations.hpp
-    notations.cpps
+    notations.cpp
     note.hpp
     note.cpp
     statement.hpp
