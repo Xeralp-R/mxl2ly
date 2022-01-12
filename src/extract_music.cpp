@@ -49,6 +49,9 @@ std::unique_ptr<Measure>
 MusicTree::ExtractMusicFunctor::extract_measure(tx2::XMLElement* meas_elem_ptr) {
     auto meas_uniq_ptr = std::make_unique<Measure>(meas_elem_ptr->IntAttribute("number"));
     
+    auto meas_attributes = extract_measure_attributes(meas_elem_ptr);
+    for (auto& ptr : meas_attributes) { meas_uniq_ptr->add_measure_object(std::move(ptr)); }
+    
     for (auto reader = meas_elem_ptr->FirstChildElement();
          reader != nullptr;
          reader = reader->NextSiblingElement()) {

@@ -52,12 +52,17 @@ namespace lmt {
             void operator() ();
         private:
             MusicTree* tree_ptr;
-            std::unique_ptr<Measure>     extract_measure(tinyxml2::XMLElement* meas_elem_ptr);
-            std::unique_ptr<aux::Tuplet> extract_tuplet(std::vector<tinyxml2::XMLElement*> tuplet_elems);
+            std::unique_ptr<Measure>
+            extract_measure(tinyxml2::XMLElement* meas_elem_ptr);
+            std::unique_ptr<aux::Tuplet>
+            extract_tuplet(std::vector<tinyxml2::XMLElement*> tuplet_elems);
             
-            std::unique_ptr<Note>        extract_note(tinyxml2::XMLElement* note_elem_ptr);
+            std::unique_ptr<Note>
+            extract_note(tinyxml2::XMLElement* note_elem_ptr);
             std::vector<std::unique_ptr<aux::AbstractNotation>>
             extract_notations(tinyxml2::XMLElement* note_ptr);
+            std::vector<std::unique_ptr<aux::AbstractMeasureAttribute>>
+            extract_measure_attributes(tinyxml2::XMLElement* note_ptr);
             
             const std::unordered_map<std::string, std::function<unsigned(void)>>
             duration_dispatcher {
