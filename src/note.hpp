@@ -20,8 +20,11 @@
 #include "measure_objects.hpp"
 #include "notations.hpp"
 #include "note_attributes.hpp"
+#include "tinyxml2/tinyxml2.h"
 
 namespace lmt {
+class MusicTree;
+
 class Note : public aux::AbstractMeasureObject {
   public:
     class Pitch {
@@ -40,10 +43,9 @@ class Note : public aux::AbstractMeasureObject {
         std::vector<short int> valid_octaves{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         std::vector<short int> valid_alterations{-2, -1, 0, 1, 2};
     };
-    struct Rest {};
 
     Note(Pitch pitch, unsigned int lly_dur, short int dotted = 0);
-    Note(Rest rest, unsigned int lly_dur, short int dotted = 0);
+    Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr);
 
     void add_notation(std::unique_ptr<aux::AbstractNotation> notation);
     void add_attribute(std::unique_ptr<aux::AbstractNoteAttribute> attribute);
@@ -62,8 +64,8 @@ class Note : public aux::AbstractMeasureObject {
     std::vector<aux::AbstractNotation*> get_notations() const;
   private:
     // ==> Required Variables
-    Pitch        pitch;
-    unsigned int lly_dur = 0; // duration of lilypond, not musicxml
+    Pitch        pitch   = Note::Pitch('r', 0, 0); // default value
+    unsigned int lly_dur = 16; // duration of lilypond, not musicxml
 
     // ==> Non-required Variables
     std::vector<std::unique_ptr<lmt::aux::AbstractNotation>>        notations;
@@ -77,6 +79,21 @@ class Note : public aux::AbstractMeasureObject {
         {"chord",      [](){return 1;}},
         {"tuplet",     [](){return 2;}}
     };
+    const std::unordered_map<std::string, std::function<unsigned(void)>>
+    duration_dispatcher {
+        {"1024th",  [](){ return 1024; }},
+        {"512th",   [](){ return 512;  }},
+        {"256th",   [](){ return 256;  }},
+        {"128th",   [](){ return 128;  }},
+        {"64th",    [](){ return 64;   }},
+        {"32nd",    [](){ return 32;   }},
+        {"16th",    [](){ return 16;   }},
+        {"eighth",  [](){ return 8;    }},
+        {"quarter", [](){ return 4;    }},
+        {"half",    [](){ return 2;    }},
+        {"whole",   [](){ return 1;    }}
+    };
+    aux::NotationFactory notation_factory;
 };
 } // namespace lmt
 

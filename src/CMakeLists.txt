@@ -23,6 +23,7 @@ PRIVATE
     notations.cpp
     note.hpp
     note.cpp
+    note_attributes.hpp
     statement.hpp
     part.hpp
     part.cpp

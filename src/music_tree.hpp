@@ -33,6 +33,7 @@ namespace lmt {
         
         void accept_musicxml(std::string filename);
         void print_lilypond(std::string filename);
+        unsigned long get_measure_duration() const { return this->measure_duration; };
         
         // Constants
         const std::array<Length, 4> default_margins{inches(1), inches(1), inches(1),
