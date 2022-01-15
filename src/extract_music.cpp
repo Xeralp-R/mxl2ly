@@ -62,10 +62,6 @@ MusicTree::ExtractMusicFunctor::extract_measure(tx2::XMLElement* meas_elem_ptr) 
             auto note = extract_note(reader);
             meas_uniq_ptr->add_measure_object(std::move(note));
         }
-        else if (reader_name == "attributes") {
-            //auto attributes = convert_attributes(reader);
-            //for (auto& i : attributes) { meas_uniq_ptr->add_measure_object(std::move(i)); }
-        }
         else if (reader_name == "direction") {
             //auto direction = convert_direction(reader);
             //meas_uniq_ptr->add_measure_object(std::move(direction));

@@ -5,6 +5,7 @@ PRIVATE
     extract_meta.cpp
     extract_music.cpp
     extract_notations.cpp
+    extract_measure_objects.cpp
     file_option_parser.hpp
     file_option_parser.cpp
     header_and_paper.hpp
@@ -13,6 +14,7 @@ PRIVATE
     measure.hpp
     measure.cpp
     measure_attributes.hpp
+    measure_attributes.cpp
     measure_directions.hpp
     measure_objects.hpp
     music_tree.hpp

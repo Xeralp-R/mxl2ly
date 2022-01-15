@@ -44,6 +44,10 @@ void MusicTree::PrintMusicFunctor::print_measure(const Measure* measure_ptr) {
         if (subobj_iden == "note") {
             print_note(dynamic_cast<Note*>(subobj_ptr));
         }
+        else if (subobj_iden == "attribute") {
+            auto printing_ptr = dynamic_cast<aux::AbstractMeasureAttribute*>(subobj_ptr);
+            tree_ptr->out << printing_ptr->return_lilypond() << newline;
+        }
     }
 
     tree_ptr->out << " |" << MusicTree::newline;
