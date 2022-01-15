@@ -14,21 +14,21 @@ template <typename T>
 int format_float(char* buf, std::size_t size, const char* format, int precision,
                  T value) {
 #ifdef FMT_FUZZ
-  if (precision > 100000)
-    throw std::runtime_error(
-        "fuzz mode - avoid large allocation inside snprintf");
+    if (precision > 100000)
+        throw std::runtime_error(
+            "fuzz mode - avoid large allocation inside snprintf");
 #endif
-  // Suppress the warning about nonliteral format string.
-  int (*snprintf_ptr)(char*, size_t, const char*, ...) = FMT_SNPRINTF;
-  return precision < 0 ? snprintf_ptr(buf, size, format, value)
-                       : snprintf_ptr(buf, size, format, precision, value);
+    // Suppress the warning about nonliteral format string.
+    int (*snprintf_ptr)(char*, size_t, const char*, ...) = FMT_SNPRINTF;
+    return precision < 0 ? snprintf_ptr(buf, size, format, value)
+                         : snprintf_ptr(buf, size, format, precision, value);
 }
 
-template FMT_API dragonbox::decimal_fp<float> dragonbox::to_decimal(float x)
-    FMT_NOEXCEPT;
-template FMT_API dragonbox::decimal_fp<double> dragonbox::to_decimal(double x)
-    FMT_NOEXCEPT;
-}  // namespace detail
+template FMT_API dragonbox::decimal_fp<float>
+                 dragonbox::to_decimal(float x) FMT_NOEXCEPT;
+template FMT_API dragonbox::decimal_fp<double>
+                 dragonbox::to_decimal(double x) FMT_NOEXCEPT;
+} // namespace detail
 
 // Workaround a bug in MSVC2013 that prevents instantiation of format_float.
 int (*instantiate_format_float)(double, int, detail::float_specs,
@@ -50,9 +50,10 @@ template FMT_API void detail::buffer<char>::append(const char*, const char*);
 // DEPRECATED!
 // There is no correspondent extern template in format.h because of
 // incompatibility between clang and gcc (#2377).
-template FMT_API void detail::vformat_to(
-    detail::buffer<char>&, string_view,
-    basic_format_args<FMT_BUFFER_CONTEXT(char)>, detail::locale_ref);
+template FMT_API void
+detail::vformat_to(detail::buffer<char>&, string_view,
+                   basic_format_args<FMT_BUFFER_CONTEXT(char)>,
+                   detail::locale_ref);
 
 template FMT_API int detail::snprintf_float(double, int, detail::float_specs,
                                             detail::buffer<char>&);

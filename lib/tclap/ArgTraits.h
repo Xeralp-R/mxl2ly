@@ -78,8 +78,7 @@ struct ValueLikeTrait {
  * default and means that operator>> will be used to assign values to
  * the type.
  */
-template <typename T>
-class ArgTraits {
+template <typename T> class ArgTraits {
     // This is a bit silly, but what we want to do is:
     // 1) If there exists a specialization of ArgTraits for type X,
     // use it.
@@ -99,25 +98,22 @@ class ArgTraits {
     // exists by checking the sizeof for the test function (return
     // value must have different sizeof).
     template <typename C>
-    static short test(typename C::ValueCategory *);  // NOLINT
-    template <typename C>
-    static long test(...);                                             // NOLINT
-    static const bool hasTrait = sizeof(test<T>(0)) == sizeof(short);  // NOLINT
+    static short test(typename C::ValueCategory*);                    // NOLINT
+    template <typename C> static long test(...);                      // NOLINT
+    static const bool hasTrait = sizeof(test<T>(0)) == sizeof(short); // NOLINT
 
-    template <typename C, bool>
-    struct DefaultArgTrait {
+    template <typename C, bool> struct DefaultArgTrait {
         typedef ValueLike ValueCategory;
     };
 
-    template <typename C>
-    struct DefaultArgTrait<C, true> {
+    template <typename C> struct DefaultArgTrait<C, true> {
         typedef typename C::ValueCategory ValueCategory;
     };
 
-public:
+  public:
     typedef typename DefaultArgTrait<T, hasTrait>::ValueCategory ValueCategory;
 };
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_ARG_TRAITS_H
+#endif // TCLAP_ARG_TRAITS_H

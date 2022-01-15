@@ -60,8 +60,9 @@ class Note : public aux::AbstractMeasureObject {
     std::optional<aux::GraceNote> get_grace_note() const;
     std::optional<aux::Chord>     get_chord() const;
     std::optional<aux::Tuplet>    get_tuplet() const;
-    
+
     std::vector<aux::AbstractNotation*> get_notations() const;
+
   private:
     // ==> Required Variables
     Pitch        pitch   = Note::Pitch('r', 0, 0); // default value
@@ -71,28 +72,20 @@ class Note : public aux::AbstractMeasureObject {
     std::vector<std::unique_ptr<lmt::aux::AbstractNotation>>        notations;
     std::array<std::unique_ptr<lmt::aux::AbstractNoteAttribute>, 3> attributes;
     short int dotted = 0; // number of dots
-    
+
     // ==> Helper functions
     const std::unordered_map<std::string, std::function<int(void)>>
-    attribute_dispatcher {
-        {"grace_note", [](){return 0;}},
-        {"chord",      [](){return 1;}},
-        {"tuplet",     [](){return 2;}}
-    };
+        attribute_dispatcher{{"grace_note", []() { return 0; }},
+                             {"chord", []() { return 1; }},
+                             {"tuplet", []() { return 2; }}};
     const std::unordered_map<std::string, std::function<unsigned(void)>>
-    duration_dispatcher {
-        {"1024th",  [](){ return 1024; }},
-        {"512th",   [](){ return 512;  }},
-        {"256th",   [](){ return 256;  }},
-        {"128th",   [](){ return 128;  }},
-        {"64th",    [](){ return 64;   }},
-        {"32nd",    [](){ return 32;   }},
-        {"16th",    [](){ return 16;   }},
-        {"eighth",  [](){ return 8;    }},
-        {"quarter", [](){ return 4;    }},
-        {"half",    [](){ return 2;    }},
-        {"whole",   [](){ return 1;    }}
-    };
+        duration_dispatcher{
+            {"1024th", []() { return 1024; }}, {"512th", []() { return 512; }},
+            {"256th", []() { return 256; }},   {"128th", []() { return 128; }},
+            {"64th", []() { return 64; }},     {"32nd", []() { return 32; }},
+            {"16th", []() { return 16; }},     {"eighth", []() { return 8; }},
+            {"quarter", []() { return 4; }},   {"half", []() { return 2; }},
+            {"whole", []() { return 1; }}};
     aux::NotationFactory notation_factory;
 };
 } // namespace lmt

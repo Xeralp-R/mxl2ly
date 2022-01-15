@@ -43,9 +43,9 @@ void MusicTree::PrintMusicFunctor::print_measure(const Measure* measure_ptr) {
 
         if (subobj_iden == "note") {
             print_note(dynamic_cast<Note*>(subobj_ptr));
-        }
-        else if (subobj_iden == "attribute") {
-            auto printing_ptr = dynamic_cast<aux::AbstractMeasureAttribute*>(subobj_ptr);
+        } else if (subobj_iden == "attribute") {
+            auto printing_ptr =
+                dynamic_cast<aux::AbstractMeasureAttribute*>(subobj_ptr);
             tree_ptr->out << printing_ptr->return_lilypond() << newline;
         }
     }
@@ -62,16 +62,26 @@ void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
 
     std::string alter_text;
     switch (note_ptr->alteration()) {
-        case 2:  alter_text = "isis"; break;
-        case 1:  alter_text = "is";   break;
-        case 0:  alter_text = "";     break;
-        case -1: alter_text = "es";   break;
-        case -2: alter_text = "eses"; break;
-        default:
-            std::cerr << fmt::format("Unusual Alteration of {0}. Discarding.\n",
-                                     note_ptr->alteration());
-            alter_text = "";
-            break;
+    case 2:
+        alter_text = "isis";
+        break;
+    case 1:
+        alter_text = "is";
+        break;
+    case 0:
+        alter_text = "";
+        break;
+    case -1:
+        alter_text = "es";
+        break;
+    case -2:
+        alter_text = "eses";
+        break;
+    default:
+        std::cerr << fmt::format("Unusual Alteration of {0}. Discarding.\n",
+                                 note_ptr->alteration());
+        alter_text = "";
+        break;
     }
 
     std::string octave_text;
@@ -89,64 +99,62 @@ void MusicTree::PrintMusicFunctor::print_note(const Note* note_ptr) {
     auto maybe_grace = note_ptr->get_grace_note();
     if (maybe_grace) {
         switch (maybe_grace->start_stop) {
-            case StartStopType::Start:
-                before_text += R"--(\grace { )--";
-                break;
-            case StartStopType::Stop:
-                after_text = "} " + after_text;
-                break;
-            case StartStopType::Both:
-                before_text += R"--(\grace { )--";
-                after_text = "} " + after_text;
-                break;
+        case StartStopType::Start:
+            before_text += R"--(\grace { )--";
+            break;
+        case StartStopType::Stop:
+            after_text = "} " + after_text;
+            break;
+        case StartStopType::Both:
+            before_text += R"--(\grace { )--";
+            after_text = "} " + after_text;
+            break;
         }
     }
 
     auto maybe_tuplet = note_ptr->get_tuplet();
     if (maybe_tuplet) {
         switch (maybe_tuplet->start_stop) {
-            case StartStopType::Start:
-                before_text += fmt::format(R"--(\tuplet {0}/{1} {2} )--",
-                                           maybe_tuplet->actual_notes,
-                                           maybe_tuplet->normal_notes,
-                                           "{");
-                this->note_time_alteration = maybe_tuplet->normal_notes /
-                                             maybe_tuplet->actual_notes;
-                break;
-            case StartStopType::Stop:
-                after_text = "} " + after_text;
-                note_time_alteration = 1.00;
-                break;
-            case StartStopType::Both:
-                // Should not be reached.
-                break;
+        case StartStopType::Start:
+            before_text += fmt::format(R"--(\tuplet {0}/{1} {2} )--",
+                                       maybe_tuplet->actual_notes,
+                                       maybe_tuplet->normal_notes, "{");
+            this->note_time_alteration =
+                maybe_tuplet->normal_notes / maybe_tuplet->actual_notes;
+            break;
+        case StartStopType::Stop:
+            after_text           = "} " + after_text;
+            note_time_alteration = 1.00;
+            break;
+        case StartStopType::Both:
+            // Should not be reached.
+            break;
         }
     }
-    
+
     auto maybe_chord = note_ptr->get_chord();
     if (maybe_chord) {
         switch (maybe_chord->start_stop) {
-            case StartStopType::Start:
-                before_text += "< ";
-                
-                in_chord = true;
-                lilypond_duration = "";
-                break;
-            case StartStopType::Stop:
-                after_text = fmt::format(">{0}{1} {2}",
-                                         note_ptr->duration(),
-                                         std::string(note_ptr->dots(), '.'),
-                                         after_text);
-                
-                in_chord = false;
-                break;
-            case StartStopType::Both:
-                // Should not be reached.
-                break;
+        case StartStopType::Start:
+            before_text += "< ";
+
+            in_chord          = true;
+            lilypond_duration = "";
+            break;
+        case StartStopType::Stop:
+            after_text =
+                fmt::format(">{0}{1} {2}", note_ptr->duration(),
+                            std::string(note_ptr->dots(), '.'), after_text);
+
+            in_chord = false;
+            break;
+        case StartStopType::Both:
+            // Should not be reached.
+            break;
         }
     }
-    
-    auto nota_vec = note_ptr->get_notations();
+
+    auto        nota_vec = note_ptr->get_notations();
     std::string notation_string;
     for (auto i : nota_vec) {
         notation_string += i->return_lilypond();

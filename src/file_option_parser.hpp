@@ -15,13 +15,13 @@
 #include "tclap/CmdLine.h"
 
 class FileOptionParser {
-public:
-    FileOptionParser(int argc, char **argv);
-    
+  public:
+    FileOptionParser(int argc, char** argv);
+
     std::string get_filename() { return this->filename; }
     std::string get_outfilename() { return this->outfilename; }
-    
-private:
+
+  private:
     std::string filename;
     std::string outfilename;
 };

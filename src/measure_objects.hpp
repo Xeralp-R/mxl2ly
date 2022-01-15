@@ -8,88 +8,89 @@
 #ifndef measure_objects_hpp
 #define measure_objects_hpp
 
-#include <string>
 #include <memory>
+#include <string>
 
 #include "statement.hpp"
 
 namespace lmt::aux {
-    struct AbstractMeasureObject : public AbstractStatement {
-        std::string get_type() { return "measure_object"; }
-        virtual std::string get_subtype() = 0;
-        virtual ~AbstractMeasureObject(){};
+struct AbstractMeasureObject : public AbstractStatement {
+    std::string         get_type() { return "measure_object"; }
+    virtual std::string get_subtype() = 0;
+    virtual ~AbstractMeasureObject(){};
+};
+
+class Backup : public AbstractMeasureObject {
+  public:
+    Backup(short int duration) : duration_back(duration) {}
+
+    std::string get_subtype() { return "backup"; };
+
+  private:
+    short int duration_back;
+};
+
+class Barline : public AbstractMeasureObject {
+  public:
+    enum class Type {
+        None,
+        // A single light barline
+        Regular,
+        // A single heavy barline
+        Heavy,
+        // A regular double barline
+        LightLight,
+        // An ending barline
+        LightHeavy,
+        // A starting barline?
+        HeavyLight,
+        // An unusual double heavy barline
+        HeavyHeavy
+        // TODO: Add more here later
     };
-    
-    class Backup : public AbstractMeasureObject {
-    public:
-        Backup(short int duration) : duration_back(duration) {}
-        
-        std::string get_subtype() { return "backup"; };
-    private:
-        short int duration_back;
-    };
-    
-    class Barline : public AbstractMeasureObject {
-      public:
-        enum class Type {
-            None,
-            // A single light barline
-            Regular,
-            // A single heavy barline
-            Heavy,
-            // A regular double barline
-            LightLight,
-            // An ending barline
-            LightHeavy,
-            // A starting barline?
-            HeavyLight,
-            // An unusual double heavy barline
-            HeavyHeavy
-            // TODO: Add more here later
-        };
 
-        // a double repeat is listed as 1 repeat before and 1 repeat after in 2
-        // different bars
-        enum class Repeat { None, RepeatBefore, RepeatAfter };
+    // a double repeat is listed as 1 repeat before and 1 repeat after in 2
+    // different bars
+    enum class Repeat { None, RepeatBefore, RepeatAfter };
 
-        Barline(Barline::Type type, Barline::Repeat repeat)
-            : type(type), repeat(repeat) {};
+    Barline(Barline::Type type, Barline::Repeat repeat)
+        : type(type), repeat(repeat){};
 
-        std::string get_subtype() override { return "barline"; }
-        std::string return_lilypond() const;
+    std::string get_subtype() override { return "barline"; }
+    std::string return_lilypond() const;
 
-        Barline::Type   get_type() const { return type; }
-        Barline::Repeat get_repeat() const { return repeat; }
+    Barline::Type   get_type() const { return type; }
+    Barline::Repeat get_repeat() const { return repeat; }
 
-      private:
-        Barline::Type   type;
-        Barline::Repeat repeat;
-    };
-    
-    /*
-   class Tuplet : public AbstractMeasureObject {
-      public:
-        Tuplet(unsigned short int actual_notes, unsigned short int normal_notes)
-            : actual_notes_var(actual_notes), normal_notes_var(normal_notes) {}
+  private:
+    Barline::Type   type;
+    Barline::Repeat repeat;
+};
 
-        void
-        add_measure_object(std::unique_ptr<AbstractMeasureObject> abstract_ptr) {
-            this->objects.push_back(std::move(abstract_ptr));
-        }
+/*
+class Tuplet : public AbstractMeasureObject {
+  public:
+    Tuplet(unsigned short int actual_notes, unsigned short int normal_notes)
+        : actual_notes_var(actual_notes), normal_notes_var(normal_notes) {}
 
-        std::string            get_subtype() override { return "tuplet"; }
-        int                    size() const { return this->objects.size(); }
-        AbstractMeasureObject* at(int i) const { return this->objects.at(i).get(); }
-        unsigned short int     actual_notes() const { return actual_notes_var; }
-        unsigned short int     normal_notes() const { return normal_notes_var; }
+    void
+    add_measure_object(std::unique_ptr<AbstractMeasureObject> abstract_ptr) {
+        this->objects.push_back(std::move(abstract_ptr));
+    }
 
-      private:
-        unsigned short int actual_notes_var = 0;
-        unsigned short int normal_notes_var = 0;
+    std::string            get_subtype() override { return "tuplet"; }
+    int                    size() const { return this->objects.size(); }
+    AbstractMeasureObject* at(int i) const { return this->objects.at(i).get(); }
+    unsigned short int     actual_notes() const { return actual_notes_var; }
+    unsigned short int     normal_notes() const { return normal_notes_var; }
 
-        std::vector<std::unique_ptr<AbstractMeasureObject>> objects;
-    };
-     */
-}
+  private:
+    unsigned short int actual_notes_var = 0;
+    unsigned short int normal_notes_var = 0;
+
+    std::vector<std::unique_ptr<AbstractMeasureObject>> objects;
+};
+ */
+} // namespace lmt::aux
 
 #endif /* measure_objects_hpp */

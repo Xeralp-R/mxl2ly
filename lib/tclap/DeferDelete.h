@@ -33,40 +33,38 @@ namespace TCLAP {
  */
 class DeferDelete {
     class DeletableBase {
-    public:
+      public:
         virtual ~DeletableBase() {}
     };
 
-    template <typename T>
-    class Deletable : public DeletableBase {
-    public:
-        Deletable(T *o) : _o(o) {}
+    template <typename T> class Deletable : public DeletableBase {
+      public:
+        Deletable(T* o) : _o(o) {}
         virtual ~Deletable() { delete _o; }
 
-    private:
-        Deletable(const Deletable<T> &) {}
-        Deletable<T> operator=(const Deletable<T> &) {}
+      private:
+        Deletable(const Deletable<T>&) {}
+        Deletable<T> operator=(const Deletable<T>&) {}
 
-        T *_o;
+        T* _o;
     };
 
-    std::list<DeletableBase *> _toBeDeleted;
+    std::list<DeletableBase*> _toBeDeleted;
 
-public:
+  public:
     DeferDelete() : _toBeDeleted() {}
     ~DeferDelete() {
-        for (std::list<DeletableBase *>::iterator it = _toBeDeleted.begin();
+        for (std::list<DeletableBase*>::iterator it = _toBeDeleted.begin();
              it != _toBeDeleted.end(); ++it) {
             delete *it;
         }
     }
 
-    template <typename T>
-    void operator()(T *toDelete) {
+    template <typename T> void operator()(T* toDelete) {
         _toBeDeleted.push_back(new Deletable<T>(toDelete));
     }
 };
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_DEFER_DELETE_H
+#endif // TCLAP_DEFER_DELETE_H

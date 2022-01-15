@@ -29,7 +29,7 @@ struct AbstractNoteAttribute : public AbstractStatement {
 
 struct GraceNote : public AbstractNoteAttribute {
     GraceNote(StartStopType start_stop, bool is_slashed)
-    : start_stop(start_stop), is_slashed(is_slashed) {};
+        : start_stop(start_stop), is_slashed(is_slashed){};
 
     std::string get_subtype() const { return "grace_note"; }
 

@@ -44,7 +44,7 @@ class CmdLineOutput;
  * along the parsing to the appropriate Arg classes.
  */
 class CmdLineInterface : public ArgContainer {
-public:
+  public:
     /**
      * Destructor
      */
@@ -55,19 +55,19 @@ public:
      * @param a - Argument to be added.
      * @retval A reference to this so that add calls can be chained
      */
-    virtual ArgContainer &add(Arg &a) = 0;
+    virtual ArgContainer& add(Arg& a) = 0;
 
     /**
      * Adds an argument. Ownership is not transfered.
      * @param a - Argument to be added.
      * @retval A reference to this so that add calls can be chained
      */
-    virtual ArgContainer &add(Arg *a) = 0;
+    virtual ArgContainer& add(Arg* a) = 0;
 
     // TODO: Rename this to something smarter or refactor this logic so
     // it's not needed.
     // Internal - do not use
-    virtual void addToArgList(Arg *a) = 0;
+    virtual void addToArgList(Arg* a) = 0;
 
     /**
      * Adds an argument group to the list of arguments to be parsed.
@@ -79,36 +79,36 @@ public:
      * @param args - Argument group to be added.
      * @retval A reference to this so that add calls can be chained
      */
-    virtual ArgContainer &add(ArgGroup &args) = 0;
+    virtual ArgContainer& add(ArgGroup& args) = 0;
 
     /**
      * \deprecated Use OneOf instead.
      */
-    virtual void xorAdd(Arg &a, Arg &b) = 0;
+    virtual void xorAdd(Arg& a, Arg& b) = 0;
 
     /**
      * \deprecated Use OneOf instead.
      */
-    virtual void xorAdd(const std::vector<Arg *> &xors) = 0;
+    virtual void xorAdd(const std::vector<Arg*>& xors) = 0;
 
     /**
      * Parses the command line.
      * \param argc - Number of arguments.
      * \param argv - Array of arguments.
      */
-    virtual void parse(int argc, const char *const *argv) = 0;
+    virtual void parse(int argc, const char* const* argv) = 0;
 
     /**
      * Parses the command line.
      * \param args - A vector of strings representing the args.
      * args[0] is still the program name.
      */
-    void parse(std::vector<std::string> &args);
+    void parse(std::vector<std::string>& args);
 
     /**
      * \param co - CmdLineOutput object that we want to use instead.
      */
-    virtual void setOutput(CmdLineOutput *co) = 0;
+    virtual void setOutput(CmdLineOutput* co) = 0;
 
     /**
      * Returns the version string.
@@ -123,8 +123,8 @@ public:
     /**
      * Returns the list of ArgGroups.
      */
-    virtual std::list<ArgGroup *> getArgGroups() = 0;
-    virtual std::list<Arg *> getArgList() const = 0;  // TODO: get rid of this
+    virtual std::list<ArgGroup*> getArgGroups() = 0;
+    virtual std::list<Arg*> getArgList() const  = 0; // TODO: get rid of this
 
     /**
      * Returns the delimiter string.
@@ -161,6 +161,6 @@ public:
     virtual bool ignoreRest() = 0;
 };
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_CMD_LINE_INTERFACE_H
+#endif // TCLAP_CMD_LINE_INTERFACE_H

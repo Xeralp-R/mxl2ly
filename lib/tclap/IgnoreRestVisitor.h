@@ -34,14 +34,14 @@ namespace TCLAP {
  * this one is parsed.
  */
 class IgnoreRestVisitor : public Visitor {
-public:
-    IgnoreRestVisitor(CmdLineInterface &cmdLine)
+  public:
+    IgnoreRestVisitor(CmdLineInterface& cmdLine)
         : Visitor(), cmdLine_(cmdLine) {}
     void visit() { cmdLine_.beginIgnoring(); }
 
-private:
-    CmdLineInterface &cmdLine_;
+  private:
+    CmdLineInterface& cmdLine_;
 };
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_IGNORE_REST_VISITOR_H
+#endif // TCLAP_IGNORE_REST_VISITOR_H

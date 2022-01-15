@@ -37,9 +37,8 @@ namespace TCLAP {
 /**
  * The interface that defines the interaction between the Arg and Constraint.
  */
-template <class T>
-class Constraint {
-public:
+template <class T> class Constraint {
+  public:
     /**
      * Returns a description of the Constraint.
      */
@@ -55,7 +54,7 @@ public:
      * line meets the constraint.
      * \param value - The value that will be checked.
      */
-    virtual bool check(const T &value) const = 0;
+    virtual bool check(const T& value) const = 0;
 
     /**
      * Destructor.
@@ -64,7 +63,7 @@ public:
      */
     virtual ~Constraint() { ; }
 
-    static std::string shortID(Constraint<T> *constraint) {
+    static std::string shortID(Constraint<T>* constraint) {
         if (!constraint)
             throw std::logic_error(
                 "Cannot create a ValueArg with a NULL constraint");
@@ -72,6 +71,6 @@ public:
     }
 };
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_CONSTRAINT_H
+#endif // TCLAP_CONSTRAINT_H

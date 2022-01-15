@@ -44,20 +44,20 @@ namespace TCLAP {
  * may be easily modified.
  */
 class StdOutput : public CmdLineOutput {
-public:
+  public:
     /**
      * Prints the usage to stdout.  Can be overridden to
      * produce alternative behavior.
      * \param c - The CmdLine object the output is generated for.
      */
-    virtual void usage(CmdLineInterface &c);
+    virtual void usage(CmdLineInterface& c);
 
     /**
      * Prints the version to stdout. Can be overridden
      * to produce alternative behavior.
      * \param c - The CmdLine object the output is generated for.
      */
-    virtual void version(CmdLineInterface &c);
+    virtual void version(CmdLineInterface& c);
 
     /**
      * Prints (to stderr) an error message, short usage
@@ -65,15 +65,15 @@ public:
      * \param c - The CmdLine object the output is generated for.
      * \param e - The ArgException that caused the failure.
      */
-    virtual void failure(CmdLineInterface &c, ArgException &e);
+    virtual void failure(CmdLineInterface& c, ArgException& e);
 
-protected:
+  protected:
     /**
      * Writes a brief usage message with short args.
      * \param c - The CmdLine object the output is generated for.
      * \param os - The stream to write the message to.
      */
-    void _shortUsage(CmdLineInterface &c, std::ostream &os) const;
+    void _shortUsage(CmdLineInterface& c, std::ostream& os) const;
 
     /**
      * Writes a longer usage message with long and short args,
@@ -81,7 +81,7 @@ protected:
      * \param c - The CmdLine object the output is generated for.
      * \param os - The stream to write the message to.
      */
-    void _longUsage(CmdLineInterface &c, std::ostream &os) const;
+    void _longUsage(CmdLineInterface& c, std::ostream& os) const;
 
     /**
      * This function inserts line breaks and indents long strings
@@ -94,11 +94,11 @@ protected:
      * \param secondLineOffset - The number of spaces to indent the second
      * and all subsequent lines in addition to indentSpaces.
      */
-    void spacePrint(std::ostream &os, const std::string &s, int maxWidth,
+    void spacePrint(std::ostream& os, const std::string& s, int maxWidth,
                     int indentSpaces, int secondLineOffset) const;
 };
 
-inline void StdOutput::version(CmdLineInterface &_cmd) {
+inline void StdOutput::version(CmdLineInterface& _cmd) {
     std::string progName = _cmd.getProgramName();
     std::string xversion = _cmd.getVersion();
 
@@ -107,7 +107,7 @@ inline void StdOutput::version(CmdLineInterface &_cmd) {
               << std::endl;
 }
 
-inline void StdOutput::usage(CmdLineInterface &_cmd) {
+inline void StdOutput::usage(CmdLineInterface& _cmd) {
     std::cout << std::endl << "USAGE: " << std::endl << std::endl;
 
     _shortUsage(_cmd, std::cout);
@@ -119,7 +119,7 @@ inline void StdOutput::usage(CmdLineInterface &_cmd) {
     std::cout << std::endl;
 }
 
-inline void StdOutput::failure(CmdLineInterface &_cmd, ArgException &e) {
+inline void StdOutput::failure(CmdLineInterface& _cmd, ArgException& e) {
     std::string progName = _cmd.getProgramName();
 
     std::cerr << "PARSE ERROR: " << e.argId() << std::endl
@@ -144,14 +144,14 @@ inline void StdOutput::failure(CmdLineInterface &_cmd, ArgException &e) {
 }
 
 // TODO: Remove this
-inline void removeChar(std::string &s, char r) {
+inline void removeChar(std::string& s, char r) {
     size_t p;
     while ((p = s.find_first_of(r)) != std::string::npos) {
         s.erase(p, 1);
     }
 }
 
-inline bool cmpSwitch(const char &a, const char &b) {
+inline bool cmpSwitch(const char& a, const char& b) {
     int lowa = std::tolower(a);
     int lowb = std::tolower(b);
 
@@ -163,24 +163,24 @@ inline bool cmpSwitch(const char &a, const char &b) {
 }
 
 namespace internal {
-inline bool IsVisibleShortSwitch(const Arg &arg) {
+inline bool IsVisibleShortSwitch(const Arg& arg) {
     return !(arg.getName() == Arg::ignoreNameString() ||
              arg.isValueRequired() || arg.getFlag() == "") &&
            arg.visibleInHelp();
 }
 
-inline bool IsVisibleLongSwitch(const Arg &arg) {
+inline bool IsVisibleLongSwitch(const Arg& arg) {
     return (arg.getName() != Arg::ignoreNameString() &&
             !arg.isValueRequired() && arg.getFlag() == "" &&
             arg.visibleInHelp());
 }
 
-inline bool IsVisibleOption(const Arg &arg) {
+inline bool IsVisibleOption(const Arg& arg) {
     return (arg.getName() != Arg::ignoreNameString() && arg.isValueRequired() &&
             arg.hasLabel() && arg.visibleInHelp());
 }
 
-inline bool CompareShortID(const Arg *a, const Arg *b) {
+inline bool CompareShortID(const Arg* a, const Arg* b) {
     if (a->getFlag() == "" && b->getFlag() != "") {
         return false;
     }
@@ -192,8 +192,8 @@ inline bool CompareShortID(const Arg *a, const Arg *b) {
 }
 
 // TODO: Fix me not to put --gopt before -f
-inline bool CompareOptions(std::pair<const Arg *, bool> a,
-                           std::pair<const Arg *, bool> b) {
+inline bool CompareOptions(std::pair<const Arg*, bool> a,
+                           std::pair<const Arg*, bool> b) {
     // First optional, then required
     if (!a.second && b.second) {
         return true;
@@ -204,7 +204,7 @@ inline bool CompareOptions(std::pair<const Arg *, bool> a,
 
     return CompareShortID(a.first, b.first);
 }
-}  // namespace internal
+} // namespace internal
 
 /**
  * Usage statements should look like the manual pages.  Options w/o
@@ -221,18 +221,18 @@ inline bool CompareOptions(std::pair<const Arg *, bool> a,
  * "usage: f [-aDde] [-b b_arg] [-m m_arg] req1 req2 [opt1 [opt2]]\n"
  * "usage: f [-a | -b] [-c [-de] [-n number]]\n"
  */
-inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
-                                   std::ostream &os) const {
-    std::list<ArgGroup *> argSets = _cmd.getArgGroups();
+inline void StdOutput::_shortUsage(CmdLineInterface& _cmd,
+                                   std::ostream&     os) const {
+    std::list<ArgGroup*> argSets = _cmd.getArgGroups();
 
     std::ostringstream outp;
     outp << _cmd.getProgramName() + " ";
 
     std::string switches = Arg::flagStartString();
 
-    std::list<ArgGroup *> exclusiveGroups;
-    std::list<ArgGroup *> nonExclusiveGroups;
-    for (std::list<ArgGroup *>::iterator sit = argSets.begin();
+    std::list<ArgGroup*> exclusiveGroups;
+    std::list<ArgGroup*> nonExclusiveGroups;
+    for (std::list<ArgGroup*>::iterator sit = argSets.begin();
          sit != argSets.end(); ++sit) {
         if (CountVisibleArgs(**sit) <= 0) {
             continue;
@@ -249,7 +249,7 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
     // non-exclusive groups as exclusivit doesn't make sense with a
     // single option. This can happen if args are hidden in help for
     // example.
-    for (std::list<ArgGroup *>::iterator it = exclusiveGroups.begin();
+    for (std::list<ArgGroup*>::iterator it = exclusiveGroups.begin();
          it != exclusiveGroups.end();) {
         if (CountVisibleArgs(**it) < 2) {
             nonExclusiveGroups.push_back(*it);
@@ -261,7 +261,7 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
 
     // First short switches (needs to be special because they are all
     // stuck together).
-    for (std::list<ArgGroup *>::iterator sit = nonExclusiveGroups.begin();
+    for (std::list<ArgGroup*>::iterator sit = nonExclusiveGroups.begin();
          sit != nonExclusiveGroups.end(); ++sit) {
         for (ArgGroup::iterator it = (*sit)->begin(); it != (*sit)->end();
              ++it) {
@@ -276,12 +276,12 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
     outp << " [" << switches << ']';
 
     // Now do long switches (e.g., --version, but no -v)
-    std::vector<Arg *> longSwitches;
-    for (std::list<ArgGroup *>::iterator sit = nonExclusiveGroups.begin();
+    std::vector<Arg*> longSwitches;
+    for (std::list<ArgGroup*>::iterator sit = nonExclusiveGroups.begin();
          sit != nonExclusiveGroups.end(); ++sit) {
         for (ArgGroup::iterator it = (*sit)->begin(); it != (*sit)->end();
              ++it) {
-            Arg &arg = **it;
+            Arg& arg = **it;
             if (internal::IsVisibleLongSwitch(arg)) {
                 longSwitches.push_back(&arg);
             }
@@ -290,18 +290,18 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
 
     std::sort(longSwitches.begin(), longSwitches.end(),
               internal::CompareShortID);
-    for (std::vector<Arg *>::const_iterator it = longSwitches.begin();
+    for (std::vector<Arg*>::const_iterator it = longSwitches.begin();
          it != longSwitches.end(); ++it) {
         outp << " [" << (**it).shortID() << ']';
     }
 
     // Now do all exclusive groups
-    for (std::list<ArgGroup *>::iterator sit = exclusiveGroups.begin();
+    for (std::list<ArgGroup*>::iterator sit = exclusiveGroups.begin();
          sit != exclusiveGroups.end(); ++sit) {
-        ArgGroup &argGroup = **sit;
+        ArgGroup& argGroup = **sit;
         outp << (argGroup.isRequired() ? " {" : " [");
 
-        std::vector<Arg *> args;
+        std::vector<Arg*> args;
         for (ArgGroup::iterator it = argGroup.begin(); it != argGroup.end();
              ++it) {
             if ((**it).visibleInHelp()) {
@@ -311,7 +311,7 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
 
         std::sort(args.begin(), args.end(), internal::CompareShortID);
         std::string sep = "";
-        for (std::vector<Arg *>::const_iterator it = args.begin();
+        for (std::vector<Arg*>::const_iterator it = args.begin();
              it != args.end(); ++it) {
             outp << sep << (**it).shortID();
             sep = "|";
@@ -321,13 +321,13 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
     }
 
     // Next do options, we sort them later by optional first.
-    std::vector<std::pair<const Arg *, bool> > options;
-    for (std::list<ArgGroup *>::iterator sit = nonExclusiveGroups.begin();
+    std::vector<std::pair<const Arg*, bool>> options;
+    for (std::list<ArgGroup*>::iterator sit = nonExclusiveGroups.begin();
          sit != nonExclusiveGroups.end(); ++sit) {
         for (ArgGroup::iterator it = (*sit)->begin(); it != (*sit)->end();
              ++it) {
-            Arg &arg = **it;
-            int visible = CountVisibleArgs(**sit);
+            Arg& arg      = **it;
+            int  visible  = CountVisibleArgs(**sit);
             bool required = arg.isRequired();
             if (internal::IsVisibleOption(arg)) {
                 if (visible == 1 && (**sit).isRequired()) {
@@ -340,22 +340,22 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
     }
 
     std::sort(options.begin(), options.end(), internal::CompareOptions);
-    for (std::vector<std::pair<const Arg *, bool> >::const_iterator it =
+    for (std::vector<std::pair<const Arg*, bool>>::const_iterator it =
              options.begin();
          it != options.end(); ++it) {
-        const Arg &arg = *it->first;
-        bool required = it->second;
+        const Arg& arg      = *it->first;
+        bool       required = it->second;
         outp << (required ? " " : " [");
         outp << arg.shortID();
         outp << (required ? "" : "]");
     }
 
     // Next do argsuments ("unlabled") in order of definition
-    for (std::list<ArgGroup *>::iterator sit = nonExclusiveGroups.begin();
+    for (std::list<ArgGroup*>::iterator sit = nonExclusiveGroups.begin();
          sit != nonExclusiveGroups.end(); ++sit) {
         for (ArgGroup::iterator it = (*sit)->begin(); it != (*sit)->end();
              ++it) {
-            Arg &arg = **it;
+            Arg& arg = **it;
             if (arg.getName() == Arg::ignoreNameString()) {
                 continue;
             }
@@ -371,23 +371,24 @@ inline void StdOutput::_shortUsage(CmdLineInterface &_cmd,
 
     // if the program name is too long, then adjust the second line offset
     int secondLineOffset = static_cast<int>(_cmd.getProgramName().length()) + 2;
-    if (secondLineOffset > 75 / 2) secondLineOffset = static_cast<int>(75 / 2);
+    if (secondLineOffset > 75 / 2)
+        secondLineOffset = static_cast<int>(75 / 2);
 
     spacePrint(os, outp.str(), 75, 3, secondLineOffset);
 }
 
-inline void StdOutput::_longUsage(CmdLineInterface &_cmd,
-                                  std::ostream &os) const {
-    std::string message = _cmd.getMessage();
-    std::list<ArgGroup *> argSets = _cmd.getArgGroups();
+inline void StdOutput::_longUsage(CmdLineInterface& _cmd,
+                                  std::ostream&     os) const {
+    std::string          message = _cmd.getMessage();
+    std::list<ArgGroup*> argSets = _cmd.getArgGroups();
 
-    std::list<Arg *> unlabled;
-    for (std::list<ArgGroup *>::iterator sit = argSets.begin();
+    std::list<Arg*> unlabled;
+    for (std::list<ArgGroup*>::iterator sit = argSets.begin();
          sit != argSets.end(); ++sit) {
-        ArgGroup &argGroup = **sit;
+        ArgGroup& argGroup = **sit;
 
-        int visible = CountVisibleArgs(argGroup);
-        bool exclusive = visible > 1 && argGroup.isExclusive();
+        int  visible       = CountVisibleArgs(argGroup);
+        bool exclusive     = visible > 1 && argGroup.isExclusive();
         bool forceRequired = visible == 1 && argGroup.isRequired();
         if (exclusive) {
             spacePrint(os, argGroup.isRequired() ? "One of:" : "Either of:", 75,
@@ -396,7 +397,7 @@ inline void StdOutput::_longUsage(CmdLineInterface &_cmd,
 
         for (ArgGroup::iterator it = argGroup.begin(); it != argGroup.end();
              ++it) {
-            Arg &arg = **it;
+            Arg& arg = **it;
             if (!arg.visibleInHelp()) {
                 continue;
             }
@@ -419,7 +420,7 @@ inline void StdOutput::_longUsage(CmdLineInterface &_cmd,
     }
 
     for (ArgListIterator it = unlabled.begin(); it != unlabled.end(); ++it) {
-        const Arg &arg = **it;
+        const Arg& arg = **it;
         spacePrint(os, arg.longID(), 75, 3, 3);
         spacePrint(os, arg.getDescription(), 75, 5, 0);
         os << '\n';
@@ -433,14 +434,14 @@ inline void StdOutput::_longUsage(CmdLineInterface &_cmd,
 }
 
 namespace {
-inline void fmtPrintLine(std::ostream &os, const std::string &s, int maxWidth,
+inline void fmtPrintLine(std::ostream& os, const std::string& s, int maxWidth,
                          int indentSpaces, int secondLineOffset) {
     const std::string splitChars(" ,|");
-    int maxChars = maxWidth - indentSpaces;
-    std::string indentString(indentSpaces, ' ');
-    int from = 0;
-    int to = 0;
-    int end = s.length();
+    int               maxChars = maxWidth - indentSpaces;
+    std::string       indentString(indentSpaces, ' ');
+    int               from = 0;
+    int               to   = 0;
+    int               end  = s.length();
     for (;;) {
         if (end - from <= maxChars) {
             // Rest of string fits on line, just print the remainder
@@ -454,7 +455,7 @@ inline void fmtPrintLine(std::ostream &os, const std::string &s, int maxWidth,
         int tooFar = to;
         while (tooFar - from <= maxChars &&
                static_cast<std::size_t>(tooFar) != std::string::npos) {
-            to = tooFar;
+            to     = tooFar;
             tooFar = s.find_first_of(splitChars, to + 1);
         }
 
@@ -484,13 +485,13 @@ inline void fmtPrintLine(std::ostream &os, const std::string &s, int maxWidth,
         }
     }
 }
-}  // namespace
+} // namespace
 
-inline void StdOutput::spacePrint(std::ostream &os, const std::string &s,
+inline void StdOutput::spacePrint(std::ostream& os, const std::string& s,
                                   int maxWidth, int indentSpaces,
                                   int secondLineOffset) const {
     std::stringstream ss(s);
-    std::string line;
+    std::string       line;
     std::getline(ss, line);
     fmtPrintLine(os, line, maxWidth, indentSpaces, secondLineOffset);
     indentSpaces += secondLineOffset;
@@ -500,6 +501,6 @@ inline void StdOutput::spacePrint(std::ostream &os, const std::string &s,
     }
 }
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_STD_OUTPUT_H
+#endif // TCLAP_STD_OUTPUT_H

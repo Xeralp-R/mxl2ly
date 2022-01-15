@@ -14,10 +14,11 @@ using namespace lmt;
 
 Measure::Measure(int id_number) : id_number(id_number) {}
 
-void Measure::add_measure_object(std::unique_ptr<lmt::aux::AbstractMeasureObject> abstract_ptr) { 
+void Measure::add_measure_object(
+    std::unique_ptr<lmt::aux::AbstractMeasureObject> abstract_ptr) {
     if (abstract_ptr->get_subtype() == "backup") {
         this->number_of_voices += 1;
     };
-    
+
     this->objects.push_back(std::move(abstract_ptr));
 }

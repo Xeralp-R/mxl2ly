@@ -13,8 +13,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,16 +25,20 @@
 // SOFTWARE.
 //
 //---------------------------------------------------------------------------------------
-// fs_std_impl.hpp - The implementation header for the header/implementation seperated usage of
-//                   ghc::filesystem that does nothing if std::filesystem is detected.
-// This file can be used to hide the implementation of ghc::filesystem into a single cpp.
-// The cpp has to include this before including fs_std_fwd.hpp directly or via a different
-// header to work.
+// fs_std_impl.hpp - The implementation header for the header/implementation
+// seperated usage of
+//                   ghc::filesystem that does nothing if std::filesystem is
+//                   detected.
+// This file can be used to hide the implementation of ghc::filesystem into a
+// single cpp. The cpp has to include this before including fs_std_fwd.hpp
+// directly or via a different header to work.
 //---------------------------------------------------------------------------------------
 #if defined(__APPLE__)
 #include <Availability.h>
 #endif
-#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || (defined(__cplusplus) && __cplusplus >= 201703L)) && defined(__has_include)
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) ||                         \
+     (defined(__cplusplus) && __cplusplus >= 201703L)) &&                      \
+    defined(__has_include)
 #if __has_include(<filesystem>) && (!defined(__MAC_OS_X_VERSION_MIN_REQUIRED) || __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500)
 #define GHC_USE_STD_FS
 #endif

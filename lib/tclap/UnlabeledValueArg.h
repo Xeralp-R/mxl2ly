@@ -40,8 +40,7 @@ namespace TCLAP {
  * that a given object will attempt to parse when an UnlabeledValueArg
  * is reached in the list of args that the CmdLine iterates over.
  */
-template <class T>
-class UnlabeledValueArg : public ValueArg<T> {
+template <class T> class UnlabeledValueArg : public ValueArg<T> {
     // If compiler has two stage name lookup (as gcc >= 3.4 does)
     // this is required to prevent undef. symbols
     using ValueArg<T>::_ignoreable;
@@ -54,7 +53,7 @@ class UnlabeledValueArg : public ValueArg<T> {
     using ValueArg<T>::_setBy;
     using ValueArg<T>::toString;
 
-public:
+  public:
     /**
      * UnlabeledValueArg constructor.
      * \param name - A one word name for the argument.  Note that this is used
@@ -77,9 +76,9 @@ public:
      * \param v - Optional Visitor.  You should leave this blank unless
      * you have a very good reason.
      */
-    UnlabeledValueArg(const std::string &name, const std::string &desc,
-                      bool req, T value, const std::string &typeDesc,
-                      bool ignoreable = false, Visitor *v = NULL);
+    UnlabeledValueArg(const std::string& name, const std::string& desc,
+                      bool req, T value, const std::string& typeDesc,
+                      bool ignoreable = false, Visitor* v = NULL);
 
     /**
      * UnlabeledValueArg constructor.
@@ -104,10 +103,10 @@ public:
      * \param v - Optional Visitor.  You should leave this blank unless
      * you have a very good reason.
      */
-    UnlabeledValueArg(const std::string &name, const std::string &desc,
-                      bool req, T value, const std::string &typeDesc,
-                      CmdLineInterface &parser, bool ignoreable = false,
-                      Visitor *v = NULL);
+    UnlabeledValueArg(const std::string& name, const std::string& desc,
+                      bool req, T value, const std::string& typeDesc,
+                      CmdLineInterface& parser, bool ignoreable = false,
+                      Visitor* v = NULL);
 
     /**
      * UnlabeledValueArg constructor.
@@ -129,9 +128,9 @@ public:
      * \param v - Optional Visitor.  You should leave this blank unless
      * you have a very good reason.
      */
-    UnlabeledValueArg(const std::string &name, const std::string &desc,
-                      bool req, T value, Constraint<T> *constraint,
-                      bool ignoreable = false, Visitor *v = NULL);
+    UnlabeledValueArg(const std::string& name, const std::string& desc,
+                      bool req, T value, Constraint<T>* constraint,
+                      bool ignoreable = false, Visitor* v = NULL);
 
     /**
      * UnlabeledValueArg constructor.
@@ -154,10 +153,10 @@ public:
      * \param v - Optional Visitor.  You should leave this blank unless
      * you have a very good reason.
      */
-    UnlabeledValueArg(const std::string &name, const std::string &desc,
-                      bool req, T value, Constraint<T> *constraint,
-                      CmdLineInterface &parser, bool ignoreable = false,
-                      Visitor *v = NULL);
+    UnlabeledValueArg(const std::string& name, const std::string& desc,
+                      bool req, T value, Constraint<T>* constraint,
+                      CmdLineInterface& parser, bool ignoreable = false,
+                      Visitor* v = NULL);
 
     /**
      * Handles the processing of the argument.
@@ -167,32 +166,32 @@ public:
      * \param i - Pointer the the current argument in the list.
      * \param args - Mutable list of strings.
      */
-    virtual bool processArg(int *i, std::vector<std::string> &args);
+    virtual bool processArg(int* i, std::vector<std::string>& args);
 
     /**
      * Overrides shortID for specific behavior.
      */
-    virtual std::string shortID(const std::string &) const {
+    virtual std::string shortID(const std::string&) const {
         return Arg::getName();
     }
 
     /**
      * Overrides longID for specific behavior.
      */
-    virtual std::string longID(const std::string &) const {
+    virtual std::string longID(const std::string&) const {
         return Arg::getName() + " <" + _typeDesc + ">";
     }
 
     /**
      * Overrides operator== for specific behavior.
      */
-    virtual bool operator==(const Arg &a) const;
+    virtual bool operator==(const Arg& a) const;
 
     /**
      * Instead of pushing to the front of list, push to the back.
      * \param argList - The list to add this to.
      */
-    virtual void addToList(std::list<Arg *> &argList) const;
+    virtual void addToList(std::list<Arg*>& argList) const;
 
     virtual bool hasLabel() const { return false; }
 };
@@ -201,10 +200,10 @@ public:
  * Constructor implementation.
  */
 template <class T>
-UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
-                                        const std::string &desc, bool req,
-                                        T val, const std::string &typeDesc,
-                                        bool ignoreable, Visitor *v)
+UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
+                                        const std::string& desc, bool req,
+                                        T val, const std::string& typeDesc,
+                                        bool ignoreable, Visitor* v)
     : ValueArg<T>("", name, desc, req, val, typeDesc, v) {
     _ignoreable = ignoreable;
 
@@ -212,11 +211,11 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
 }
 
 template <class T>
-UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
-                                        const std::string &desc, bool req,
-                                        T val, const std::string &typeDesc,
-                                        CmdLineInterface &parser,
-                                        bool ignoreable, Visitor *v)
+UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
+                                        const std::string& desc, bool req,
+                                        T val, const std::string& typeDesc,
+                                        CmdLineInterface& parser,
+                                        bool ignoreable, Visitor* v)
     : ValueArg<T>("", name, desc, req, val, typeDesc, v) {
     _ignoreable = ignoreable;
     OptionalUnlabeledTracker::check(req, toString());
@@ -227,21 +226,21 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
  * Constructor implementation.
  */
 template <class T>
-UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
-                                        const std::string &desc, bool req,
-                                        T val, Constraint<T> *constraint,
-                                        bool ignoreable, Visitor *v)
+UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
+                                        const std::string& desc, bool req,
+                                        T val, Constraint<T>* constraint,
+                                        bool ignoreable, Visitor* v)
     : ValueArg<T>("", name, desc, req, val, constraint, v) {
     _ignoreable = ignoreable;
     OptionalUnlabeledTracker::check(req, toString());
 }
 
 template <class T>
-UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
-                                        const std::string &desc, bool req,
-                                        T val, Constraint<T> *constraint,
-                                        CmdLineInterface &parser,
-                                        bool ignoreable, Visitor *v)
+UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
+                                        const std::string& desc, bool req,
+                                        T val, Constraint<T>* constraint,
+                                        CmdLineInterface& parser,
+                                        bool ignoreable, Visitor* v)
     : ValueArg<T>("", name, desc, req, val, constraint, v) {
     _ignoreable = ignoreable;
     OptionalUnlabeledTracker::check(req, toString());
@@ -252,24 +251,25 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
  * Implementation of processArg().
  */
 template <class T>
-bool UnlabeledValueArg<T>::processArg(int *i, std::vector<std::string> &args) {
-    if (_alreadySet) return false;
+bool UnlabeledValueArg<T>::processArg(int* i, std::vector<std::string>& args) {
+    if (_alreadySet)
+        return false;
 
-    if (_hasBlanks(args[*i])) return false;
+    if (_hasBlanks(args[*i]))
+        return false;
 
     // never ignore an unlabeled arg
 
     _extractValue(args[*i]);
     _alreadySet = true;
-    _setBy = args[*i];
+    _setBy      = args[*i];
     return true;
 }
 
 /**
  * Overriding operator== for specific behavior.
  */
-template <class T>
-bool UnlabeledValueArg<T>::operator==(const Arg &a) const {
+template <class T> bool UnlabeledValueArg<T>::operator==(const Arg& a) const {
     if (_name == a.getName() || _description == a.getDescription())
         return true;
     else
@@ -277,9 +277,9 @@ bool UnlabeledValueArg<T>::operator==(const Arg &a) const {
 }
 
 template <class T>
-void UnlabeledValueArg<T>::addToList(std::list<Arg *> &argList) const {
-    argList.push_back(const_cast<Arg *>(static_cast<const Arg *const>(this)));
+void UnlabeledValueArg<T>::addToList(std::list<Arg*>& argList) const {
+    argList.push_back(const_cast<Arg*>(static_cast<const Arg* const>(this)));
 }
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_UNLABELED_VALUE_ARG_H
+#endif // TCLAP_UNLABELED_VALUE_ARG_H

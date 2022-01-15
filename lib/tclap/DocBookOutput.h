@@ -41,20 +41,20 @@ namespace TCLAP {
  * given CmdLine and its Args.
  */
 class DocBookOutput : public CmdLineOutput {
-public:
+  public:
     /**
      * Prints the usage to stdout.  Can be overridden to
      * produce alternative behavior.
      * \param c - The CmdLine object the output is generated for.
      */
-    virtual void usage(CmdLineInterface &c);
+    virtual void usage(CmdLineInterface& c);
 
     /**
      * Prints the version to stdout. Can be overridden
      * to produce alternative behavior.
      * \param c - The CmdLine object the output is generated for.
      */
-    virtual void version(CmdLineInterface &c);
+    virtual void version(CmdLineInterface& c);
 
     /**
      * Prints (to stderr) an error message, short usage
@@ -62,33 +62,33 @@ public:
      * \param c - The CmdLine object the output is generated for.
      * \param e - The ArgException that caused the failure.
      */
-    virtual void failure(CmdLineInterface &c, ArgException &e);
+    virtual void failure(CmdLineInterface& c, ArgException& e);
 
     DocBookOutput() : theDelimiter('=') {}
 
-protected:
+  protected:
     /**
      * Substitutes the char r for string x in string s.
      * \param s - The string to operate on.
      * \param r - The char to replace.
      * \param x - What to replace r with.
      */
-    void substituteSpecialChars(std::string &s, char r,
-                                const std::string &x) const;
-    void removeChar(std::string &s, char r) const;
+    void substituteSpecialChars(std::string& s, char r,
+                                const std::string& x) const;
+    void removeChar(std::string& s, char r) const;
 
-    void printShortArg(Arg *it, bool required);
-    void printLongArg(const ArgGroup &it) const;
+    void printShortArg(Arg* it, bool required);
+    void printLongArg(const ArgGroup& it) const;
 
     char theDelimiter;
 };
 
-inline void DocBookOutput::version(CmdLineInterface &_cmd) {
+inline void DocBookOutput::version(CmdLineInterface& _cmd) {
     std::cout << _cmd.getVersion() << std::endl;
 }
 
 namespace internal {
-const char *GroupChoice(const ArgGroup &group) {
+const char* GroupChoice(const ArgGroup& group) {
     if (!group.showAsGroup()) {
         return "plain";
     }
@@ -99,13 +99,13 @@ const char *GroupChoice(const ArgGroup &group) {
 
     return "opt";
 }
-}  // namespace internal
+} // namespace internal
 
-inline void DocBookOutput::usage(CmdLineInterface &_cmd) {
-    std::list<ArgGroup *> argSets = _cmd.getArgGroups();
-    std::string progName = _cmd.getProgramName();
-    std::string xversion = _cmd.getVersion();
-    theDelimiter = _cmd.getDelimiter();
+inline void DocBookOutput::usage(CmdLineInterface& _cmd) {
+    std::list<ArgGroup*> argSets  = _cmd.getArgGroups();
+    std::string          progName = _cmd.getProgramName();
+    std::string          xversion = _cmd.getVersion();
+    theDelimiter                  = _cmd.getDelimiter();
 
     std::cout << "<?xml version='1.0'?>\n";
     std::cout
@@ -130,7 +130,7 @@ inline void DocBookOutput::usage(CmdLineInterface &_cmd) {
 
     std::cout << "<command>" << progName << "</command>\n";
 
-    for (std::list<ArgGroup *>::iterator sit = argSets.begin();
+    for (std::list<ArgGroup*>::iterator sit = argSets.begin();
          sit != argSets.end(); ++sit) {
         int visible = CountVisibleArgs(**sit);
         if (visible > 1) {
@@ -166,7 +166,7 @@ inline void DocBookOutput::usage(CmdLineInterface &_cmd) {
 
     std::cout << "<variablelist>\n";
 
-    for (std::list<ArgGroup *>::iterator sit = argSets.begin();
+    for (std::list<ArgGroup*>::iterator sit = argSets.begin();
          sit != argSets.end(); ++sit) {
         printLongArg(**sit);
     }
@@ -184,14 +184,14 @@ inline void DocBookOutput::usage(CmdLineInterface &_cmd) {
     std::cout << "</refentry>" << std::endl;
 }
 
-inline void DocBookOutput::failure(CmdLineInterface &_cmd, ArgException &e) {
-    static_cast<void>(_cmd);  // unused
+inline void DocBookOutput::failure(CmdLineInterface& _cmd, ArgException& e) {
+    static_cast<void>(_cmd); // unused
     std::cout << e.what() << std::endl;
     throw ExitException(1);
 }
 
-inline void DocBookOutput::substituteSpecialChars(std::string &s, char r,
-                                                  const std::string &x) const {
+inline void DocBookOutput::substituteSpecialChars(std::string& s, char r,
+                                                  const std::string& x) const {
     size_t p;
     while ((p = s.find_first_of(r)) != std::string::npos) {
         s.erase(p, 1);
@@ -199,14 +199,14 @@ inline void DocBookOutput::substituteSpecialChars(std::string &s, char r,
     }
 }
 
-inline void DocBookOutput::removeChar(std::string &s, char r) const {
+inline void DocBookOutput::removeChar(std::string& s, char r) const {
     size_t p;
     while ((p = s.find_first_of(r)) != std::string::npos) {
         s.erase(p, 1);
     }
 }
 
-inline void DocBookOutput::printShortArg(Arg *a, bool required) {
+inline void DocBookOutput::printShortArg(Arg* a, bool required) {
     std::string lt = "&lt;";
     std::string gt = "&gt;";
 
@@ -222,7 +222,8 @@ inline void DocBookOutput::printShortArg(Arg *a, bool required) {
     }
 
     std::cout << "<arg choice='" << choice << '\'';
-    if (a->acceptsMultipleValues()) std::cout << " rep='repeat'";
+    if (a->acceptsMultipleValues())
+        std::cout << " rep='repeat'";
 
     std::cout << '>';
     if (!a->getFlag().empty())
@@ -243,13 +244,13 @@ inline void DocBookOutput::printShortArg(Arg *a, bool required) {
     std::cout << "</arg>" << std::endl;
 }
 
-inline void DocBookOutput::printLongArg(const ArgGroup &group) const {
+inline void DocBookOutput::printLongArg(const ArgGroup& group) const {
     const std::string lt = "&lt;";
     const std::string gt = "&gt;";
 
     bool forceRequired = group.isRequired() && CountVisibleArgs(group) == 1;
     for (ArgGroup::const_iterator it = group.begin(); it != group.end(); ++it) {
-        Arg &a = **it;
+        Arg& a = **it;
         if (!a.visibleInHelp()) {
             continue;
         }
@@ -296,5 +297,5 @@ inline void DocBookOutput::printLongArg(const ArgGroup &group) const {
     }
 }
 
-}  // namespace TCLAP
-#endif  // TCLAP_DOC_BOOK_OUTPUT_H
+} // namespace TCLAP
+#endif // TCLAP_DOC_BOOK_OUTPUT_H

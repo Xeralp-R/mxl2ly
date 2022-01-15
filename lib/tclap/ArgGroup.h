@@ -39,18 +39,18 @@ namespace TCLAP {
  * EitherOf or OneOf derived classes are used.
  */
 class ArgGroup : public ArgContainer {
-public:
-    typedef std::list<Arg *> Container;
-    typedef Container::iterator iterator;
+  public:
+    typedef std::list<Arg*>           Container;
+    typedef Container::iterator       iterator;
     typedef Container::const_iterator const_iterator;
 
     virtual ~ArgGroup() {}
 
     /// Add an argument to this arg group
-    virtual ArgContainer &add(Arg &arg) { return add(&arg); }
+    virtual ArgContainer& add(Arg& arg) { return add(&arg); }
 
     /// Add an argument to this arg group
-    virtual ArgContainer &add(Arg *arg);
+    virtual ArgContainer& add(Arg* arg);
 
     /**
      * Validates that the constraints of the ArgGroup are satisfied.
@@ -87,7 +87,7 @@ public:
      * this arg group) are also added to the parser (and checked for
      * consistency with other args).
      */
-    void setParser(CmdLineInterface &parser) {
+    void setParser(CmdLineInterface& parser) {
         if (_parser) {
             throw SpecificationException("Arg group can have only one parser");
         }
@@ -106,22 +106,22 @@ public:
     /// Returns the argument group's name.
     const std::string getName() const;
 
-    iterator begin() { return _args.begin(); }
-    iterator end() { return _args.end(); }
+    iterator       begin() { return _args.begin(); }
+    iterator       end() { return _args.end(); }
     const_iterator begin() const { return _args.begin(); }
     const_iterator end() const { return _args.end(); }
 
-protected:
+  protected:
     // No direct instantiation
     ArgGroup() : _parser(0), _args() {}
 
-private:
-    explicit ArgGroup(const ArgGroup &);
-    ArgGroup &operator=(const ArgGroup &);  // no copy
+  private:
+    explicit ArgGroup(const ArgGroup&);
+    ArgGroup& operator=(const ArgGroup&); // no copy
 
-protected:
-    CmdLineInterface *_parser;
-    Container _args;
+  protected:
+    CmdLineInterface* _parser;
+    Container         _args;
 };
 
 /**
@@ -130,33 +130,32 @@ protected:
  * @internal
  */
 class ExclusiveArgGroup : public ArgGroup {
-public:
-    inline bool validate();
-    bool isExclusive() const { return true; }
-    ArgContainer &add(Arg &arg) { return add(&arg); }
-    ArgContainer &add(Arg *arg) {
+  public:
+    inline bool   validate();
+    bool          isExclusive() const { return true; }
+    ArgContainer& add(Arg& arg) { return add(&arg); }
+    ArgContainer& add(Arg* arg) {
         if (arg->isRequired()) {
-            throw SpecificationException(
-                "Required arguments are not allowed"
-                " in an exclusive grouping.",
-                arg->longID());
+            throw SpecificationException("Required arguments are not allowed"
+                                         " in an exclusive grouping.",
+                                         arg->longID());
         }
 
         return ArgGroup::add(arg);
     }
 
-protected:
+  protected:
     ExclusiveArgGroup() {}
-    explicit ExclusiveArgGroup(CmdLineInterface &parser) { parser.add(*this); }
+    explicit ExclusiveArgGroup(CmdLineInterface& parser) { parser.add(*this); }
 };
 
 /**
  * Implements a group of arguments where at most one can be selected.
  */
 class EitherOf : public ExclusiveArgGroup {
-public:
+  public:
     EitherOf() {}
-    explicit EitherOf(CmdLineInterface &parser) : ExclusiveArgGroup(parser) {}
+    explicit EitherOf(CmdLineInterface& parser) : ExclusiveArgGroup(parser) {}
 
     bool isRequired() const { return false; }
 };
@@ -166,9 +165,9 @@ public:
  * selected. This corresponds to the deprecated "xoradd".
  */
 class OneOf : public ExclusiveArgGroup {
-public:
+  public:
     OneOf() {}
-    explicit OneOf(CmdLineInterface &parser) : ExclusiveArgGroup(parser) {}
+    explicit OneOf(CmdLineInterface& parser) : ExclusiveArgGroup(parser) {}
 
     bool isRequired() const { return true; }
 };
@@ -180,16 +179,16 @@ public:
  * [-c [-de] [-n <int>]]).
  */
 class AnyOf : public ArgGroup {
-public:
+  public:
     AnyOf() {}
-    explicit AnyOf(CmdLineInterface &parser) { parser.add(*this); }
+    explicit AnyOf(CmdLineInterface& parser) { parser.add(*this); }
 
     bool validate() { return false; /* All good */ }
     bool isExclusive() const { return false; }
     bool isRequired() const { return false; }
 };
 
-inline ArgContainer &ArgGroup::add(Arg *arg) {
+inline ArgContainer& ArgGroup::add(Arg* arg) {
     for (iterator it = begin(); it != end(); it++) {
         if (*arg == **it) {
             throw SpecificationException(
@@ -206,7 +205,7 @@ inline ArgContainer &ArgGroup::add(Arg *arg) {
 }
 
 inline bool ExclusiveArgGroup::validate() {
-    Arg *arg = NULL;
+    Arg*        arg = NULL;
     std::string flag;
 
     for (const_iterator it = begin(); it != end(); ++it) {
@@ -214,12 +213,12 @@ inline bool ExclusiveArgGroup::validate() {
             if (arg != NULL && !(*arg == **it)) {
                 // We found a matching argument, but one was
                 // already found previously.
-                throw CmdLineParseException(
-                    "Only one is allowed.",
-                    flag + " AND " + (*it)->setBy() + " provided.");
+                throw CmdLineParseException("Only one is allowed.",
+                                            flag + " AND " + (*it)->setBy() +
+                                                " provided.");
             }
 
-            arg = *it;
+            arg  = *it;
             flag = arg->setBy();
         }
     }
@@ -229,8 +228,8 @@ inline bool ExclusiveArgGroup::validate() {
 
 inline const std::string ArgGroup::getName() const {
     std::string name;
-    std::string sep = "{";  // TODO: this should change for
-                            // non-exclusive arg groups
+    std::string sep = "{"; // TODO: this should change for
+                           // non-exclusive arg groups
     for (const_iterator it = begin(); it != end(); ++it) {
         name += sep + (*it)->getName();
         sep = " | ";
@@ -240,7 +239,7 @@ inline const std::string ArgGroup::getName() const {
 }
 
 /// @internal
-inline int CountVisibleArgs(const ArgGroup &g) {
+inline int CountVisibleArgs(const ArgGroup& g) {
     int visible = 0;
     for (ArgGroup::const_iterator it = g.begin(); it != g.end(); ++it) {
         if ((*it)->visibleInHelp()) {
@@ -251,6 +250,6 @@ inline int CountVisibleArgs(const ArgGroup &g) {
     return visible;
 }
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_ARG_GROUP_H
+#endif // TCLAP_ARG_GROUP_H

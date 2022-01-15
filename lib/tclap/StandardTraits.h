@@ -44,16 +44,12 @@ namespace TCLAP {
 // have value-like semantics.
 
 // Strings have string like argument traits.
-template <>
-struct ArgTraits<std::string> {
-    typedef StringLike ValueCategory;
-};
+template <> struct ArgTraits<std::string> { typedef StringLike ValueCategory; };
 
-template <typename T>
-void SetString(T &dst, const std::string &src) {
+template <typename T> void SetString(T& dst, const std::string& src) {
     dst = src;
 }
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_STANDARD_TRAITS_H
+#endif // TCLAP_STANDARD_TRAITS_H

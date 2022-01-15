@@ -29,15 +29,15 @@
 
 namespace lmt::aux {
 struct AbstractNotation : public AbstractStatement {
-    std::string         get_type() { return "note_statement"; }
-    
-    virtual std::string get_subtype() const          = 0;
-    //virtual void        accept_musicxml(std::string) = 0;
-    virtual std::string return_lilypond() const      = 0;
-    
+    std::string get_type() { return "note_statement"; }
+
+    virtual std::string get_subtype() const     = 0;
+    // virtual void        accept_musicxml(std::string) = 0;
+    virtual std::string return_lilypond() const = 0;
+
     virtual ~AbstractNotation(){};
 };
-    
+
 struct NotationFactory {
     std::vector<std::unique_ptr<AbstractNotation>>
     operator()(const tinyxml2::XMLElement* attr_ptr) const;
@@ -50,6 +50,7 @@ class Dynamic : public AbstractNotation {
 
     std::string get_subtype() const override { return "dynamic"; }
     std::string return_lilypond() const override;
+
   private:
     std::string type;
 
@@ -101,7 +102,7 @@ struct Slur : public AbstractNotation {
 
     std::string get_subtype() const override { return "slur"; }
     std::string return_lilypond() const override;
-    
+
     StartStopType start_stop;
 };
 } // namespace lmt::aux

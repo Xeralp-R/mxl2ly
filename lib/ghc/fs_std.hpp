@@ -13,8 +13,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,16 +25,19 @@
 // SOFTWARE.
 //
 //---------------------------------------------------------------------------------------
-// fs_std.hpp - The dynamic switching header that includes std::filesystem if detected
-//              or ghc::filesystem if not, and makes the resulting API available in the
-//              namespace fs.
+// fs_std.hpp - The dynamic switching header that includes std::filesystem if
+// detected
+//              or ghc::filesystem if not, and makes the resulting API available
+//              in the namespace fs.
 //---------------------------------------------------------------------------------------
 #ifndef GHC_FILESYSTEM_STD_H
 #define GHC_FILESYSTEM_STD_H
 #if defined(__APPLE__)
 #include <Availability.h>
 #endif
-#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || (defined(__cplusplus) && __cplusplus >= 201703L)) && defined(__has_include)
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) ||                         \
+     (defined(__cplusplus) && __cplusplus >= 201703L)) &&                      \
+    defined(__has_include)
 #if __has_include(<filesystem>) && (!defined(__MAC_OS_X_VERSION_MIN_REQUIRED) || __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500)
 #define GHC_USE_STD_FS
 #include <filesystem>
@@ -42,8 +45,8 @@ namespace fs {
 using namespace std::filesystem;
 using ifstream = std::ifstream;
 using ofstream = std::ofstream;
-using fstream = std::fstream;
-}
+using fstream  = std::fstream;
+} // namespace fs
 #endif
 #endif
 #ifndef GHC_USE_STD_FS
@@ -53,8 +56,7 @@ namespace fs {
 using namespace ghc::filesystem;
 using ifstream = ghc::filesystem::ifstream;
 using ofstream = ghc::filesystem::ofstream;
-using fstream = ghc::filesystem::fstream;
-} 
+using fstream  = ghc::filesystem::fstream;
+} // namespace fs
 #endif
 #endif // GHC_FILESYSTEM_STD_H
-

@@ -36,14 +36,13 @@ namespace TCLAP {
  * A Constraint that constrains the Arg to only those values specified
  * in the constraint.
  */
-template <class T>
-class ValuesConstraint : public Constraint<T> {
-public:
+template <class T> class ValuesConstraint : public Constraint<T> {
+  public:
     /**
      * Constructor.
      * \param allowed - vector of allowed values.
      */
-    explicit ValuesConstraint(std::vector<T> &allowed);
+    explicit ValuesConstraint(std::vector<T>& allowed);
 
     /**
      * Virtual destructor.
@@ -65,9 +64,9 @@ public:
      * line meets the constraint.
      * \param value - The value that will be checked.
      */
-    virtual bool check(const T &value) const;
+    virtual bool check(const T& value) const;
 
-protected:
+  protected:
     /**
      * The list of valid values.
      */
@@ -80,7 +79,7 @@ protected:
 };
 
 template <class T>
-ValuesConstraint<T>::ValuesConstraint(std::vector<T> &allowed)
+ValuesConstraint<T>::ValuesConstraint(std::vector<T>& allowed)
     : _allowed(allowed), _typeDesc("") {
     for (unsigned int i = 0; i < _allowed.size(); i++) {
         std::ostringstream os;
@@ -88,28 +87,26 @@ ValuesConstraint<T>::ValuesConstraint(std::vector<T> &allowed)
 
         std::string temp(os.str());
 
-        if (i > 0) _typeDesc += "|";
+        if (i > 0)
+            _typeDesc += "|";
         _typeDesc += temp;
     }
 }
 
-template <class T>
-bool ValuesConstraint<T>::check(const T &val) const {
+template <class T> bool ValuesConstraint<T>::check(const T& val) const {
     if (std::find(_allowed.begin(), _allowed.end(), val) == _allowed.end())
         return false;
     else
         return true;
 }
 
-template <class T>
-std::string ValuesConstraint<T>::shortID() const {
+template <class T> std::string ValuesConstraint<T>::shortID() const {
     return _typeDesc;
 }
 
-template <class T>
-std::string ValuesConstraint<T>::description() const {
+template <class T> std::string ValuesConstraint<T>::description() const {
     return _typeDesc;
 }
 
-}  // namespace TCLAP
-#endif  // TCLAP_VALUES_CONSTRAINT_H
+} // namespace TCLAP
+#endif // TCLAP_VALUES_CONSTRAINT_H

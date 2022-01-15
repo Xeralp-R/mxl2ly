@@ -34,31 +34,31 @@ namespace TCLAP {
  * object for the specified CmdLine object.
  */
 class HelpVisitor : public Visitor {
-private:
+  private:
     /**
      * Prevent accidental copying.
      */
-    HelpVisitor(const HelpVisitor &rhs);
-    HelpVisitor &operator=(const HelpVisitor &rhs);
+    HelpVisitor(const HelpVisitor& rhs);
+    HelpVisitor& operator=(const HelpVisitor& rhs);
 
-protected:
+  protected:
     /**
      * The CmdLine the output will be generated for.
      */
-    CmdLineInterface *_cmd;
+    CmdLineInterface* _cmd;
 
     /**
      * The output object.
      */
-    CmdLineOutput **_out;
+    CmdLineOutput** _out;
 
-public:
+  public:
     /**
      * Constructor.
      * \param cmd - The CmdLine the output will be generated for.
      * \param out - The type of output.
      */
-    HelpVisitor(CmdLineInterface *cmd, CmdLineOutput **out)
+    HelpVisitor(CmdLineInterface* cmd, CmdLineOutput** out)
         : Visitor(), _cmd(cmd), _out(out) {}
 
     /**
@@ -70,6 +70,6 @@ public:
         throw ExitException(0);
     }
 };
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_HELP_VISITOR_H
+#endif // TCLAP_HELP_VISITOR_H

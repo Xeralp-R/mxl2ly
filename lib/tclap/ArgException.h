@@ -34,7 +34,7 @@ namespace TCLAP {
  * whenever a CmdLine is created and parsed.
  */
 class ArgException : public std::exception {
-public:
+  public:
     /**
      * Constructor.
      * \param text - The text of the exception.
@@ -42,13 +42,11 @@ public:
      * \param td - Text describing the type of ArgException it is.
      * of the exception.
      */
-    ArgException(const std::string &text = "undefined exception",
-                 const std::string &id = "undefined",
-                 const std::string &td = "Generic ArgException")
-        : std::exception(),
-          _errorText(text),
-          _argId(id),
-          _typeDescription(td) {}
+    ArgException(const std::string& text = "undefined exception",
+                 const std::string& id   = "undefined",
+                 const std::string& td   = "Generic ArgException")
+        : std::exception(), _errorText(text), _argId(id), _typeDescription(td) {
+    }
 
     /**
      * Destructor.
@@ -73,7 +71,7 @@ public:
     /**
      * Returns the arg id and error text.
      */
-    const char *what() const throw() {
+    const char* what() const throw() {
         static std::string ex;
         ex = _argId + " -- " + _errorText;
         return ex.c_str();
@@ -85,7 +83,7 @@ public:
      */
     std::string typeDescription() const { return _typeDescription; }
 
-private:
+  private:
     /**
      * The text of the exception message.
      */
@@ -108,15 +106,15 @@ private:
  * parse the argument it has been passed.
  */
 class ArgParseException : public ArgException {
-public:
+  public:
     /**
      * Constructor.
      * \param text - The text of the exception.
      * \param id - The text identifying the argument source
      * of the exception.
      */
-    ArgParseException(const std::string &text = "undefined exception",
-                      const std::string &id = "undefined")
+    ArgParseException(const std::string& text = "undefined exception",
+                      const std::string& id   = "undefined")
         : ArgException(text, id,
                        std::string("Exception found while parsing ") +
                            std::string("the value the Arg has been passed.")) {}
@@ -127,15 +125,15 @@ public:
  * properly specified, e.g. too many arguments, required argument missing, etc.
  */
 class CmdLineParseException : public ArgException {
-public:
+  public:
     /**
      * Constructor.
      * \param text - The text of the exception.
      * \param id - The text identifying the argument source
      * of the exception.
      */
-    CmdLineParseException(const std::string &text = "undefined exception",
-                          const std::string &id = "undefined")
+    CmdLineParseException(const std::string& text = "undefined exception",
+                          const std::string& id   = "undefined")
         : ArgException(text, id,
                        std::string("Exception found when the values ") +
                            std::string("on the command line do not meet ") +
@@ -148,15 +146,15 @@ public:
  * same flag as another Arg, same name, etc.
  */
 class SpecificationException : public ArgException {
-public:
+  public:
     /**
      * Constructor.
      * \param text - The text of the exception.
      * \param id - The text identifying the argument source
      * of the exception.
      */
-    SpecificationException(const std::string &text = "undefined exception",
-                           const std::string &id = "undefined")
+    SpecificationException(const std::string& text = "undefined exception",
+                           const std::string& id   = "undefined")
         : ArgException(text, id,
                        std::string("Exception found when an Arg object ") +
                            std::string("is improperly defined by the ") +
@@ -176,15 +174,15 @@ public:
  * cleanup. See for example, https://sourceforge.net/p/tclap/bugs/29.
  */
 class ExitException {
-public:
+  public:
     explicit ExitException(int estat) : _estat(estat) {}
 
     int getExitStatus() const { return _estat; }
 
-private:
+  private:
     int _estat;
 };
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_ARG_EXCEPTION_H
+#endif // TCLAP_ARG_EXCEPTION_H

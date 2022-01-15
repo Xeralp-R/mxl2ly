@@ -38,7 +38,7 @@ namespace TCLAP {
  * switch.
  */
 class SwitchArg : public Arg {
-protected:
+  protected:
     /**
      * The value of the switch.
      */
@@ -50,7 +50,7 @@ protected:
      */
     bool _default;
 
-public:
+  public:
     /**
      * SwitchArg constructor.
      * \param flag - The one character flag that identifies this
@@ -63,8 +63,8 @@ public:
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    SwitchArg(const std::string &flag, const std::string &name,
-              const std::string &desc, bool def = false, Visitor *v = NULL);
+    SwitchArg(const std::string& flag, const std::string& name,
+              const std::string& desc, bool def = false, Visitor* v = NULL);
 
     /**
      * SwitchArg constructor.
@@ -79,9 +79,9 @@ public:
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    SwitchArg(const std::string &flag, const std::string &name,
-              const std::string &desc, ArgContainer &parser, bool def = false,
-              Visitor *v = NULL);
+    SwitchArg(const std::string& flag, const std::string& name,
+              const std::string& desc, ArgContainer& parser, bool def = false,
+              Visitor* v = NULL);
 
     /**
      * Handles the processing of the argument.
@@ -91,13 +91,13 @@ public:
      * \param args - Mutable list of strings. Passed
      * in from main().
      */
-    virtual bool processArg(int *i, std::vector<std::string> &args);
+    virtual bool processArg(int* i, std::vector<std::string>& args);
 
     /**
      * Checks a string to see if any of the chars in the string
      * match the flag for this Switch.
      */
-    bool combinedSwitchesMatch(std::string &combined);
+    bool combinedSwitchesMatch(std::string& combined);
 
     /**
      * Returns bool, whether or not the switch has been set.
@@ -113,12 +113,12 @@ public:
 
     virtual void reset();
 
-private:
+  private:
     /**
      * Checks to see if we've found the last match in
      * a combined string.
      */
-    bool lastCombined(std::string &combined);
+    bool lastCombined(std::string& combined);
 
     /**
      * Does the common processing of processArg.
@@ -129,30 +129,29 @@ private:
 //////////////////////////////////////////////////////////////////////
 // BEGIN SwitchArg.cpp
 //////////////////////////////////////////////////////////////////////
-inline SwitchArg::SwitchArg(const std::string &flag, const std::string &name,
-                            const std::string &desc, bool default_val,
-                            Visitor *v)
-    : Arg(flag, name, desc, false, false, v),
-      _value(default_val),
+inline SwitchArg::SwitchArg(const std::string& flag, const std::string& name,
+                            const std::string& desc, bool default_val,
+                            Visitor* v)
+    : Arg(flag, name, desc, false, false, v), _value(default_val),
       _default(default_val) {}
 
-inline SwitchArg::SwitchArg(const std::string &flag, const std::string &name,
-                            const std::string &desc, ArgContainer &parser,
-                            bool default_val, Visitor *v)
-    : Arg(flag, name, desc, false, false, v),
-      _value(default_val),
+inline SwitchArg::SwitchArg(const std::string& flag, const std::string& name,
+                            const std::string& desc, ArgContainer& parser,
+                            bool default_val, Visitor* v)
+    : Arg(flag, name, desc, false, false, v), _value(default_val),
       _default(default_val) {
     parser.add(this);
 }
 
-inline bool SwitchArg::lastCombined(std::string &combinedSwitches) {
+inline bool SwitchArg::lastCombined(std::string& combinedSwitches) {
     for (unsigned int i = 1; i < combinedSwitches.length(); i++)
-        if (combinedSwitches[i] != Arg::blankChar()) return false;
+        if (combinedSwitches[i] != Arg::blankChar())
+            return false;
 
     return true;
 }
 
-inline bool SwitchArg::combinedSwitchesMatch(std::string &combinedSwitches) {
+inline bool SwitchArg::combinedSwitchesMatch(std::string& combinedSwitches) {
     // make sure this is actually a combined switch
     if (combinedSwitches.length() > 0 &&
         combinedSwitches[0] != Arg::flagStartString()[0])
@@ -176,7 +175,7 @@ inline bool SwitchArg::combinedSwitchesMatch(std::string &combinedSwitches) {
             // present this is necessary so that no unlabeled args are
             // matched later in the processing.
             // combinedSwitches.erase(i,1);
-            _setBy = Arg::flagStartString() + combinedSwitches[i];
+            _setBy              = Arg::flagStartString() + combinedSwitches[i];
             combinedSwitches[i] = Arg::blankChar();
             return true;
         }
@@ -200,7 +199,7 @@ inline void SwitchArg::commonProcessing() {
     _checkWithVisitor();
 }
 
-inline bool SwitchArg::processArg(int *i, std::vector<std::string> &args) {
+inline bool SwitchArg::processArg(int* i, std::vector<std::string>& args) {
     if (argMatches(args[*i])) {
         // The whole string matches the flag or name string
         _setBy = args[*i];
@@ -230,6 +229,6 @@ inline void SwitchArg::reset() {
     _value = _default;
 }
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_SWITCH_ARG_H
+#endif // TCLAP_SWITCH_ARG_H

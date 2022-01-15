@@ -41,9 +41,8 @@ namespace TCLAP {
  * an unflagged ValueArg, it is unwise and would cause significant problems.
  * Instead use an UnlabeledValueArg.
  */
-template <class T>
-class ValueArg : public Arg {
-protected:
+template <class T> class ValueArg : public Arg {
+  protected:
     /**
      * The value parsed from the command line.
      * Can be of any type, as long as the >> operator for the type
@@ -69,7 +68,7 @@ protected:
     /**
      * A Constraint this Arg must conform to.
      */
-    Constraint<T> *_constraint;
+    Constraint<T>* _constraint;
 
     /**
      * Extracts the value from the string.
@@ -77,9 +76,9 @@ protected:
      * is thrown.
      * \param val - value to be parsed.
      */
-    void _extractValue(const std::string &val);
+    void _extractValue(const std::string& val);
 
-public:
+  public:
     /**
      * Labeled ValueArg constructor.
      * You could conceivably call this constructor with a blank flag,
@@ -103,9 +102,9 @@ public:
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    ValueArg(const std::string &flag, const std::string &name,
-             const std::string &desc, bool req, T value,
-             const std::string &typeDesc, Visitor *v = NULL);
+    ValueArg(const std::string& flag, const std::string& name,
+             const std::string& desc, bool req, T value,
+             const std::string& typeDesc, Visitor* v = NULL);
 
     /**
      * Labeled ValueArg constructor.
@@ -131,10 +130,10 @@ public:
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    ValueArg(const std::string &flag, const std::string &name,
-             const std::string &desc, bool req, T value,
-             const std::string &typeDesc, ArgContainer &parser,
-             Visitor *v = NULL);
+    ValueArg(const std::string& flag, const std::string& name,
+             const std::string& desc, bool req, T value,
+             const std::string& typeDesc, ArgContainer& parser,
+             Visitor* v = NULL);
 
     /**
      * Labeled ValueArg constructor.
@@ -158,10 +157,10 @@ public:
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    ValueArg(const std::string &flag, const std::string &name,
-             const std::string &desc, bool req, T value,
-             Constraint<T> *constraint, ArgContainer &parser,
-             Visitor *v = NULL);
+    ValueArg(const std::string& flag, const std::string& name,
+             const std::string& desc, bool req, T value,
+             Constraint<T>* constraint, ArgContainer& parser,
+             Visitor* v = NULL);
 
     /**
      * Labeled ValueArg constructor.
@@ -184,9 +183,9 @@ public:
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    ValueArg(const std::string &flag, const std::string &name,
-             const std::string &desc, bool req, T value,
-             Constraint<T> *constraint, Visitor *v = NULL);
+    ValueArg(const std::string& flag, const std::string& name,
+             const std::string& desc, bool req, T value,
+             Constraint<T>* constraint, Visitor* v = NULL);
 
     /**
      * Handles the processing of the argument.
@@ -197,87 +196,75 @@ public:
      * \param args - Mutable list of strings. Passed
      * in from main().
      */
-    virtual bool processArg(int *i, std::vector<std::string> &args);
+    virtual bool processArg(int* i, std::vector<std::string>& args);
 
     /**
      * Returns the value of the argument.
      */
-    const T &getValue() const { return _value; }
+    const T& getValue() const { return _value; }
 
     /**
      * A ValueArg can be used as as its value type (T) This is the
      * same as calling getValue()
      */
-    operator const T &() const { return getValue(); }
+    operator const T&() const { return getValue(); }
 
     /**
      * Specialization of shortID.
      * \param val - value to be used.
      */
-    virtual std::string shortID(const std::string &val = "val") const;
+    virtual std::string shortID(const std::string& val = "val") const;
 
     /**
      * Specialization of longID.
      * \param val - value to be used.
      */
-    virtual std::string longID(const std::string &val = "val") const;
+    virtual std::string longID(const std::string& val = "val") const;
 
     virtual void reset();
 
-private:
+  private:
     /**
      * Prevent accidental copying
      */
-    ValueArg<T>(const ValueArg<T> &rhs);
-    ValueArg<T> &operator=(const ValueArg<T> &rhs);
+    ValueArg<T>(const ValueArg<T>& rhs);
+    ValueArg<T>& operator=(const ValueArg<T>& rhs);
 };
 
 /**
  * Constructor implementation.
  */
 template <class T>
-ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
-                      const std::string &desc, bool req, T val,
-                      const std::string &typeDesc, Visitor *v)
-    : Arg(flag, name, desc, req, true, v),
-      _value(val),
-      _default(val),
-      _typeDesc(typeDesc),
-      _constraint(NULL) {}
+ValueArg<T>::ValueArg(const std::string& flag, const std::string& name,
+                      const std::string& desc, bool req, T val,
+                      const std::string& typeDesc, Visitor* v)
+    : Arg(flag, name, desc, req, true, v), _value(val), _default(val),
+      _typeDesc(typeDesc), _constraint(NULL) {}
 
 template <class T>
-ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
-                      const std::string &desc, bool req, T val,
-                      const std::string &typeDesc, ArgContainer &parser,
-                      Visitor *v)
-    : Arg(flag, name, desc, req, true, v),
-      _value(val),
-      _default(val),
-      _typeDesc(typeDesc),
-      _constraint(NULL) {
+ValueArg<T>::ValueArg(const std::string& flag, const std::string& name,
+                      const std::string& desc, bool req, T val,
+                      const std::string& typeDesc, ArgContainer& parser,
+                      Visitor* v)
+    : Arg(flag, name, desc, req, true, v), _value(val), _default(val),
+      _typeDesc(typeDesc), _constraint(NULL) {
     parser.add(this);
 }
 
 template <class T>
-ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
-                      const std::string &desc, bool req, T val,
-                      Constraint<T> *constraint, Visitor *v)
-    : Arg(flag, name, desc, req, true, v),
-      _value(val),
-      _default(val),
-      _typeDesc(Constraint<T>::shortID(constraint)),
-      _constraint(constraint) {}
+ValueArg<T>::ValueArg(const std::string& flag, const std::string& name,
+                      const std::string& desc, bool req, T val,
+                      Constraint<T>* constraint, Visitor* v)
+    : Arg(flag, name, desc, req, true, v), _value(val), _default(val),
+      _typeDesc(Constraint<T>::shortID(constraint)), _constraint(constraint) {}
 
 template <class T>
-ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
-                      const std::string &desc, bool req, T val,
-                      Constraint<T> *constraint, ArgContainer &parser,
-                      Visitor *v)
-    : Arg(flag, name, desc, req, true, v),
-      _value(val),
-      _default(val),
-      _typeDesc(Constraint<T>::shortID(constraint)),
-      _constraint(constraint) {
+ValueArg<T>::ValueArg(const std::string& flag, const std::string& name,
+                      const std::string& desc, bool req, T val,
+                      Constraint<T>* constraint, ArgContainer& parser,
+                      Visitor* v)
+    : Arg(flag, name, desc, req, true, v), _value(val), _default(val),
+      _typeDesc(Constraint<T>::shortID(constraint)), _constraint(constraint) {
     parser.add(this);
 }
 
@@ -285,8 +272,9 @@ ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
  * Implementation of processArg().
  */
 template <class T>
-bool ValueArg<T>::processArg(int *i, std::vector<std::string> &args) {
-    if (_hasBlanks(args[*i])) return false;
+bool ValueArg<T>::processArg(int* i, std::vector<std::string>& args) {
+    if (_hasBlanks(args[*i]))
+        return false;
 
     std::string flag = args[*i];
 
@@ -314,7 +302,7 @@ bool ValueArg<T>::processArg(int *i, std::vector<std::string> &args) {
         }
 
         _alreadySet = true;
-        _setBy = flag;
+        _setBy      = flag;
         _checkWithVisitor();
         return true;
     } else {
@@ -325,24 +313,21 @@ bool ValueArg<T>::processArg(int *i, std::vector<std::string> &args) {
 /**
  * Implementation of shortID.
  */
-template <class T>
-std::string ValueArg<T>::shortID(const std::string &) const {
+template <class T> std::string ValueArg<T>::shortID(const std::string&) const {
     return Arg::shortID("<" + _typeDesc + ">");
 }
 
 /**
  * Implementation of longID.
  */
-template <class T>
-std::string ValueArg<T>::longID(const std::string &) const {
+template <class T> std::string ValueArg<T>::longID(const std::string&) const {
     return Arg::longID("<" + _typeDesc + ">");
 }
 
-template <class T>
-void ValueArg<T>::_extractValue(const std::string &val) {
+template <class T> void ValueArg<T>::_extractValue(const std::string& val) {
     try {
         ExtractValue(_value, val, typename ArgTraits<T>::ValueCategory());
-    } catch (ArgParseException &e) {
+    } catch (ArgParseException& e) {
         throw ArgParseException(e.error(), toString());
     }
 
@@ -354,12 +339,11 @@ void ValueArg<T>::_extractValue(const std::string &val) {
                                         toString()));
 }
 
-template <class T>
-void ValueArg<T>::reset() {
+template <class T> void ValueArg<T>::reset() {
     Arg::reset();
     _value = _default;
 }
 
-}  // namespace TCLAP
+} // namespace TCLAP
 
-#endif  // TCLAP_VALUE_ARG_H
+#endif // TCLAP_VALUE_ARG_H

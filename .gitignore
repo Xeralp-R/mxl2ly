@@ -5,16 +5,16 @@ build_xcode/
 
 # ignore unimportant things in the tinyxml
 tinyxml2/*/
-tinyxml2/dox 
-tinyxml2/Makefile 
-tinyxml2/meson_options.txt 
-tinyxml2/meson.build 
-tinyxml2/readme.md 
-tinyxml2/setversion.py 
+tinyxml2/dox
+tinyxml2/Makefile
+tinyxml2/meson_options.txt
+tinyxml2/meson.build
+tinyxml2/readme.md
+tinyxml2/setversion.py
 tinyxml2/TinyXML2_small.png
 
 # ignore the .DS_store?
 .DS_Store
 *.out
-*.musicxml 
+*.musicxml
 *.mxl

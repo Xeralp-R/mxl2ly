@@ -36,15 +36,15 @@
 namespace TCLAP {
 typedef std::istringstream istringstream;
 typedef std::ostringstream ostringstream;
-}  // namespace TCLAP
+} // namespace TCLAP
 #elif defined(TCLAP_HAVE_STRSTREAM)
 #include <strstream>
 namespace TCLAP {
 typedef std::istrstream istringstream;
 typedef std::ostrstream ostringstream;
-}  // namespace TCLAP
+} // namespace TCLAP
 #else
 #error "Need a stringstream (sstream or strstream) to compile!"
 #endif
 
-#endif  // TCLAP_SSTREAM_H
+#endif // TCLAP_SSTREAM_H

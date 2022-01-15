@@ -14,9 +14,9 @@ using namespace lmt::aux;
 
 std::vector<std::unique_ptr<AbstractNotation>>
 NotationFactory::operator()(const tinyxml2::XMLElement* attr_ptr) const {
-    
+
     std::vector<std::unique_ptr<AbstractNotation>> returner;
-    std::string switcher = attr_ptr->Name();
+    std::string                                    switcher = attr_ptr->Name();
     if (switcher == "articulations") {
         for (auto ptr : attr_ptr) {
             returner.push_back(std::move(std::make_unique<Articulation>(ptr)));
