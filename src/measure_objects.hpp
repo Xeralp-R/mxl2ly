@@ -29,6 +29,43 @@ namespace lmt::aux {
         short int duration_back;
     };
     
+    class Barline : public AbstractMeasureObject {
+      public:
+        enum class Type {
+            None,
+            // A single light barline
+            Regular,
+            // A single heavy barline
+            Heavy,
+            // A regular double barline
+            LightLight,
+            // An ending barline
+            LightHeavy,
+            // A starting barline?
+            HeavyLight,
+            // An unusual double heavy barline
+            HeavyHeavy
+            // TODO: Add more here later
+        };
+
+        // a double repeat is listed as 1 repeat before and 1 repeat after in 2
+        // different bars
+        enum class Repeat { None, RepeatBefore, RepeatAfter };
+
+        Barline(Barline::Type type, Barline::Repeat repeat)
+            : type(type), repeat(repeat) {};
+
+        std::string get_subtype() override { return "barline"; }
+        std::string return_lilypond() const;
+
+        Barline::Type   get_type() const { return type; }
+        Barline::Repeat get_repeat() const { return repeat; }
+
+      private:
+        Barline::Type   type;
+        Barline::Repeat repeat;
+    };
+    
     /*
    class Tuplet : public AbstractMeasureObject {
       public:
