@@ -10,6 +10,7 @@
 
 #include <exception>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -19,27 +20,23 @@
 namespace lmt::aux {
 struct AbstractMeasureAttribute : public AbstractMeasureObject {
     std::string get_subtype() { return "attribute"; }
-    
-    virtual std::string get_subsubtype() const = 0;
+
+    virtual std::string get_subsubtype() const  = 0;
     virtual std::string return_lilypond() const = 0;
-    
+
     virtual ~AbstractMeasureAttribute(){};
+};
+
+struct MeasureAttributeFactory {
+    std::unique_ptr<AbstractMeasureAttribute>
+    operator()(const tinyxml2::XMLElement* attr_ptr) const;
 };
 
 // The clef: add more clefs later
 class Clef : public AbstractMeasureAttribute {
   public:
-    Clef(char type, short int staff_line) {
-        if (type != 'c' && type != 'f' && type != 'g') {
-            throw std::logic_error("Incorrect clef");
-        }
-        if (staff_line > 5) {
-            throw std::logic_error("Incorrect clef position");
-        }
-
-        this->type       = type;
-        this->staff_line = staff_line;
-    }
+    Clef(char type, short int staff_line);
+    Clef(const tinyxml2::XMLElement* clef_ptr);
 
     std::string get_subsubtype() const override { return "key-signature"; }
     std::string return_lilypond() const override;
@@ -52,13 +49,8 @@ class Clef : public AbstractMeasureAttribute {
 // The key signature
 class KeySignature : public AbstractMeasureAttribute {
   public:
-    KeySignature(int fifths) {
-        if (fifths < -7 || fifths > 7) {
-            throw std::logic_error("Incorrect clef position");
-        }
-
-        this->fifths = fifths;
-    }
+    KeySignature(int fifths);
+    KeySignature(const tinyxml2::XMLElement* clef_ptr);
 
     std::string get_subsubtype() const override { return "key-signature"; }
     std::string return_lilypond() const override;
@@ -77,8 +69,8 @@ class KeySignature : public AbstractMeasureAttribute {
 // the time signature
 class TimeSignature : public AbstractMeasureAttribute {
   public:
-    TimeSignature(short int upper, short int lower)
-        : upper_num{upper}, lower_num{lower} {};
+    TimeSignature(short int upper, short int lower);
+    TimeSignature(const tinyxml2::XMLElement* attr_ptr);
 
     std::string get_subsubtype() const override { return "time-signature"; }
     std::string return_lilypond() const override;
@@ -112,11 +104,7 @@ class Barline : public AbstractMeasureAttribute {
 
     // a double repeat is listed as 1 repeat before and 1 repeat after in 2
     // different bars
-    enum class Repeat {
-        None,
-        RepeatBefore,
-        RepeatAfter
-    };
+    enum class Repeat { None, RepeatBefore, RepeatAfter };
 
     Barline(Barline::Type type, Barline::Repeat repeat)
         : type(type), repeat(repeat){};

@@ -473,7 +473,20 @@ namespace tinyxml2
 				return ""s;
 		}
         
-    // ================== ADDITION ================== //
+    // ================== BEGIN ADDITION ================== //
+    inline std::string text (const XMLElement* element, std::string xpath) {
+        const XMLElement* elem = find_element(element, xpath);
+        if (!elem) {
+            throw XmlException("null element"s);
+        }
+        
+        if (auto value = elem->GetText()) {
+            return std::string(value);
+        } else {
+            throw XmlException("content of element "s + elem->Name() + " not int"s);
+        }
+    }
+    
     inline bool exists (const XMLElement* element, std::string xpath = ""s) {
         if (find_element(element, xpath)) {
             return true;
@@ -492,6 +505,19 @@ namespace tinyxml2
         }
     }
     
+    inline int int_text (const XMLElement* element, std::string xpath) {
+        const XMLElement* elem = find_element(element, xpath);
+        if (!elem) {
+            throw XmlException("null element"s);
+        }
+        
+        if (auto value = elem->IntText(); true) {
+            return value;
+        } else {
+            throw XmlException("content of element "s + elem->Name() + " not int"s);
+        }
+    }
+    
     inline float float_text (const XMLElement* element) {
         if (!element) {
             throw XmlException("null element"s);
@@ -502,7 +528,20 @@ namespace tinyxml2
             throw XmlException("content of element "s + element->Name() + " not float"s);
         }
     }
-    // ================== ADDITION ================== //
+    
+    inline float float_text (const XMLElement* element, std::string xpath) {
+        const XMLElement* elem = find_element(element, xpath);
+        if (!elem) {
+            throw XmlException("null element"s);
+        }
+        
+        if (auto value = elem->FloatText()) {
+            return value;
+        } else {
+            throw XmlException("content of element "s + elem->Name() + " not float"s);
+        }
+    }
+    // ================== END ADDITION ================== //
 
 		// append / prepend element
 		// common method for all append / prepend element insertions
