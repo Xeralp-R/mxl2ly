@@ -19,10 +19,10 @@
 
 namespace lmt::aux {
 struct AbstractMeasureAttribute : public AbstractMeasureObject {
-    std::string get_subtype() { return "attribute"; }
+    std::string get_subtype() const override { return "attribute"; }
 
-    virtual std::string get_subsubtype() const  = 0;
-    virtual std::string return_lilypond() const = 0;
+    virtual std::string get_subsubtype() const           = 0;
+    virtual std::string return_lilypond() const override = 0;
 
     virtual ~AbstractMeasureAttribute(){};
 };

@@ -16,18 +16,9 @@
 namespace lmt::aux {
 struct AbstractMeasureObject : public AbstractStatement {
     std::string         get_type() { return "measure_object"; }
-    virtual std::string get_subtype() = 0;
+    virtual std::string get_subtype() const     = 0;
+    virtual std::string return_lilypond() const = 0;
     virtual ~AbstractMeasureObject(){};
-};
-
-class Backup : public AbstractMeasureObject {
-  public:
-    Backup(short int duration) : duration_back(duration) {}
-
-    std::string get_subtype() { return "backup"; };
-
-  private:
-    short int duration_back;
 };
 
 class Barline : public AbstractMeasureObject {
@@ -56,8 +47,8 @@ class Barline : public AbstractMeasureObject {
     Barline(Barline::Type type, Barline::Repeat repeat)
         : type(type), repeat(repeat){};
 
-    std::string get_subtype() override { return "barline"; }
-    std::string return_lilypond() const;
+    std::string get_subtype() const override { return "barline"; }
+    std::string return_lilypond() const override;
 
     Barline::Type   get_type() const { return type; }
     Barline::Repeat get_repeat() const { return repeat; }

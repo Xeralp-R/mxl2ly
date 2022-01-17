@@ -54,35 +54,36 @@ Clef::Clef(const tinyxml2::XMLElement* clef_ptr)
 }
 
 std::string Clef::return_lilypond() const {
+    using namespace std::string_literals;
     switch (this->type) {
     case 'g':
         if (this->staff_line == 1) {
-            return R"--(\clef french)--";
+            return R"--(\clef french)--" + "\n"s;
         }
-        return R"--(\clef treble)--";
+        return R"--(\clef treble)--" + "\n"s;
     case 'f':
         if (this->staff_line == 5) {
-            return R"--(\clef subbass)--";
+            return R"--(\clef subbass)--" + "\n"s;
         }
         if (this->staff_line == 3) {
-            return R"--(\clef varbaritone)--";
+            return R"--(\clef varbaritone)--" + "\n"s;
         }
-        return R"--(\clef bass)--";
+        return R"--(\clef bass)--" + "\n"s;
     case 'c':
         if (this->staff_line == 1) {
-            return R"--(\clef soprano)--";
+            return R"--(\clef soprano)--" + "\n"s;
         }
         if (this->staff_line == 2) {
-            return R"--(\clef mezzosoprano)--";
+            return R"--(\clef mezzosoprano)--" + "\n"s;
         }
         if (this->staff_line == 3) {
-            return R"--(\clef alto)--";
+            return R"--(\clef alto)--" + "\n"s;
         }
         if (this->staff_line == 4) {
-            return R"--(\clef tenor)--";
+            return R"--(\clef tenor)--" + "\n"s;
         }
         if (this->staff_line == 5) {
-            return R"--(\clef baritone)--";
+            return R"--(\clef baritone)--" + "\n"s;
         }
         return R"--()--";
     default:
@@ -107,8 +108,8 @@ KeySignature::KeySignature(const tinyxml2::XMLElement* attr_ptr)
 
 std::string KeySignature::return_lilypond() const {
     // allow for other modes next time
-    return fmt::format(R"--(\key {0} \{1})--", this->converter.at(fifths),
-                       mode);
+    return fmt::format(R"--(\key {0} \{1}{2})--", this->converter.at(fifths),
+                       mode, '\n');
 }
 
 TimeSignature::TimeSignature(short int upper, short int lower)
@@ -119,8 +120,8 @@ TimeSignature::TimeSignature(const tinyxml2::XMLElement* attr_ptr)
       lower_num(tx2::int_text(attr_ptr, "beat-type")) {}
 
 std::string TimeSignature::return_lilypond() const {
-    return fmt::format(R"--(\time {0}/{1})--", this->upper_num,
-                       this->lower_num);
+    return fmt::format(R"--(\time {0}/{1}{2})--", this->upper_num,
+                       this->lower_num, '\n');
 }
 
 std::string Barline::return_lilypond() const {
@@ -158,5 +159,5 @@ std::string Barline::return_lilypond() const {
         break;
     }
 
-    return fmt::format(R"--(\bar "{0}")--", returner);
+    return fmt::format(R"--(\bar "{0}"{1})--", returner, '\n');
 }

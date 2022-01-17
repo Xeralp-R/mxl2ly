@@ -17,6 +17,7 @@
 
 #include "measure.hpp"
 #include "statement.hpp"
+#include "tinyxml2/tixml2ex.h"
 
 namespace lmt {
 class PartList : public AbstractStatement {
@@ -36,8 +37,10 @@ class PartList : public AbstractStatement {
 class Part : public AbstractStatement {
   public:
     Part(std::string id);
+    Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr);
 
-    void add_measure(std::unique_ptr<Measure> measure_ptr);
+    void        add_measure(std::unique_ptr<Measure> measure_ptr);
+    std::string return_lilypond() const;
 
     std::string get_type() override { return "part"; }
     std::string get_id() const { return this->id; }
@@ -47,6 +50,11 @@ class Part : public AbstractStatement {
   private:
     std::string                           id;
     std::vector<std::unique_ptr<Measure>> measures;
+
+    std::string convert_number_names(const std::string) const;
+    const std::vector<std::string> number_names{"zero",  "one",  "two", "three",
+                                                "four",  "five", "six", "seven",
+                                                "eight", "nine"};
 };
 } // namespace lmt
 

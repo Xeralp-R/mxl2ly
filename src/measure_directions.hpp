@@ -17,15 +17,19 @@
 
 namespace lmt::aux {
 struct AbstractMeasureDirection : public AbstractMeasureObject {
-    std::string         get_subtype() { return "direction"; }
-    virtual std::string get_subsubtype() = 0;
+    std::string get_subtype() const override { return "direction"; }
+
+    virtual std::string get_subsubtype() const           = 0;
+    virtual std::string return_lilypond() const override = 0;
     virtual ~AbstractMeasureDirection(){};
 };
 
 struct Wedge : AbstractMeasureDirection {
     enum { Crescendo, Decrescendo, Stop } type;
 
-    std::string get_subsubtype() { return "wedge"; }
+    std::string get_subsubtype() const override { return "wedge"; }
+    // TODO: Implement
+    std::string return_lilypond() const override { return ""; }
 };
 } // namespace lmt::aux
 

@@ -13,7 +13,7 @@
 #include <optional>
 #include <ostream>
 #include <string>
-#include <variant>
+#include <utility>
 #include <vector>
 
 #include "helper.hpp"
@@ -22,8 +22,9 @@
 
 namespace lmt::aux {
 struct AbstractNoteAttribute : public AbstractStatement {
-    std::string         get_type() { return "note_attribute"; }
-    virtual std::string get_subtype() const = 0;
+    std::string         get_type() override { return "note_attribute"; }
+    virtual std::string get_subtype() const                             = 0;
+    virtual std::pair<std::string, std::string> return_lilypond() const = 0;
     virtual ~AbstractNoteAttribute(){};
 };
 
@@ -31,7 +32,8 @@ struct GraceNote : public AbstractNoteAttribute {
     GraceNote(StartStopType start_stop, bool is_slashed)
         : start_stop(start_stop), is_slashed(is_slashed){};
 
-    std::string get_subtype() const { return "grace_note"; }
+    std::string get_subtype() const override { return "grace_note"; }
+    std::pair<std::string, std::string> return_lilypond() const override;
 
     StartStopType start_stop;
     bool          is_slashed;
@@ -40,7 +42,8 @@ struct GraceNote : public AbstractNoteAttribute {
 struct Chord : public AbstractNoteAttribute {
     Chord(StartStopType start_stop) : start_stop(start_stop){};
 
-    std::string get_subtype() const { return "chord"; }
+    std::string get_subtype() const override { return "chord"; }
+    std::pair<std::string, std::string> return_lilypond() const override;
 
     StartStopType start_stop;
 };
@@ -51,7 +54,8 @@ struct Tuplet : public AbstractNoteAttribute {
         : start_stop(start_stop), actual_notes(actual_notes),
           normal_notes(normal_notes){};
 
-    std::string get_subtype() const { return "tuplet"; }
+    std::string get_subtype() const override { return "tuplet"; }
+    std::pair<std::string, std::string> return_lilypond() const override;
 
     StartStopType      start_stop;
     unsigned short int actual_notes;

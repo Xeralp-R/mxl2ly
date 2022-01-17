@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 target_sources(mxl2ly
 PRIVATE
+    chord.hpp
+    chord.cpp
     extract_meta.cpp
     extract_music.cpp
     extract_notations.cpp
@@ -24,6 +26,7 @@ PRIVATE
     note.hpp
     note.cpp
     note_attributes.hpp
+    note_attributes.cpp
     statement.hpp
     part.hpp
     part.cpp

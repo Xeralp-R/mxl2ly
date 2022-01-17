@@ -24,6 +24,7 @@
 
 namespace lmt {
 class MusicTree;
+class Chord;
 
 class Note : public aux::AbstractMeasureObject {
   public:
@@ -31,7 +32,9 @@ class Note : public aux::AbstractMeasureObject {
       public:
         Pitch(char pitch_class, short int octave, short int alteration);
 
+        std::string return_lilypond() const;
         friend class Note;
+        friend class Chord;
 
       private:
         short int alteration;
@@ -50,7 +53,9 @@ class Note : public aux::AbstractMeasureObject {
     void add_notation(std::unique_ptr<aux::AbstractNotation> notation);
     void add_attribute(std::unique_ptr<aux::AbstractNoteAttribute> attribute);
 
-    std::string  get_subtype() override { return "note"; }
+    std::string get_subtype() const override { return "note"; }
+    std::string return_lilypond() const override;
+
     short int    alteration() const { return pitch.alteration; }
     char         pitch_class() const { return pitch.pitch_class; }
     short int    octave() const { return pitch.octave; }

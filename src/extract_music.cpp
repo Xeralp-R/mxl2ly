@@ -28,23 +28,25 @@ void MusicTree::ExtractMusicFunctor::operator()() {
                     tree_ptr->valid_part_ids.end(), reader->Attribute("id"));
          reader = tree_ptr->root_element->FirstChildElement("part")) {
 
-        auto part_ptr = std::make_unique<Part>(reader->Attribute("id"));
+        /*auto part_ptr = std::make_unique<Part>(reader);
 
         for (auto* measure_reader = reader->FirstChildElement("measure");
              measure_reader != nullptr;
              measure_reader = reader->FirstChildElement("measure")) {
 
-            auto meas_ptr = extract_measure(measure_reader);
-            part_ptr->add_measure(std::move(meas_ptr));
+            // auto meas_ptr = extract_measure(measure_reader);
+            part_ptr->add_measure(
+                std::make_unique<Measure>(measure_reader, tree_ptr));
             reader->DeleteChild(measure_reader);
-        }
+        }*/
 
-        tree_ptr->statements.emplace_back(std::move(part_ptr));
+        tree_ptr->statements.push_back(
+            std::make_unique<Part>(reader, tree_ptr));
 
         tree_ptr->root_element->DeleteChild(reader);
     }
 }
-
+/*
 std::unique_ptr<Measure> MusicTree::ExtractMusicFunctor::extract_measure(
     tx2::XMLElement* meas_elem_ptr) {
     auto meas_uniq_ptr =
@@ -69,14 +71,15 @@ std::unique_ptr<Measure> MusicTree::ExtractMusicFunctor::extract_measure(
             // meas_uniq_ptr->add_measure_object(std::move(direction));
         } else if (reader_name == "backup") {
             // auto backup =
-            // std::make_unique<aux::Backup>(reader->FirstChildElement()->IntText());
+            //
+std::make_unique<aux::Backup>(reader->FirstChildElement()->IntText());
             // meas_uniq_ptr->add_measure_object(std::move(backup));
         }
     }
 
     return std::move(meas_uniq_ptr);
 }
-
+*/
 /* Obsolete by new constructor
 std::unique_ptr<Note>
 MusicTree::ExtractMusicFunctor::extract_note(tx2::XMLElement* note_elem_ptr) {

@@ -12,6 +12,7 @@
 #include <cmath>
 #include <iostream>
 
+#include "fmt/format.h"
 #include "tinyxml2/tixml2ex.h"
 
 using namespace lmt;
@@ -36,6 +37,43 @@ Note::Pitch::Pitch(char pitch_class, short int octave, short int alteration)
     this->alteration  = alteration;
 }
 
+std::string Note::Pitch::return_lilypond() const {
+    std::string alter_text;
+    switch (alteration) {
+    case 2:
+        alter_text = "isis";
+        break;
+    case 1:
+        alter_text = "is";
+        break;
+    case 0:
+        alter_text = "";
+        break;
+    case -1:
+        alter_text = "es";
+        break;
+    case -2:
+        alter_text = "eses";
+        break;
+    default:
+        std::cerr << fmt::format("Unusual Alteration: {0}. Discarding.\n",
+                                 alteration);
+        alter_text = "";
+        break;
+    }
+
+    std::string octave_text;
+    if (pitch_class == 'r') {
+        octave_text = "";
+    } else if (octave > 3) {
+        octave_text = std::string(octave - 3, '\'');
+    } else if (octave < 3) {
+        octave_text = std::string((octave - 3) * -1, ',');
+    }
+
+    return fmt::format("{0}{1}{2}", pitch_class, alter_text, octave_text);
+}
+
 // ==> Constructors and private setters
 
 Note::Note(lmt::Note::Pitch pitch, unsigned lly_dur, short dotted)
@@ -46,13 +84,12 @@ Note::Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr) {
 
     // set duration
     if (tx2::exists(note_ptr, "type")) {
-        this->lly_dur =
-            this->duration_dispatcher.at(tx2::text(note_ptr, "type"))();
+        lly_dur = duration_dispatcher.at(tx2::text(note_ptr, "type"))();
     } else if (!tx2::exists(note_ptr, "grace")) {
-        auto mxl_dur  = tx2::int_text(note_ptr, "duration");
-        this->lly_dur = std::round(tree_ptr->get_measure_duration() / mxl_dur);
-
+        auto mxl_dur = tx2::int_text(note_ptr, "duration");
+        lly_dur      = std::round(tree_ptr->get_measure_duration() / mxl_dur);
     } else {
+        lly_dur = 16;
     }
 
     for (auto i = tx2::find_element(note_ptr, "dot"); i != nullptr;
@@ -143,6 +180,40 @@ Note::Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr) {
             }
         }
     }
+}
+
+std::string Note::return_lilypond() const {
+    std::string lilypond_duration = std::to_string(lly_dur);
+    lilypond_duration += std::string(dotted, '.');
+
+    auto pitch_text = pitch.return_lilypond();
+
+    // Generate any and all text before and after the thing
+    std::string before_text, after_text;
+
+    auto maybe_grace = get_grace_note();
+    if (maybe_grace) {
+        auto pair = maybe_grace->return_lilypond();
+        before_text += pair.first;
+        after_text = pair.second + after_text;
+    }
+
+    auto maybe_tuplet = get_tuplet();
+    if (maybe_tuplet) {
+        auto pair = maybe_tuplet->return_lilypond();
+        before_text += pair.first;
+        after_text = pair.second + after_text;
+    }
+
+    std::string notation_string;
+    for (const auto& i : notations) {
+        notation_string += i->return_lilypond();
+    }
+
+    std::string note_text = fmt::format("{0}{1}{2} ", pitch_text,
+                                        lilypond_duration, notation_string);
+
+    return before_text + note_text + after_text + " ";
 }
 
 void Note::add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation) {
