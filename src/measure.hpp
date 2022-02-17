@@ -29,6 +29,8 @@ class Measure {
   public:
     Measure(int id_number);
     Measure(tinyxml2::XMLElement* meas_elem, const MusicTree* tree_ptr);
+    Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
+            const MusicTree* tree_ptr);
 
     std::string return_lilypond() const;
 

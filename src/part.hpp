@@ -13,6 +13,8 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "measure.hpp"
@@ -44,12 +46,19 @@ class Part : public AbstractStatement {
 
     std::string get_type() override { return "part"; }
     std::string get_id() const { return this->id; }
-    int         size() const { return this->measures.size(); }
-    Measure*    at(int index) const { return this->measures.at(index).get(); }
+    // int         size() const { return this->measures.size(); }
+    // Measure*    at(int index) const { return this->measures.at(index).get();
+    // }
 
   private:
-    std::string                           id;
-    std::vector<std::unique_ptr<Measure>> measures;
+    std::string id;
+    bool        using_many_staves;
+
+    // the measures if there's only 1 voice
+    std::vector<std::unique_ptr<Measure>> measures_flat;
+    // the measures if there are many voices
+    std::unordered_map<int, std::vector<std::unique_ptr<Measure>>>
+        measures_dimen;
 
     std::string convert_number_names(const std::string) const;
     const std::vector<std::string> number_names{"zero",  "one",  "two", "three",
