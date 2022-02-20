@@ -30,7 +30,7 @@ class Note : public aux::AbstractMeasureObject {
   public:
     class Pitch {
       public:
-        Pitch(char pitch_class, short int octave, short int alteration);
+        Pitch(char pitch_class, short int octave = 3, short int alteration = 0);
 
         std::string return_lilypond() const;
         friend class Note;

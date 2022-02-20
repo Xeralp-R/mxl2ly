@@ -87,24 +87,9 @@ class MusicTree {
     void print_paper_block() const;
     void print_header_block() const;
     void print_part_list() const;
+    void print_music() const;
 
-    class PrintMusicFunctor {
-      public:
-        PrintMusicFunctor(const MusicTree* tree_ptr) : tree_ptr(tree_ptr) {}
-        void operator()();
-
-      private:
-        const MusicTree* tree_ptr;
-        void             print_measure(const Measure* measure_ptr);
-
-        void print_note(const Note* note_ptr);
-        void print_chord(const std::vector<const Note*> notes);
-        void print_notations(const Note* note_ptr);
-
-        double note_time_alteration = 1.00;
-        bool   in_chord             = false;
-    } print_music{this};
-    friend class PrintMusicFunctor;
+    mutable std::vector<std::string> print_directory;
 
     std::string convert_number_names(const std::string) const;
     const std::vector<std::string> number_names{"zero",  "one",  "two", "three",

@@ -63,7 +63,7 @@ std::string Note::Pitch::return_lilypond() const {
     }
 
     std::string octave_text;
-    if (pitch_class == 'r') {
+    if (pitch_class == 'r' || pitch_class == 's') {
         octave_text = "";
     } else if (octave > 3) {
         octave_text = std::string(octave - 3, '\'');

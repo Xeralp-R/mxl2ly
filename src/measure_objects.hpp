@@ -21,6 +21,14 @@ struct AbstractMeasureObject : public AbstractStatement {
     virtual ~AbstractMeasureObject(){};
 };
 
+struct Backup : public AbstractMeasureObject {
+    Backup(unsigned int mxl_dur) : mxl_dur(mxl_dur) {}
+    std::string get_subtype() const { return "backup"; }
+    std::string return_lilypond() const { return ""; }
+
+    unsigned int mxl_dur;
+};
+
 class Barline : public AbstractMeasureObject {
   public:
     enum class Type {

@@ -20,10 +20,10 @@
 
 using namespace lmt;
 
-void MusicTree::PrintMusicFunctor::operator()() {
-    for (int i = 4; i < tree_ptr->statements.size(); ++i) {
+void MusicTree::print_music() const {
+    for (int i = 4; i < this->statements.size(); ++i) {
         // Get the pointer
-        auto part_ptr = dynamic_cast<Part*>(tree_ptr->statements.at(i).get());
+        auto part_ptr = dynamic_cast<Part*>(this->statements.at(i).get());
 
         /*tree_ptr->out << "part-";
         tree_ptr->out << tree_ptr->convert_number_names(part_ptr->get_id());
@@ -32,7 +32,9 @@ void MusicTree::PrintMusicFunctor::operator()() {
             tree_ptr->out << part_ptr->at(i)->return_lilypond();
         }
         tree_ptr->out << "}" << newline;*/
-        tree_ptr->out << part_ptr->return_lilypond();
+        const auto& [entry, music] = part_ptr->return_lilypond();
+        out << music;
+        print_directory.push_back(entry);
     }
 }
 /*

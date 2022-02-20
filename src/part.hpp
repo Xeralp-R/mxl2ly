@@ -41,8 +41,9 @@ class Part : public AbstractStatement {
     Part(std::string id);
     Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr);
 
-    void        add_measure(std::unique_ptr<Measure> measure_ptr);
-    std::string return_lilypond() const;
+    void add_measure(std::unique_ptr<Measure> measure_ptr);
+
+    std::pair<std::string, std::string> return_lilypond() const;
 
     std::string get_type() override { return "part"; }
     std::string get_id() const { return this->id; }
@@ -51,19 +52,23 @@ class Part : public AbstractStatement {
     // }
 
   private:
-    std::string id;
-    bool        using_many_staves;
+    struct Staff {
+        Staff(int id) : id(id){};
+        std::vector<std::unique_ptr<Measure>> measures;
+        int                                   id;
+    };
 
+    std::string id;
+
+    std::vector<std::unique_ptr<Staff>> staves;
+    /*
+     bool        using_many_staves;
     // the measures if there's only 1 voice
     std::vector<std::unique_ptr<Measure>> measures_flat;
     // the measures if there are many voices
     std::unordered_map<int, std::vector<std::unique_ptr<Measure>>>
         measures_dimen;
-
-    std::string convert_number_names(const std::string) const;
-    const std::vector<std::string> number_names{"zero",  "one",  "two", "three",
-                                                "four",  "five", "six", "seven",
-                                                "eight", "nine"};
+     */
 };
 } // namespace lmt
 

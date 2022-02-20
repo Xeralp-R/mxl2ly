@@ -38,6 +38,10 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
                  const MusicTree* tree_ptr)
     : id_number(id_number) {
     using namespace std::string_literals;
+    mxl_full_duration = tree_ptr->get_measure_duration();
+
+    // initialize the first line
+    this->lines.push_back(std::make_unique<MusicLine>());
 
     // get all the attributes
     /*
@@ -58,7 +62,15 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
         auto reader = *iter;
 
         const auto reader_name = reader->Name();
-        if (reader_name != "note"s && reader_name != "attributes"s) {
+        if (reader_name != "note"s && reader_name != "attributes"s &&
+            reader_name != "backup"s) {
+            continue;
+        }
+
+        // Handle backups
+        if (reader_name == "backup"s) {
+            add_measure_object(std::make_unique<aux::Backup>(
+                tx2::int_text(reader, "duration")));
             continue;
         }
 
@@ -69,12 +81,17 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
                 if (temp == nullptr) {
                     continue;
                 }
-                objects.push_back(move(temp));
+                add_measure_object(move(temp));
             }
             continue;
         }
 
         // Handle notes
+        // move to add_measure later
+        this->mxl_count += tx2::exists(reader, "duration")
+                               ? tx2::int_text(reader, "duration")
+                               : 0;
+
         auto temp_iter = iter;
         ++temp_iter;
         if (temp_iter != elem_vec.end() && tx2::exists(*temp_iter, "chord")) {
@@ -98,24 +115,37 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
     }
 }
 
-std::string Measure::return_lilypond() const {
-    std::string measure_text;
-    for (const auto& obj_ptr : objects) {
-        measure_text += obj_ptr->return_lilypond();
-    }
-
-    measure_text += " |\n";
-    if ((id_number % 5) == 0) {
-        measure_text += fmt::format("% {0}{1}", id_number, '\n');
-    }
-    return measure_text;
-}
-
 void Measure::add_measure_object(
     std::unique_ptr<lmt::aux::AbstractMeasureObject> abstract_ptr) {
     if (abstract_ptr->get_subtype() == "backup") {
-        this->number_of_voices += 1;
+        current_line += 1;
+        this->lines.push_back(std::make_unique<MusicLine>());
+
+        mxl_count =
+            mxl_count - dynamic_cast<aux::Backup*>(abstract_ptr.get())->mxl_dur;
+        if (mxl_count != 0) {
+            // TODO: accomodate dotted backups
+            this->lines.at(current_line)
+                ->objects.push_back(std::make_unique<Note>(
+                    Note::Pitch('s'), mxl_full_duration / mxl_count));
+        }
     };
 
-    this->objects.push_back(std::move(abstract_ptr));
+    this->lines.at(current_line)->objects.push_back(std::move(abstract_ptr));
+}
+
+std::vector<std::string> Measure::return_lilypond() const {
+    std::vector<std::string> measure_content;
+
+    for (const auto& line : lines) {
+        std::string line_text;
+
+        for (const auto& obj_ptr : line->objects) {
+            line_text += obj_ptr->return_lilypond();
+        }
+
+        measure_content.push_back(line_text);
+    }
+
+    return measure_content;
 }

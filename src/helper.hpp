@@ -8,14 +8,38 @@
 #ifndef helper_hpp
 #define helper_hpp
 
+#include <vector>
+
 template <class InputIt, class T>
-constexpr bool is_element(InputIt first, InputIt last, const T& value) {
+constexpr inline bool is_element(InputIt first, InputIt last, const T& value) {
     for (; first != last; ++first) {
         if (*first == value) {
             return true;
         }
     }
     return false;
+}
+
+const std::vector<std::string> number_names{"zero",  "one",  "two", "three",
+                                            "four",  "five", "six", "seven",
+                                            "eight", "nine"};
+const inline std::string       convert_number_names(const std::string test) {
+    std::string returner;
+    for (auto ch : test) {
+        // if ch is any number from 0 to 9
+        if (ch - '0' >= 0 && ch - '9' <= 0) {
+            returner += number_names.at(ch - '0');
+        } else {
+            returner += ch;
+        }
+    }
+    return returner;
+}
+const inline std::string convert_number_names(const int test) {
+    if (test < 0 || test > 9) {
+        return "";
+    }
+    return number_names.at(test);
 }
 
 namespace lmt {

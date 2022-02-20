@@ -32,20 +32,28 @@ class Measure {
     Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
             const MusicTree* tree_ptr);
 
-    std::string return_lilypond() const;
+    int                      id() { return id_number; }
+    std::vector<std::string> return_lilypond() const;
 
     void add_measure_object(
         std::unique_ptr<lmt::aux::AbstractMeasureObject> abstract_ptr);
+    /*
     int size() const { return this->objects.size(); }
     lmt::aux::AbstractMeasureObject* at(int i) const {
         return this->objects.at(i).get();
     }
-
+     */
   private:
+    struct MusicLine {
+        std::vector<std::unique_ptr<lmt::aux::AbstractMeasureObject>> objects;
+    };
+
     // ==> Variables
-    int                                                           id_number;
-    std::vector<std::unique_ptr<lmt::aux::AbstractMeasureObject>> objects;
-    int number_of_voices = 0;
+    int                                     id_number;
+    std::vector<std::unique_ptr<MusicLine>> lines;
+    int                                     current_line = 0;
+    unsigned int                            mxl_count    = 0;
+    unsigned int                            mxl_full_duration;
 
     // ==> Helper Functions
     aux::MeasureAttributeFactory measure_attribute_factory;

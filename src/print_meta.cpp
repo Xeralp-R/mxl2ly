@@ -95,12 +95,7 @@ void MusicTree::print_part_list() const {
     const auto list_ptr = dynamic_cast<PartList*>(statements.at(3).get());
 
     out << R"||(\score {)||" << newline;
-    for (auto pair : list_ptr->get_parts()) {
-        out << tab << R"||(\new Staff \with {)||" << newline;
-        out << tab << tab << R"||(instrumentName = ")||" << pair.second
-            << R"||(")||" << newline;
-        out << tab << R"||(} \part-)||" << convert_number_names(pair.first)
-            << newline;
-    }
+    std::for_each(print_directory.begin(), print_directory.end(),
+                  [this](const auto& a) { out << a; });
     out << "}" << newline;
 }
