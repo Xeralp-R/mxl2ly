@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <utility>
 
 #include "fmt/format.h"
 
@@ -31,30 +32,6 @@ Part::Part(std::string id) : id(id) {}
 Part::Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr) {
     id = tx2::attribute_value(part_elem, "id");
 
-    /*
-    bool has_many_staves =
-        tx2::exists(part_elem, "measure/attribute/staves")
-            ? tx2::int_text(part_elem, "measure/attribute/staves") > 1
-            : false;
-     */
-    /*
-    bool has_many_voices =
-        tx2::exists(part_elem, "measure/note/voice")
-            ? tx2::int_text(part_elem->FirstChildElement("measure")
-                                ->LastChildElement("note")
-                                ->FirstChildElement("voice")) > 1
-            : false;
-
-     std::vector<int> permitted_voice_nums;
-            for (auto voice_elem :
-    tx2::selection(tx2::first_child_element(part_elem), "note/voice")) { auto i
-    = tx2::int_text(voice_elem); if (is_element(permitted_voice_nums.begin(),
-                               permitted_voice_nums.end(),
-                               i)) {
-                    permitted_voice_nums.push_back(i);
-                }
-            }
-     */
     using namespace std::string_literals;
 
     // prepare all the staves we need
@@ -71,9 +48,56 @@ Part::Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr) {
         int current_staff_no = tx2::int_text(meas_elem, "note/staff");
         std::vector<tx2::XMLElement*> holder;
 
+        auto holder_document = std::make_unique<tx2::XMLDocument>();
+        holder_document->Parse("<root></root>");
+        auto full_distributor = tx2::append_element(
+            holder_document->FirstChildElement(), "attributes");
+        std::unordered_map<int, tx2::XMLElement*> directed_distributor;
+
         for (auto* meas_object : meas_elem) {
-            // If the object is not a note, allow it to go into the current
-            // holder.
+            // If the object is an attribute, then distribute it to the staves.
+            if (meas_object->Name() == "attributes"s) {
+                // Distribute it to the distributors
+                for (auto attr_elem : meas_object) {
+                    // If it is to be distributed to all staves
+                    if (tx2::attribute_value(attr_elem, "number") == ""s) {
+                        // make a deep copy into the new document
+                        auto attr_ptr =
+                            attr_elem->DeepClone(holder_document.get());
+                        // place it into the right location
+                        full_distributor->InsertEndChild(attr_ptr);
+                        continue;
+                    }
+
+                    // if it has to go to one staff in particular
+                    auto staff_num =
+                        std::stoi(tx2::attribute_value(attr_elem, "number"));
+
+                    // if the current director doesn't exist
+                    if (directed_distributor.find(staff_num) ==
+                        directed_distributor.end()) {
+                        directed_distributor.insert(
+                            {staff_num,
+                             tx2::append_element(holder_document->RootElement(),
+                                                 "attributes")});
+                    }
+                    // append the element
+                    auto attr_ptr = attr_elem->DeepClone(holder_document.get());
+                    directed_distributor.at(staff_num)->InsertEndChild(
+                        attr_ptr);
+                }
+
+                // fill out the distributors
+                holder.push_back(full_distributor);
+                if (directed_distributor.find(current_staff_no) !=
+                    directed_distributor.end()) {
+                    holder.push_back(directed_distributor.at(current_staff_no));
+                }
+                continue;
+            }
+
+            // If the object is still not a note, allow it to go into the
+            // current holder.
             if (meas_object->Name() != "note"s) {
                 holder.push_back(meas_object);
                 continue;
@@ -98,8 +122,13 @@ Part::Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr) {
                 ->measures.push_back(std::move(new_measure));
             holder.clear();
 
-            holder.push_back(meas_object);
             current_staff_no = tx2::int_text(meas_object, "staff");
+            holder.push_back(full_distributor);
+            if (directed_distributor.find(current_staff_no) !=
+                directed_distributor.end()) {
+                holder.push_back(directed_distributor.at(current_staff_no));
+            }
+            holder.push_back(meas_object);
         }
         // last set of holders
         auto new_measure =
@@ -107,59 +136,6 @@ Part::Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr) {
         this->staves.at(current_staff_no - 1)
             ->measures.push_back(std::move(new_measure));
     }
-
-    /*
-if (!has_many_staves) {
-    // deal with the entire, "flat" part.
-    for (auto* measure_reader : tx2::selection(part_elem, "measure")) {
-        measures_flat.push_back(
-            std::make_unique<Measure>(measure_reader, tree_ptr));
-    }
-} else {
-    // profile the first measure.
-    std::vector<int> permitted_staff_nums(
-        tx2::int_text(part_elem, "measure/attribute/staves"), -1);
-    std::iota(permitted_staff_nums.begin(), permitted_staff_nums.end(), 1);
-
-    for (auto* meas_elem : tx2::selection(part_elem, "measure")) {
-        int id_number = meas_elem->IntAttribute("number");
-
-        int current_staff_num = tx2::int_text(meas_elem, "note/staff");
-        std::vector<tx2::XMLElement*> holder;
-        tx2::XMLElement*              last_backup_element;
-        unsigned long int             current_count;
-
-        for (auto* note_elem : meas_elem) {
-            if (note_elem->Name() == std::string("backup")) {
-                last_backup_element = note_elem;
-            }
-
-            if (note_elem->Name() != std::string("note")) {
-                holder.push_back(note_elem);
-
-            } else if (tx2::int_text(note_elem, "staff") ==
-                       current_staff_num) {
-                current_count += tx2::int_text(note_elem, "duration");
-                holder.push_back(note_elem);
-
-            } else {
-                // guaranteed: tx2::int_text(note_elem, "staff") !=
-current_staff_num int turn_back_amount = tx2::int_text(last_backup_element,
-"duration"); int staff_forward = current_count - turn_back_amount; if
-(staff_forward != 0) {std::cerr << "Error: half-filled bar in staff;
-continuing...\n";}
-                // find a way to input this later...
-
-                measures_dimen.at(current_staff_num)
-                    .push_back(std::make_unique<Measure>(holder, id_number,
-                                                         tree_ptr));
-                holder.clear();
-                holder.push_back(note_elem);
-            }
-        }
-    }
-}
-     */
 }
 
 std::pair<std::string, std::string> Part::return_lilypond() const {
