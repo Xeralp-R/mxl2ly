@@ -4,21 +4,21 @@
 #(set-global-staff-size 17.7358)
 
 #(set! paper-alist
-    (cons '("new_size" . (cons (* 210.059 mm) (* 296.93 mm))) paper-alist))
+(cons '("new_size" . (cons (* 210.059 mm) (* 296.93 mm))) paper-alist))
 \paper {
-    #(set-paper-size "new_size")
-    top-margin = 10\mm
-    bottom-margin = 20\mm
-    left-margin = 10\mm
-    right-margin = 10\mm
-    ragged-last-bottom = ##f
+#(set-paper-size "new_size")
+top-margin = 10\mm
+bottom-margin = 20\mm
+left-margin = 10\mm
+right-margin = 10\mm
+ragged-last-bottom = ##f
 }
 
 \header {
-    composer = "Wolfgang Amadeus Mozart
+composer = "Wolfgang Amadeus Mozart
 "
-    subtitle = "No. 8, K 310"
-    title = "Piano Sonata in A Minor"
+subtitle = "No. 8, K 310"
+title = "Piano Sonata in A Minor"
 }
 
 part-Pone-one = {
@@ -286,7 +286,7 @@ part-Pone-two = {
 \key c \major
 \time 4/4
 \clef bass
-<a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.   |
+\slashedGrace { s8 } <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.   |
 <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.   |
 <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.  <a c' e' >8-.   |
 <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.  <a b d' e' >8-.   |

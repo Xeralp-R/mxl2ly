@@ -13,24 +13,12 @@
 #include <string_view>
 #include <vector>
 
+#include "corrector.hpp"
 #include "fmt/format.h"
 #include "header_and_paper.hpp"
 #include "part.hpp"
 
 using namespace lmt;
-
-std::string MusicTree::convert_number_names(const std::string test) const {
-    std::string returner;
-    for (auto ch : test) {
-        // if ch is any number from 0 to 9
-        if (ch - '0' >= 0 && ch - '9' <= 0) {
-            returner += number_names.at(ch - '0');
-        } else {
-            returner += ch;
-        }
-    }
-    return returner;
-}
 
 void MusicTree::print_staff_info() const {
     const auto staff_width =
@@ -39,6 +27,10 @@ void MusicTree::print_staff_info() const {
     out << "#(set-global-staff-size ";
     out << staff_width.get_points();
     out << ")\n\n";
+
+    if (this->correction) {
+        out << lmt::aux::corrected_preamble << "\n\n";
+    }
 }
 
 void MusicTree::print_paper_block() const {
@@ -46,7 +38,7 @@ void MusicTree::print_paper_block() const {
     const auto paper_ptr = dynamic_cast<Paper*>(statements.at(1).get());
 
     // Prepare the page size
-    out << R"||(#(set! paper-alist )||" << newline << tab;
+    out << R"||(#(set! paper-alist )||" << newline;
     out << fmt::format(
                R"--((cons '("new_size" . (cons (* {0} mm) (* {1} mm))) paper-alist)))--",
                paper_ptr->get_width().get_millimeters(),
@@ -55,28 +47,24 @@ void MusicTree::print_paper_block() const {
 
     // Output the actual paper thing
     out << R"(\paper {)" << newline;
-    out << tab << R"||(#(set-paper-size "new_size"))||" << newline;
-    out << tab
-        << fmt::format(R"||(top-margin = {0}\mm)||",
+    out << R"||(#(set-paper-size "new_size"))||" << newline;
+    out << fmt::format(R"||(top-margin = {0}\mm)||",
                        paper_ptr->get_margin(Paper::Margins::TopMargin)
                            .get_millimeters())
         << newline;
-    out << tab
-        << fmt::format(R"||(bottom-margin = {0}\mm)||",
+    out << fmt::format(R"||(bottom-margin = {0}\mm)||",
                        paper_ptr->get_margin(Paper::Margins::BottomMargin)
                            .get_millimeters())
         << newline;
-    out << tab
-        << fmt::format(R"||(left-margin = {0}\mm)||",
+    out << fmt::format(R"||(left-margin = {0}\mm)||",
                        paper_ptr->get_margin(Paper::Margins::LeftMargin)
                            .get_millimeters())
         << newline;
-    out << tab
-        << fmt::format(R"||(right-margin = {0}\mm)||",
+    out << fmt::format(R"||(right-margin = {0}\mm)||",
                        paper_ptr->get_margin(Paper::Margins::RightMargin)
                            .get_millimeters())
         << newline;
-    out << tab << R"||(ragged-last-bottom = ##f)||" << newline;
+    out << R"||(ragged-last-bottom = ##f)||" << newline;
     out << "}" << newline << newline;
 }
 
@@ -85,17 +73,35 @@ void MusicTree::print_header_block() const {
 
     out << R"||(\header {)||" << newline;
     for (auto pair : header_ptr->get_statements()) {
-        out << tab << fmt::format(R"||({0} = "{1}")||", pair.first, pair.second)
+        out << fmt::format(R"||({0} = "{1}")||", pair.first, pair.second)
             << newline;
     }
     out << "}" << newline << newline;
 }
 
 void MusicTree::print_part_list() const {
-    const auto list_ptr = dynamic_cast<PartList*>(statements.at(3).get());
+    /*const auto list_ptr = dynamic_cast<PartList*>(statements.at(3).get());
 
     out << R"||(\score {)||" << newline;
     std::for_each(print_directory.begin(), print_directory.end(),
                   [this](const auto& a) { out << a; });
+    out << "}" << newline;*/
+}
+
+void MusicTree::print_music() const {
+    std::vector<std::string> print_directory;
+
+    for (int i = 4; i < this->statements.size(); ++i) {
+        auto part_ptr = dynamic_cast<Part*>(this->statements.at(i).get());
+
+        const auto& [entry, music] = part_ptr->return_lilypond();
+        out << music;
+        print_directory.push_back(entry);
+    }
+
+    out << R"||(\score {)||" << newline;
+    std::for_each(print_directory.begin(), print_directory.end(),
+                  [this](const auto& a) { out << a; });
+    out << (this->correction ? lmt::aux::corrected_layout : "\\layout {}\n");
     out << "}" << newline;
 }

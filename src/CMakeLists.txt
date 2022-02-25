@@ -4,10 +4,8 @@ target_sources(mxl2ly
 PRIVATE
     chord.hpp
     chord.cpp
+    corrector.hpp
     extract_meta.cpp
-    extract_music.cpp
-    extract_notations.cpp
-    extract_measure_objects.cpp
     file_option_parser.hpp
     file_option_parser.cpp
     header_and_paper.hpp
@@ -31,5 +29,4 @@ PRIVATE
     part.hpp
     part.cpp
     print_meta.cpp
-    print_music.cpp
 )

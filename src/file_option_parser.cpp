@@ -25,9 +25,20 @@ FileOptionParser::FileOptionParser(int argc, char** argv) {
         false, "", "string");
     cmd.add(output_arg);
 
+    TCLAP::SwitchArg is_hyper_correct(
+        "c", "hyper-correct",
+        "Add hyper-corrections based on the LSR, like grace echo correction ",
+        cmd, false);
+
+    TCLAP::ValueArg<std::string> format_arg(
+        "f", "format", "Formatting options like indentation", false,
+        "{format:true;indent:\"    \";}", "string: json-like");
+    cmd.add(format_arg);
+
     // Parse the command-line arguments.
     cmd.parse(argc, argv);
 
+    // Set the respective arguments
     this->filename = filename_arg.getValue();
     if (output_arg.isSet()) {
         this->outfilename = output_arg.getValue();
@@ -35,4 +46,6 @@ FileOptionParser::FileOptionParser(int argc, char** argv) {
         std::string temp  = filename_arg.getValue();
         this->outfilename = temp.substr(0, temp.find('.')) + ".ly";
     }
+    this->format_options = format_arg.getValue();
+    this->hypercorrect   = is_hyper_correct.getValue();
 }

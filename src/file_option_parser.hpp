@@ -20,10 +20,14 @@ class FileOptionParser {
 
     std::string get_filename() { return this->filename; }
     std::string get_outfilename() { return this->outfilename; }
+    std::string get_format_options() { return this->format_options; }
+    bool        get_hypercorrect() { return this->hypercorrect; }
 
   private:
     std::string filename;
     std::string outfilename;
+    std::string format_options;
+    bool        hypercorrect;
 };
 
 #endif /* file_option_parser_hpp */

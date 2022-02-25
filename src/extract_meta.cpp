@@ -119,3 +119,16 @@ void MusicTree::extract_part_list() {
 
     this->root_element->DeleteChild(element_ptr);
 }
+
+void MusicTree::extract_music() {
+    for (auto* reader = root_element->FirstChildElement("part");
+         reader != nullptr &&
+         is_element(valid_part_ids.begin(), valid_part_ids.end(),
+                    reader->Attribute("id"));
+         reader = root_element->FirstChildElement("part")) {
+
+        statements.push_back(std::make_unique<Part>(reader, this));
+
+        root_element->DeleteChild(reader);
+    }
+}

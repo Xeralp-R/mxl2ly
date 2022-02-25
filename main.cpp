@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
 
         lmt::MusicTree music_tree;
         music_tree.accept_musicxml(filename);
+        music_tree.set_corrections(file_option_parser.get_hypercorrect());
         music_tree.print_lilypond(file_option_parser.get_outfilename());
     } catch (TCLAP::ArgException& e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId()
