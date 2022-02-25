@@ -43,13 +43,15 @@ NotationFactory::operator()(const tinyxml2::XMLElement* attr_ptr) const {
 }
 
 Dynamic::Dynamic(std::string type) : type(type) {
-    if (!is_element(permitted_types.begin(), permitted_types.end(), type)) {
+    if (!helper::is_element(permitted_types.begin(), permitted_types.end(),
+                            type)) {
         throw std::logic_error("Incorrect dynamic");
     }
 }
 
 Dynamic::Dynamic(const tinyxml2::XMLElement* dyn_ptr) : type(dyn_ptr->Name()) {
-    if (!is_element(permitted_types.begin(), permitted_types.end(), type)) {
+    if (!helper::is_element(permitted_types.begin(), permitted_types.end(),
+                            type)) {
         throw std::logic_error("Incorrect dynamic");
     }
 }

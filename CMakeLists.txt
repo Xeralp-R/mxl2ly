@@ -16,6 +16,7 @@ add_subdirectory(lib/tinyxml2)
 add_subdirectory(lib/tclap)
 add_subdirectory(lib/ghc)
 add_subdirectory(lib/fmt)
+add_subdirectory(lib/nlohmann)
 
 # set the sources
 set (SOURCES
@@ -45,6 +46,10 @@ target_link_libraries(
 
 target_link_libraries(
     mxl2ly PUBLIC fmt-lib
+)
+
+target_link_libraries(
+    mxl2ly PUBLIC nlohmann
 )
 
 target_include_directories(

@@ -8,6 +8,8 @@ PRIVATE
     extract_meta.cpp
     file_option_parser.hpp
     file_option_parser.cpp
+    formatter.hpp
+    formatter.cpp
     header_and_paper.hpp
     header_and_paper.cpp
     helper.hpp

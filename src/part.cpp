@@ -142,26 +142,28 @@ std::pair<std::string, std::string> Part::return_lilypond() const {
     using namespace std::string_literals;
     std::string directory;
     if (staves.size() == 1) {
-        directory += fmt::format(R"__(\new Staff \part-{0}-{1})__",
-                                 convert_number_names(id),
-                                 convert_number_names(staves.at(0)->id + 1)) +
-                     "\n";
+        directory +=
+            fmt::format(R"__(\new Staff \part-{0}-{1})__",
+                        helper::convert_number_names(id),
+                        helper::convert_number_names(staves.at(0)->id + 1)) +
+            "\n";
     } else {
         directory += R"__(\new GrandStaff <<)__"s + "\n";
         for (auto& staff : staves) {
-            directory += fmt::format(R"__(\new Staff \part-{0}-{1})__",
-                                     convert_number_names(id),
-                                     convert_number_names(staff->id + 1)) +
-                         "\n";
+            directory +=
+                fmt::format(R"__(\new Staff \part-{0}-{1})__",
+                            helper::convert_number_names(id),
+                            helper::convert_number_names(staff->id + 1)) +
+                "\n";
         }
         directory += ">>\n";
     }
 
     std::string part_string;
     for (auto& staff : staves) {
-        part_string +=
-            fmt::format("part-{0}-{1} = {2}\n", convert_number_names(id),
-                        convert_number_names(staff->id + 1), "{");
+        part_string += fmt::format(
+            "part-{0}-{1} = {2}\n", helper::convert_number_names(id),
+            helper::convert_number_names(staff->id + 1), "{");
 
         for (auto iter = staff->measures.begin(); iter != staff->measures.end();
              ++iter) {
@@ -230,8 +232,9 @@ std::pair<std::string, std::string> Part::return_lilypond() const {
             for (int i = 0; i < polyphony.size(); ++i) {
                 part_string += fmt::format(
                     R"__(\context Voice = "voice{0}" {1} \voice{2} {3})__",
-                    convert_number_names(i + 1), "{",
-                    capitalize_first(convert_number_names(i + 1)), "\n");
+                    helper::convert_number_names(i + 1), "{",
+                    capitalize_first(helper::convert_number_names(i + 1)),
+                    "\n");
                 part_string += polyphony.at(i);
                 part_string += "\n}\n";
             }

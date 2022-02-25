@@ -10,6 +10,8 @@
 
 #include <vector>
 
+namespace helper {
+
 template <class InputIt, class T>
 constexpr inline bool is_element(InputIt first, InputIt last, const T& value) {
     for (; first != last; ++first) {
@@ -23,7 +25,8 @@ constexpr inline bool is_element(InputIt first, InputIt last, const T& value) {
 const std::vector<std::string> number_names{"zero",  "one",  "two", "three",
                                             "four",  "five", "six", "seven",
                                             "eight", "nine"};
-const inline std::string       convert_number_names(const std::string test) {
+
+const inline std::string convert_number_names(const std::string test) {
     std::string returner;
     for (auto ch : test) {
         // if ch is any number from 0 to 9
@@ -41,6 +44,8 @@ const inline std::string convert_number_names(const int test) {
     }
     return number_names.at(test);
 }
+
+}; // namespace helper
 
 namespace lmt {
 class Length {

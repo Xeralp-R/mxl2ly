@@ -20,15 +20,16 @@ namespace tx2 = tinyxml2;
 
 Note::Pitch::Pitch(char pitch_class, short int octave, short int alteration)
     : pitch_class(pitch_class), octave(octave), alteration(alteration) {
-    if (!is_element(valid_pitch_classes.begin(), valid_pitch_classes.end(),
-                    pitch_class)) {
+    if (!helper::is_element(valid_pitch_classes.begin(),
+                            valid_pitch_classes.end(), pitch_class)) {
         throw std::logic_error("Invalid pitch class");
     }
-    if (!is_element(valid_octaves.begin(), valid_octaves.end(), octave)) {
+    if (!helper::is_element(valid_octaves.begin(), valid_octaves.end(),
+                            octave)) {
         throw std::logic_error("Invalid octave");
     }
-    if (!is_element(valid_alterations.begin(), valid_alterations.end(),
-                    alteration)) {
+    if (!helper::is_element(valid_alterations.begin(), valid_alterations.end(),
+                            alteration)) {
         throw std::logic_error("Invalid alteration (sharp/flat)");
     }
 

@@ -7,6 +7,7 @@
 
 #include "src/file_option_parser.hpp"
 #include "src/music_tree.hpp"
+#include "src/formatter.hpp"
 
 int main(int argc, char* argv[]) {
     try {
@@ -17,10 +18,15 @@ int main(int argc, char* argv[]) {
             throw std::invalid_argument("File cannot be found");
         }
 
-        lmt::MusicTree music_tree;
-        music_tree.accept_musicxml(filename);
-        music_tree.set_corrections(file_option_parser.get_hypercorrect());
-        music_tree.print_lilypond(file_option_parser.get_outfilename());
+        { // placed in a block to prevent too much memory use
+            lmt::MusicTree music_tree;
+            music_tree.accept_musicxml(filename);
+            music_tree.set_corrections(file_option_parser.get_hypercorrect());
+            music_tree.print_lilypond(file_option_parser.get_outfilename());
+        }
+
+        lmt::Formatter formatter(file_option_parser.get_format_options());
+        formatter.format_file(file_option_parser.get_outfilename());
     } catch (TCLAP::ArgException& e) {
         std::cerr << "Error: " << e.error() << " for arg " << e.argId()
                   << std::endl;
