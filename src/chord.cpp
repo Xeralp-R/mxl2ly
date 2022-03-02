@@ -46,8 +46,8 @@ Chord::Chord(std::vector<tinyxml2::XMLElement*> elements,
         auto pitch_class = std::tolower(tx2::text(elem_ptr, "pitch/step")[0]);
         auto octave      = tx2::int_text(elem_ptr, "pitch/octave");
         auto alteration  = int(0);
-        if (tx2::exists(elem_ptr, "alter")) {
-            alteration = tx2::int_text(elem_ptr, "alter");
+        if (tx2::exists(elem_ptr, "pitch/alter")) {
+            alteration = tx2::int_text(elem_ptr, "pitch/alter");
         }
         pitches.push_back(Note::Pitch(pitch_class, octave, alteration));
     }

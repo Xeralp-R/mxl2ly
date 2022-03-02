@@ -6,8 +6,8 @@
 #include "ghc/filesystem.hpp"
 
 #include "src/file_option_parser.hpp"
-#include "src/music_tree.hpp"
 #include "src/formatter.hpp"
+#include "src/music_tree.hpp"
 
 int main(int argc, char* argv[]) {
     try {
