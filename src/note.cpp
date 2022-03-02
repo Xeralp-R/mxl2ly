@@ -110,8 +110,8 @@ Note::Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr) {
             std::tolower(tx2::text(pitch_elem_ptr, "step")[0]);
         this->pitch.octave = tx2::int_text(pitch_elem_ptr, "octave");
 
-        if (note_ptr->FirstChildElement("alter") != nullptr) {
-            this->pitch.alteration = tx2::int_text(note_ptr, "alter");
+        if (tx2::exists(pitch_elem_ptr, "alter")) {
+            this->pitch.alteration = tx2::int_text(pitch_elem_ptr, "alter");
         }
     }
 
