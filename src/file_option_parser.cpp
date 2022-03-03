@@ -32,7 +32,8 @@ FileOptionParser::FileOptionParser(int argc, char** argv) {
 
     TCLAP::ValueArg<std::string> format_arg(
         "f", "format", "Formatting options like indentation", false,
-        R"__({"format":true,"indent":"    "})__", "string: json-like");
+        R"__({"format":true,"indent":"    ","deindentMeasureNumbers":true,"maxLineWidth":80})__",
+        "string: json-like");
     cmd.add(format_arg);
 
     // Parse the command-line arguments.

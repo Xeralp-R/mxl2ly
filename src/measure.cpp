@@ -43,20 +43,6 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
     // initialize the first line
     this->lines.push_back(std::make_unique<MusicLine>());
 
-    // get all the attributes
-    /*
-    std::vector<tx2::XMLElement*> attr_vec;
-    std::copy_if(
-        elem_vec.begin(), elem_vec.end(), std::back_inserter(attr_vec),
-        [](tinyxml2::XMLElement* x) { return x->Name() == "attributes"s; });
-    for (const auto spec_ptr : attr_vec) {
-        auto temp = move(measure_attribute_factory(spec_ptr));
-        if (temp == nullptr) {
-            continue;
-        }
-        objects.push_back(move(temp));
-    }*/
-
     // get notes and chords
     for (auto iter = elem_vec.begin(); iter != elem_vec.end(); ++iter) {
         auto reader = *iter;

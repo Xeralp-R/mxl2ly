@@ -186,7 +186,7 @@ std::pair<std::string, std::string> Part::return_lilypond() const {
                 (*temp_iter)->return_lilypond().size() != meas_vec.size()) {
                 part_string += "<< "s;
                 for (const auto& line_str : meas_vec) {
-                    part_string += "{ "s + line_str + R"( } \\)"s;
+                    part_string += " { "s + line_str + R"( } \\)"s;
                 }
                 part_string.pop_back();
                 part_string.pop_back();
@@ -212,12 +212,12 @@ std::pair<std::string, std::string> Part::return_lilypond() const {
                 std::vector<std::string>(meas_vec.size(), "");
             for (auto temp_iter = iter; temp_iter != end_iter; ++temp_iter) {
                 auto temp_vec    = (*temp_iter)->return_lilypond();
-                bool has_comment = (((*iter)->id() % 5) == 0);
+                bool has_comment = (((*temp_iter)->id() % 5) == 0);
 
                 for (int i = 0; i < polyphony.size(); ++i) {
                     polyphony.at(i) += temp_vec.at(i) + " |\n";
                     polyphony.at(i) +=
-                        has_comment ? fmt::format("% {0}\n", (*iter)->id())
+                        has_comment ? fmt::format("% {0}\n", (*temp_iter)->id())
                                     : "";
                 }
             }
@@ -236,7 +236,7 @@ std::pair<std::string, std::string> Part::return_lilypond() const {
                     capitalize_first(helper::convert_number_names(i + 1)),
                     "\n");
                 part_string += polyphony.at(i);
-                part_string += "\n}\n";
+                part_string += "}\n";
             }
             part_string += ">>\n";
             iter = --end_iter;
