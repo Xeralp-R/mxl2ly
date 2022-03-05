@@ -15,8 +15,8 @@
 #include <variant>
 #include <vector>
 
+#include "directions.hpp"
 #include "measure_attributes.hpp"
-#include "measure_directions.hpp"
 #include "measure_objects.hpp"
 #include "note.hpp"
 #include "tinyxml2/tixml2ex.h"
@@ -57,6 +57,7 @@ class Measure {
 
     // ==> Helper Functions
     aux::MeasureAttributeFactory measure_attribute_factory;
+    aux::DirectionFactory        measure_direction_factory;
 };
 } // namespace lmt
 

@@ -174,7 +174,7 @@ inline element_path_t<XE> element_path_from_xpath(XE*                root,
     size_t start = 0;
     size_t pos;
     // set element at head of selection branch
-    //	if path starts with '/' then it is relative to document, otherwise
+    //    if path starts with '/' then it is relative to document, otherwise
     // relative to element passed in
     // first element in selection branch is the root and only children of the
     // root are considered for document-based paths, this works because there
@@ -477,6 +477,20 @@ inline std::string text(const XMLElement* element, std::string xpath) {
     }
 }
 
+inline std::string text(const XMLElement* element, std::string xpath,
+                        std::string default_val) {
+    const XMLElement* elem = find_element(element, xpath);
+    if (!elem) {
+        return default_val;
+    }
+
+    if (auto value = elem->GetText()) {
+        return std::string(value);
+    } else {
+        return default_val;
+    }
+}
+
 inline bool exists(const XMLElement* element, std::string xpath = ""s) {
     if (find_element(element, xpath)) {
         return true;
@@ -509,6 +523,20 @@ inline int int_text(const XMLElement* element, std::string xpath) {
     }
 }
 
+inline int int_text(const XMLElement* element, std::string xpath,
+                    int default_val) {
+    const XMLElement* elem = find_element(element, xpath);
+    if (!elem) {
+        return default_val;
+    }
+
+    if (auto value = elem->IntText(); true) {
+        return value;
+    } else {
+        return default_val;
+    }
+}
+
 inline float float_text(const XMLElement* element) {
     if (!element) {
         throw XmlException("null element"s);
@@ -532,6 +560,20 @@ inline float float_text(const XMLElement* element, std::string xpath) {
     } else {
         throw XmlException("content of element "s + elem->Name() +
                            " not float"s);
+    }
+}
+
+inline float float_text(const XMLElement* element, std::string xpath,
+                        float default_val) {
+    const XMLElement* elem = find_element(element, xpath);
+    if (!elem) {
+        return default_val;
+    }
+
+    if (auto value = elem->FloatText()) {
+        return value;
+    } else {
+        return default_val;
     }
 }
 // ================== END ADDITION ================== //

@@ -50,7 +50,7 @@ class Note : public aux::AbstractMeasureObject {
     Note(Pitch pitch, unsigned int lly_dur, short int dotted = 0);
     Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr);
 
-    void add_notation(std::unique_ptr<aux::AbstractNotation> notation);
+    void add_note_object(std::unique_ptr<aux::AbstractNoteObject> note_object);
     void add_attribute(std::unique_ptr<aux::AbstractNoteAttribute> attribute);
 
     std::string get_subtype() const override { return "note"; }
@@ -66,15 +66,13 @@ class Note : public aux::AbstractMeasureObject {
     std::optional<aux::Chord>     get_chord() const;
     std::optional<aux::Tuplet>    get_tuplet() const;
 
-    std::vector<aux::AbstractNotation*> get_notations() const;
-
   private:
     // ==> Required Variables
     Pitch        pitch   = Note::Pitch('r', 0, 0); // default value
     unsigned int lly_dur = 16; // duration of lilypond, not musicxml
 
     // ==> Non-required Variables
-    std::vector<std::unique_ptr<lmt::aux::AbstractNotation>>        notations;
+    std::vector<std::unique_ptr<lmt::aux::AbstractNoteObject>> note_objects;
     std::array<std::unique_ptr<lmt::aux::AbstractNoteAttribute>, 3> attributes;
     short int dotted = 0; // number of dots
 

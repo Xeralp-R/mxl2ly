@@ -20,21 +20,20 @@
 #include "statement.hpp"
 #include "tinyxml2/tinyxml2.h"
 
-/* Add later
- enum class Location {
- Above,
- Below
- };
- */
-
 namespace lmt::aux {
-struct AbstractNotation : public AbstractStatement {
-    std::string get_type() { return "note_statement"; }
+struct AbstractNoteObject : public AbstractStatement {
+    std::string get_type() override { return "note_object"; }
 
     virtual std::string get_subtype() const     = 0;
-    // virtual void        accept_musicxml(std::string) = 0;
     virtual std::string return_lilypond() const = 0;
+    virtual ~AbstractNoteObject(){};
+};
 
+struct AbstractNotation : public AbstractNoteObject {
+    std::string get_subtype() const override { return "note_statement"; }
+
+    virtual std::string get_subsubtype() const           = 0;
+    virtual std::string return_lilypond() const override = 0;
     virtual ~AbstractNotation(){};
 };
 
@@ -48,7 +47,7 @@ class Dynamic : public AbstractNotation {
     Dynamic(std::string type);
     Dynamic(const tinyxml2::XMLElement* dyn_ptr);
 
-    std::string get_subtype() const override { return "dynamic"; }
+    std::string get_subsubtype() const override { return "dynamic"; }
     std::string return_lilypond() const override;
 
   private:
@@ -75,7 +74,7 @@ struct Articulation : public AbstractNotation {
     Articulation(Articulation::Type type);
     Articulation(const tinyxml2::XMLElement* art_ptr);
 
-    std::string get_subtype() const override { return "articulation"; }
+    std::string get_subsubtype() const override { return "articulation"; }
     std::string return_lilypond() const override;
 };
 
@@ -92,7 +91,7 @@ struct Ornament : public AbstractNotation {
     Ornament(Ornament::Type type);
     Ornament(const tinyxml2::XMLElement* ornament_ptr);
 
-    std::string get_subtype() const override { return "ornament"; }
+    std::string get_subsubtype() const override { return "ornament"; }
     std::string return_lilypond() const override;
 };
 
@@ -100,7 +99,7 @@ struct Slur : public AbstractNotation {
     Slur(StartStopType start_stop);
     Slur(const tinyxml2::XMLElement* slur_ptr);
 
-    std::string get_subtype() const override { return "slur"; }
+    std::string get_subsubtype() const override { return "slur"; }
     std::string return_lilypond() const override;
 
     StartStopType start_stop;

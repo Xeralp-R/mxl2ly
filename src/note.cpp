@@ -177,7 +177,7 @@ Note::Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr) {
         for (auto object_ptr : notation_ptr) {
             auto temp = notation_factory(object_ptr);
             for (auto& i : temp) {
-                this->notations.push_back(std::move(i));
+                this->note_objects.push_back(std::move(i));
             }
         }
     }
@@ -207,7 +207,7 @@ std::string Note::return_lilypond() const {
     }
 
     std::string notation_string;
-    for (const auto& i : notations) {
+    for (const auto& i : note_objects) {
         notation_string += i->return_lilypond();
     }
 
@@ -217,8 +217,9 @@ std::string Note::return_lilypond() const {
     return before_text + note_text + after_text + " ";
 }
 
-void Note::add_notation(std::unique_ptr<lmt::aux::AbstractNotation> notation) {
-    this->notations.push_back(std::move(notation));
+void Note::add_note_object(
+    std::unique_ptr<lmt::aux::AbstractNoteObject> note_object) {
+    this->note_objects.push_back(std::move(note_object));
 }
 
 void Note::add_attribute(
@@ -248,13 +249,4 @@ std::optional<aux::Tuplet> Note::get_tuplet() const {
         return std::nullopt;
     }
     return *(dynamic_cast<aux::Tuplet*>(attributes.at(2).get()));
-}
-
-std::vector<aux::AbstractNotation*> Note::get_notations() const {
-    std::vector<aux::AbstractNotation*> returner;
-    returner.reserve(notations.size());
-    for (auto& i : this->notations) {
-        returner.push_back(i.get());
-    }
-    return returner;
 }

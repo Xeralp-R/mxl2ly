@@ -5,6 +5,8 @@ PRIVATE
     chord.hpp
     chord.cpp
     corrector.hpp
+    directions.hpp
+    directions.cpp
     extract_meta.cpp
     file_option_parser.hpp
     file_option_parser.cpp
@@ -17,7 +19,6 @@ PRIVATE
     measure.cpp
     measure_attributes.hpp
     measure_attributes.cpp
-    measure_directions.hpp
     measure_objects.hpp
     music_tree.hpp
     music_tree.cpp

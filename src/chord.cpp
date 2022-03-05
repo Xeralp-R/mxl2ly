@@ -105,7 +105,7 @@ Chord::Chord(std::vector<tinyxml2::XMLElement*> elements,
             for (auto object_ptr : notation_ptr) {
                 auto temp = notation_factory(object_ptr);
                 for (auto& i : temp) {
-                    this->notations.push_back(std::move(i));
+                    this->note_objects.push_back(std::move(i));
                 }
             }
         }
@@ -139,7 +139,7 @@ std::string Chord::return_lilypond() const {
     }
 
     std::string notation_string;
-    for (const auto& i : notations) {
+    for (const auto& i : note_objects) {
         notation_string += i->return_lilypond();
     }
 
@@ -147,4 +147,9 @@ std::string Chord::return_lilypond() const {
                                         lilypond_duration, notation_string);
 
     return before_text + note_text + after_text + " ";
+}
+
+void Chord::add_note_object(
+    std::unique_ptr<lmt::aux::AbstractNoteObject> note_object) {
+    this->note_objects.push_back(std::move(note_object));
 }

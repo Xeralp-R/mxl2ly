@@ -34,12 +34,14 @@ class Chord : public aux::AbstractMeasureObject {
     std::string get_subtype() const override { return "chord"; }
     std::string return_lilypond() const override;
 
+    void add_note_object(std::unique_ptr<aux::AbstractNoteObject> note_object);
+
   private:
     std::vector<Note::Pitch> pitches;
     unsigned int             lly_dur;
     short int                dotted; // number of dots
 
-    std::vector<std::unique_ptr<lmt::aux::AbstractNotation>>        notations;
+    std::vector<std::unique_ptr<lmt::aux::AbstractNoteObject>> note_objects;
     std::array<std::unique_ptr<lmt::aux::AbstractNoteAttribute>, 2> attributes;
 
     const std::unordered_map<std::string, std::function<unsigned(void)>>

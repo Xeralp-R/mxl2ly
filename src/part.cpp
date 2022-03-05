@@ -45,7 +45,7 @@ Part::Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr) {
 
     for (auto* meas_elem : tx2::selection(part_elem, "measure")) {
         int id_number        = meas_elem->IntAttribute("number");
-        int current_staff_no = tx2::int_text(meas_elem, "note/staff");
+        int current_staff_no = tx2::int_text(meas_elem, "note/staff", 1);
         std::vector<tx2::XMLElement*> holder;
 
         auto holder_document = std::make_unique<tx2::XMLDocument>();
@@ -105,7 +105,7 @@ Part::Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr) {
 
             // The measure object is a note. If it is in the current staff,
             // allow it to go into the current holder.
-            if (tx2::int_text(meas_object, "staff") == current_staff_no) {
+            if (tx2::int_text(meas_object, "staff", 1) == current_staff_no) {
                 holder.push_back(meas_object);
                 continue;
             }
@@ -122,7 +122,7 @@ Part::Part(tinyxml2::XMLElement* part_elem, const MusicTree* tree_ptr) {
                 ->measures.push_back(std::move(new_measure));
             holder.clear();
 
-            current_staff_no = tx2::int_text(meas_object, "staff");
+            current_staff_no = tx2::int_text(meas_object, "staff", 1);
             holder.push_back(full_distributor);
             if (directed_distributor.find(current_staff_no) !=
                 directed_distributor.end()) {

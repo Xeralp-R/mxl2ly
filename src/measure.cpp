@@ -42,16 +42,13 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
 
     // initialize the first line
     this->lines.push_back(std::make_unique<MusicLine>());
+    std::vector<std::unique_ptr<lmt::aux::AbstractDirection>> holder;
 
     // get notes and chords
     for (auto iter = elem_vec.begin(); iter != elem_vec.end(); ++iter) {
         auto reader = *iter;
 
         const auto reader_name = reader->Name();
-        if (reader_name != "note"s && reader_name != "attributes"s &&
-            reader_name != "backup"s) {
-            continue;
-        }
 
         // Handle backups
         if (reader_name == "backup"s) {
@@ -72,7 +69,24 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
             continue;
         }
 
+        // Handle directions
+        if (reader_name == "direction"s) {
+            for (const auto dir_ptr :
+                 tx2::selection(reader, "direction-type")) {
+                auto temp = std::move(measure_direction_factory(dir_ptr));
+                if (temp.empty()) {
+                    continue;
+                }
+                for (auto& i : temp) {
+                    holder.push_back(std::move(i));
+                }
+            }
+        }
+
         // Handle notes
+        if (reader_name != "note"s) {
+            continue;
+        }
         // move to add_measure later
         this->mxl_count += tx2::exists(reader, "duration")
                                ? tx2::int_text(reader, "duration")
@@ -81,6 +95,7 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
         auto temp_iter = iter;
         ++temp_iter;
         if (temp_iter != elem_vec.end() && tx2::exists(*temp_iter, "chord")) {
+            // it is a chord
             std::vector<tx2::XMLElement*>           chord_vec = {reader};
             tx2::XMLElement*                        chord_reader;
             std::vector<tx2::XMLElement*>::iterator chord_iter;
@@ -91,12 +106,25 @@ Measure::Measure(std::vector<tinyxml2::XMLElement*> elem_vec, int id_number,
                 chord_vec.push_back(*chord_iter);
                 temp_iter = chord_iter;
             }
-            add_measure_object(std::make_unique<Chord>(chord_vec, tree_ptr));
+            auto chord = std::make_unique<Chord>(chord_vec, tree_ptr);
+            if (not holder.empty()) {
+                for (auto& i : holder) {
+                    chord->add_note_object(std::move(i));
+                }
+                holder.clear();
+            }
+            add_measure_object(std::move(chord));
             iter = temp_iter;
         } else {
-            // auto note = extract_note(reader);
-            // auto note = std::make_unique<Note>(reader, tree_ptr);
-            add_measure_object(std::make_unique<Note>(reader, tree_ptr));
+            // It is a note
+            auto note = std::make_unique<Note>(reader, tree_ptr);
+            if (not holder.empty()) {
+                for (auto& i : holder) {
+                    note->add_note_object(std::move(i));
+                }
+                holder.clear();
+            }
+            add_measure_object(std::move(note));
         }
     }
 }
