@@ -106,7 +106,8 @@ void MusicTree::extract_part_list() {
     auto part_list_ptr = std::make_unique<PartList>();
 
     for (auto* score_ptr = element_ptr->FirstChildElement("score-part");
-         score_ptr != nullptr; score_ptr = score_ptr->NextSiblingElement()) {
+         score_ptr != nullptr;
+         score_ptr = score_ptr->NextSiblingElement("score-part")) {
 
         part_list_ptr->add_part(
             score_ptr->Attribute("id"),
