@@ -39,6 +39,10 @@ NotationFactory::operator()(const tinyxml2::XMLElement* attr_ptr) const {
         returner.push_back(std::move(std::make_unique<Slur>(attr_ptr)));
         return returner;
     }
+    if (switcher == "tied") {
+        returner.push_back(std::move(std::make_unique<Tie>(attr_ptr)));
+        return returner;
+    }
     return {};
 }
 
@@ -170,6 +174,32 @@ std::string Slur::return_lilypond() const {
     case StartStopType::Both:
     default:
         // unreached
+        return "";
+        break;
+    }
+}
+
+Tie::Tie(StartStopType start_stop) : start_stop(start_stop) {}
+
+Tie::Tie(const tinyxml2::XMLElement* tie_ptr) {
+    std::string obj_name = tinyxml2::attribute_value(tie_ptr, "type");
+    if (obj_name == "start") {
+        start_stop = StartStopType::Start;
+    } else if (obj_name == "stop") {
+        start_stop = StartStopType::Stop;
+    } else if (obj_name == "let-ring") {
+        std::cerr << "Let ring not yet implemented. \n";
+    } else {
+        std::cerr << "Warning: Unusual tie \n";
+    }
+}
+
+std::string Tie::return_lilypond() const {
+    switch (this->start_stop) {
+    case StartStopType::Start:
+        return "~";
+        break;
+    default:
         return "";
         break;
     }

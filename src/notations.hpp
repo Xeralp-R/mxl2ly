@@ -104,6 +104,16 @@ struct Slur : public AbstractNotation {
 
     StartStopType start_stop;
 };
+
+struct Tie : public AbstractNotation {
+    Tie(StartStopType start_stop);
+    Tie(const tinyxml2::XMLElement* tie_ptr);
+
+    std::string get_subsubtype() const override { return "tie"; }
+    std::string return_lilypond() const override;
+
+    StartStopType start_stop;
+};
 } // namespace lmt::aux
 
 #endif /* notations_hpp */
