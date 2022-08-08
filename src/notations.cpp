@@ -43,6 +43,10 @@ NotationFactory::operator()(const tinyxml2::XMLElement* attr_ptr) const {
         returner.push_back(std::move(std::make_unique<Tie>(attr_ptr)));
         return returner;
     }
+    if (switcher == "arpeggiate") {
+        returner.push_back(std::move(std::make_unique<Arpeggiando>(attr_ptr)));
+        return returner;
+    }
     return {};
 }
 
@@ -201,6 +205,31 @@ std::string Tie::return_lilypond() const {
         break;
     default:
         return "";
+        break;
+    }
+}
+
+Arpeggiando::Arpeggiando(UpDownType up_down) : up_down(up_down) {}
+
+Arpeggiando::Arpeggiando(const tinyxml2::XMLElement* arp_ptr) {
+    std::string direction_str = tinyxml2::attribute_value(arp_ptr, "direction");
+
+    if (direction_str == "down") {
+        this->up_down = UpDownType::Down;
+        return;
+    }
+    this->up_down = UpDownType::Up;
+}
+
+std::string Arpeggiando::return_lilypond() const {
+    switch (this->up_down) {
+    case UpDownType::Down:
+        return R"__(\arpeggio)__";
+        std::cerr << "Cannot accomodate downward arpeggios yet";
+        break;
+
+    default:
+        return R"__(\arpeggio)__";
         break;
     }
 }

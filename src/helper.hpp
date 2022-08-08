@@ -81,6 +81,8 @@ inline Length tenths(long double amt, long double conversion) {
 }
 
 enum class StartStopType { Start, Stop, Both };
+
+enum class UpDownType { Up, Down };
 } // namespace lmt
 
 #endif /* helper_hpp */

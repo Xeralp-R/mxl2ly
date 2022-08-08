@@ -114,6 +114,16 @@ struct Tie : public AbstractNotation {
 
     StartStopType start_stop;
 };
+
+struct Arpeggiando : public AbstractNotation {
+    Arpeggiando(UpDownType up_down = UpDownType::Up);
+    Arpeggiando(const tinyxml2::XMLElement* arp_ptr);
+
+    std::string get_subsubtype() const override { return "arpeggiando"; }
+    std::string return_lilypond() const override;
+
+    UpDownType up_down;
+};
 } // namespace lmt::aux
 
 #endif /* notations_hpp */
