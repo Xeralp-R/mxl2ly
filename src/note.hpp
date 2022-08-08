@@ -68,8 +68,8 @@ class Note : public aux::AbstractMeasureObject {
 
   private:
     // ==> Required Variables
-    Pitch        pitch   = Note::Pitch('r', 0, 0); // default value
-    unsigned int lly_dur = 16; // duration of lilypond, not musicxml
+    Pitch pitch   = Note::Pitch('r', 0, 0); // default value
+    int   lly_dur = 16; // duration of lilypond, not musicxml
 
     // ==> Non-required Variables
     std::vector<std::unique_ptr<lmt::aux::AbstractNoteObject>> note_objects;
@@ -81,14 +81,12 @@ class Note : public aux::AbstractMeasureObject {
         attribute_dispatcher{{"grace_note", []() { return 0; }},
                              {"chord", []() { return 1; }},
                              {"tuplet", []() { return 2; }}};
-    const std::unordered_map<std::string, std::function<unsigned(void)>>
-        duration_dispatcher{
-            {"1024th", []() { return 1024; }}, {"512th", []() { return 512; }},
-            {"256th", []() { return 256; }},   {"128th", []() { return 128; }},
-            {"64th", []() { return 64; }},     {"32nd", []() { return 32; }},
-            {"16th", []() { return 16; }},     {"eighth", []() { return 8; }},
-            {"quarter", []() { return 4; }},   {"half", []() { return 2; }},
-            {"whole", []() { return 1; }}};
+    const std::unordered_map<std::string, int> duration_dispatcher{
+        {"1024th", 1024}, {"512th", 512}, {"256th", 256}, {"128th", 128},
+        {"64th", 64},     {"32nd", 32},   {"16th", 16},   {"eighth", 8},
+        {"quarter", 4},   {"half", 2},    {"whole", 1},   {"breve", -1},
+        {"long", -2} // add maxima another time
+    };
     aux::NotationFactory notation_factory;
 };
 } // namespace lmt

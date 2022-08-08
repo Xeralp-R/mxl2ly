@@ -22,7 +22,7 @@ Chord::Chord(std::vector<tinyxml2::XMLElement*> elements,
 
     // get the duration of the first note
     if (tx2::exists(first_elem, "type")) {
-        lly_dur = duration_dispatcher.at(tx2::text(first_elem, "type"))();
+        lly_dur = duration_dispatcher.at(tx2::text(first_elem, "type"));
     } else if (!tx2::exists(first_elem, "grace")) {
         auto mxl_dur = tx2::int_text(first_elem, "duration");
         lly_dur      = std::round(tree_ptr->get_measure_duration() / mxl_dur);
@@ -113,8 +113,15 @@ Chord::Chord(std::vector<tinyxml2::XMLElement*> elements,
 }
 
 std::string Chord::return_lilypond() const {
-    std::string lilypond_duration = std::to_string(lly_dur);
-    lilypond_duration += std::string(dotted, '.');
+    std::string lilypond_duration;
+    if (lly_dur > 0) {
+        lilypond_duration = std::to_string(lly_dur);
+        lilypond_duration += std::string(dotted, '.');
+    } else if (lly_dur == duration_dispatcher.at("breve")) {
+        lilypond_duration = R"__(\breve)__";
+    } else if (lly_dur == duration_dispatcher.at("long")) {
+        lilypond_duration = R"__(\longa)__";
+    }
 
     std::string pitch_text;
     for (auto pitch : pitches) {

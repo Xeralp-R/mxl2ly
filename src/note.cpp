@@ -85,7 +85,7 @@ Note::Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr) {
 
     // set duration
     if (tx2::exists(note_ptr, "type")) {
-        lly_dur = duration_dispatcher.at(tx2::text(note_ptr, "type"))();
+        lly_dur = duration_dispatcher.at(tx2::text(note_ptr, "type"));
     } else if (!tx2::exists(note_ptr, "grace")) {
         auto mxl_dur = tx2::int_text(note_ptr, "duration");
         lly_dur      = std::round(tree_ptr->get_measure_duration() / mxl_dur);
@@ -184,8 +184,15 @@ Note::Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr) {
 }
 
 std::string Note::return_lilypond() const {
-    std::string lilypond_duration = std::to_string(lly_dur);
-    lilypond_duration += std::string(dotted, '.');
+    std::string lilypond_duration;
+    if (lly_dur > 0) {
+        lilypond_duration = std::to_string(lly_dur);
+        lilypond_duration += std::string(dotted, '.');
+    } else if (lly_dur == duration_dispatcher.at("breve")) {
+        lilypond_duration = R"__(\breve)__";
+    } else if (lly_dur == duration_dispatcher.at("long")) {
+        lilypond_duration = R"__(\longa)__";
+    }
 
     auto pitch_text = pitch.return_lilypond();
 
