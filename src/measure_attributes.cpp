@@ -45,7 +45,7 @@ Clef::Clef(char type, short int staff_line)
 Clef::Clef(const tinyxml2::XMLElement* clef_ptr)
     : type(std::tolower(tx2::text(clef_ptr, "sign").at(0))),
       staff_line(tx2::int_text(clef_ptr, "line")) {
-    if (this->type != 'c' && type != 'f' && type != 'g') {
+    if (this->type != 'c' && type != 'f' && type != 'g' && type != 'p') {
         throw std::logic_error("Incorrect clef");
     }
     if (this->staff_line > 5) {
@@ -86,6 +86,8 @@ std::string Clef::return_lilypond() const {
             return R"--(\clef baritone)--" + "\n"s;
         }
         return R"--()--";
+    case 'p':
+        return R"__(\clef percussion)__";
     default:
         // should be unreachable
         return R"--()--";

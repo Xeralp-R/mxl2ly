@@ -17,8 +17,8 @@ namespace tx2 = tinyxml2;
 
 Chord::Chord(std::vector<tinyxml2::XMLElement*> elements,
              const MusicTree*                   tree_ptr) {
-    auto first_elem = elements.at(0);
-    auto last_elem  = *(elements.end());
+    auto first_elem = elements.front();
+    auto last_elem  = elements.back();
 
     // get the duration of the first note
     if (tx2::exists(first_elem, "type")) {

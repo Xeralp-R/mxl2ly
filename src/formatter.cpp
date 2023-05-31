@@ -130,7 +130,14 @@ void Formatter::format_linewidth(std::ifstream& input_file,
         return;
     }
 
-    auto split_string = [](std::string input, unsigned int count) {
+    auto split_string = [](const std::string c_input, unsigned int count) {
+        auto input = c_input;
+
+        // if the input is short enough, then don't bother
+        if (input.size() < count) {
+            return std::vector{input};
+        }
+
         // how this regex works:
         // split the string into everything before and after
         // the last space before the last text.
@@ -138,13 +145,14 @@ void Formatter::format_linewidth(std::ifstream& input_file,
         std::regex               line_checker(R"__(([\s\S]+\s+)(\S+\s*))__");
         std::vector<std::string> returner;
 
-        while (not input.empty()) {
+        while (!input.empty()) {
             auto tentative = input.substr(0, count);
             auto actual    = std::regex_replace(tentative, line_checker, "$1");
             auto spare     = std::regex_replace(tentative, line_checker, "$2");
 
             // if this is the end of the bar
-            if (spare == "|") {
+            if (spare == "|" || spare == "" ||
+                !std::regex_match(tentative, line_checker)) {
                 returner.push_back(tentative);
                 input.clear();
             } else {

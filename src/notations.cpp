@@ -107,8 +107,10 @@ std::string Articulation::return_lilypond() const {
         return R"__(-!)__";
     case Articulation::Type::DetachedLegato:
         return R"__(-.--)__";
+    default:
+        // unreached, supposedly
+        return "";
     }
-    // unreached.
 }
 
 Ornament::Ornament(Ornament::Type type) : type(type) {}

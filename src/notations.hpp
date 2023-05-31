@@ -57,7 +57,7 @@ class Dynamic : public AbstractNotation {
         "pppppppp", "ppppppp", "pppppp", "ppppp",  "pppp",    "ppp",
         "pp",       "p",       "mp",     "mf",     "f",       "ff",
         "fff",      "ffff",    "fffff",  "ffffff", "fffffff", "ffffffff",
-        "sf",       "sfz",     "rf",     "sffz",   "fz"};
+        "sf",       "sfz",     "rf",     "sffz",   "fz",      "fp"};
 };
 
 struct Articulation : public AbstractNotation {
