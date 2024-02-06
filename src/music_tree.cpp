@@ -37,7 +37,7 @@ void MusicTree::print_lilypond(std::string filename) {
     std::cout << "Printing to: " << filename << '\n';
     this->out.open(filename);
     this->out << "% Automatically generated from a musicxml file." << newline;
-    this->out << R"-(\version "2.22.1")-" << newline << newline;
+    this->out << R"-(\version "2.24.0")-" << newline << newline;
 
     this->print_staff_info();
     this->print_paper_block();
