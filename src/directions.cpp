@@ -32,6 +32,9 @@ std::vector<std::unique_ptr<AbstractDirection>> DirectionFactory::operator()(
             returner.push_back(std::make_unique<Words>(true_elem));
             continue;
         }
+        if (elem_name == "rehearsal") {
+            returner.push_back(std::make_unique<RehearsalMark>(true_elem));
+        }
     }
 
     return returner;
@@ -94,4 +97,12 @@ std::string Words::return_lilypond() const {
     return fmt::format(R"__(-\markup {{ {1}{2}"{0}" }})__", content,
                        is_bold ? R"__(\bold )__" : "",
                        is_italic ? R"__(\italic )__" : "");
+}
+
+RehearsalMark::RehearsalMark(const tx2::XMLElement* dyn_ptr) {
+    text = tx2::text(dyn_ptr);
+}
+
+std::string RehearsalMark::return_lilypond() const {
+    return fmt::format(R"__(-\mark "{0}" )__", text);
 }

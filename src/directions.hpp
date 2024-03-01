@@ -69,6 +69,16 @@ struct DirectionDynamic : public AbstractDirection {
         return actual.return_lilypond();
     }
 };
+
+struct RehearsalMark : public AbstractDirection {
+    std::string text;
+
+    RehearsalMark(std::string text) : text(text){};
+    RehearsalMark(const tinyxml2::XMLElement* words_ptr);
+
+    std::string get_subsubtype() const override { return "rehearlsal_mark"; }
+    std::string return_lilypond() const override;
+};
 } // namespace lmt::aux
 
 #endif /* directions_hpp */
