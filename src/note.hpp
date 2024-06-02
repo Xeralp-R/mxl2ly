@@ -42,7 +42,7 @@ class Note : public aux::AbstractMeasureObject {
         short int octave;
 
         std::vector<char>      valid_pitch_classes{'a', 'b', 'c', 'd', 'e',
-                                              'f', 'g', 'r', 's'};
+                                              'f', 'g', 'r', 's', 'R'};
         std::vector<short int> valid_octaves{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         std::vector<short int> valid_alterations{-2, -1, 0, 1, 2};
     };
@@ -68,8 +68,8 @@ class Note : public aux::AbstractMeasureObject {
 
   private:
     // ==> Required Variables
-    Pitch pitch   = Note::Pitch('r', 0, 0); // default value
-    int   lly_dur = 16; // duration of lilypond, not musicxml
+    Pitch pitch   = Note::Pitch('r'); // default value
+    int   lly_dur = 16;               // duration of lilypond, not musicxml
 
     // ==> Non-required Variables
     std::vector<std::unique_ptr<lmt::aux::AbstractNoteObject>> note_objects;

@@ -114,6 +114,14 @@ Note::Note(const tinyxml2::XMLElement* note_ptr, const MusicTree* tree_ptr) {
             this->pitch.alteration = tx2::int_text(pitch_elem_ptr, "alter");
         }
     }
+    // if it is a rest, check that it's multimeasure
+    else if (tx2::exists(note_ptr, "rest") &&
+             tx2::attribute_value(note_ptr->FirstChildElement("rest"),
+                                  "measure") == "yes") {
+        // default behavior is no = "r", so we only have to check if it's yes =
+        // "R"
+        this->pitch.pitch_class = 'R';
+    }
 
     // handle articulation, ornaments, etc.
 
